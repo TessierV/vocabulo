@@ -1,4 +1,3 @@
-// useCustomFonts.ts
 import { useFonts } from 'expo-font';
 
 const useCustomFonts = () => {
