@@ -21,23 +21,23 @@ const ParameterScreen = () => {
         <Section title="Profil" iconName="user" darkMode={darkMode}>
           <Setting
             iconName="edit-3"
-            text="Edit Profile"
-            buttonText="Edit"
+            text="Modifier Profil"
+            buttonText=">"
             onPress={() => console.log('Edit profile pressed')}
           />
           <Setting
             iconName="lock"
-            text="Change Password"
-            buttonText="Change"
+            text="Modifier mot de passe"
+            buttonText=">"
             onPress={() => console.log('Change password pressed')}
           />
         </Section>
 
         <Section title="Personnalisation" iconName="sliders" darkMode={darkMode}>
           <Setting
-            iconName="moon"
-            text="Dark Mode"
-            buttonText=""
+            iconName={darkMode ? "moon": "sun"}
+            text={darkMode ? "Thème Sombre": "Thème Clair"}
+            buttonText=">"
             onPress={toggleDarkMode}
             children={
               <Switch
