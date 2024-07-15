@@ -1,59 +1,72 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
-import React from 'react'
-import { Tabs } from 'expo-router'
-import { Octicons, Feather, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'
-import logoImage from '../../assets/images/Logo_transparent.png'
-import Colors from '@/constants/Colors';
+import { View, Text, StyleSheet, Image } from 'react-native';
+import React from 'react';
+import { Tabs } from 'expo-router';
+import { Octicons, Feather, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import logoImage from '../../assets/images/Logo_typo.png';
+import { darkTheme, lightTheme, color } from '@/constants/Colors';
+import useDarkMode from '@/components/useDarkMode';
 
 export default function Layout() {
+  const [darkMode, toggleDarkMode] = useDarkMode();
+
   return (
-    <View style={{ bottom: 0, flex: 1, backgroundColor: Colors.neutralBody }}>
-      <Tabs screenOptions={{
-        tabBarStyle: {
-          backgroundColor: Colors.body,
-          padding: 0,
-          borderTopWidth: 0,
-          height: 75,
-          margin: 5,
-          borderRadius: 5,
-          elevation: 0,
-        },
-        tabBarInactiveTintColor: Colors.lightGreen,
-        tabBarActiveTintColor: Colors.lightCoral,
+    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
+      <Tabs screenOptions={({ route }) => ({
+        tabBarStyle: ((route) => {
+          const routesToHideTabBar = ['profile'];
+          if (routesToHideTabBar.includes(route.name)) {
+            return { display: 'none' };
+          }
+          return [
+            styles.tabBar,
+            { backgroundColor: darkMode ? darkTheme.container : lightTheme.container }
+          ];
+        })(route),
+        tabBarInactiveTintColor: darkMode ? darkTheme.icons : lightTheme.icon_container,
+        tabBarActiveTintColor: color.darkGreen,
         tabBarShowLabel: false,
-      }}>
+      })}>
         <Tabs.Screen
-          name='index'
+          name='home'
           options={{
+            headerShown: false,
+
             tabBarIcon: ({ color }) => (
-              <Octicons name="home" size={28} color={color} />
+              <Feather name="home" size={28} color={color} />
             ),
           }}
         />
         <Tabs.Screen
           name='category'
           options={{
+            headerShown: false,
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="food-apple-outline" style={{ bottom: 3 }} size={32} color={color} />
+              <MaterialCommunityIcons name="food-apple-outline" style={styles.categoryIcon} size={32} color={color} />
             ),
           }}
         />
         <Tabs.Screen
           name='game'
           options={{
-            tabBarIcon: ({ color, focused }) => (
+            headerShown: false,
+            tabBarIcon: ({ focused }) => (
               <View style={[
-                styles.middle_container,
-                focused && { backgroundColor: Colors.darkCoral }
+                styles.middleContainer,
+                { borderColor: darkMode ? darkTheme.background : lightTheme.background },
+                focused && { backgroundColor: color.lightPlum }
               ]}>
-                <Image source={logoImage} style={{ width: 36, height: 36, bottom: 2, right:1, tintColor: color }} />
+                <Image source={logoImage} style={[
+                  styles.logoImage,
+                  { tintColor: darkMode ? darkTheme.background : lightTheme.background }
+                ]} />
               </View>
             ),
           }}
         />
         <Tabs.Screen
-          name='library'
+          name='dictionary'
           options={{
+            headerShown: false,
             tabBarIcon: ({ color }) => (
               <Feather name="book-open" size={26} color={color} />
             ),
@@ -62,6 +75,7 @@ export default function Layout() {
         <Tabs.Screen
           name='profile'
           options={{
+            headerShown: false,
             tabBarIcon: ({ color }) => (
               <FontAwesome5 name="user" size={24} color={color} />
             ),
@@ -69,19 +83,37 @@ export default function Layout() {
         />
       </Tabs>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  middle_container: {
-    backgroundColor: Colors.darkGreen,
+  container: {
+    flex: 1,
+  },
+  tabBar: {
+    padding: 0,
+    borderTopWidth: 0,
+    height: 75,
+    margin: 5,
+    borderRadius: 7,
+    elevation: 0,
+  },
+  middleContainer: {
+    backgroundColor: color.darkGreen,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 70,
-    width: 70,
-    bottom: 35,
+    height: 80,
+    width: 80,
+    bottom: 25,
     borderRadius: 50,
     borderWidth: 5,
-    borderColor: Colors.neutralBody,
-  }
+  },
+  categoryIcon: {
+    bottom: 3,
+  },
+  logoImage: {
+    width: 50,
+    height: 41,
+    right: 2,
+  },
 });
