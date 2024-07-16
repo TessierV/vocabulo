@@ -5,9 +5,9 @@ import { darkTheme, lightTheme } from '@/constants/Colors';
 
 const Setting = ({ iconName, text, buttonText, onPress, darkMode, isLast }) => {
   return (
-    <View style={[styles.setting, isLast && styles.lastSetting, {borderColor: darkMode ? darkTheme.background : lightTheme.background}]}>
-      <Feather name={iconName} size={15} color={darkMode ? darkTheme.icon_container : lightTheme.icon_container} />
-      <Text style={[styles.settingText, { color: darkMode ? darkTheme.text_container : lightTheme.text_container }]}>{text}</Text>
+    <View style={[styles.setting, isLast && styles.lastSetting, {borderColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade}]}>
+      <Feather name={iconName} size={15} color={darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade} />
+      <Text style={[styles.settingText, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }]}>{text}</Text>
       <Button title={buttonText} onPress={onPress}></Button>
     </View>
   );

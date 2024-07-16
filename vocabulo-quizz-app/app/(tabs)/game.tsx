@@ -8,9 +8,9 @@ const Page = () => {
   return (
     <View style={[
       styles.container,
-      { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }
+      { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }
     ]}>
-      <Text style={{ color: darkMode ? darkTheme.text : lightTheme.text }}>Game</Text>
+      <Text style={{ color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>Jeux</Text>
     </View>
   );
 }
@@ -22,6 +22,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    color: lightTheme.text,
   }
 });

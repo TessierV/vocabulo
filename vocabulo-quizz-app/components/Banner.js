@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ImageBackground, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import BannerImage from '@/assets/images/Parameter.png';
-import { color } from '@/constants/Colors';
+import { darkTheme, lightTheme } from '@/constants/Colors';
 
 
 const BannerContainer = ({ title, text, darkMode }) => {
@@ -13,10 +13,11 @@ const BannerContainer = ({ title, text, darkMode }) => {
                 <View style={styles.bannerContainer}>
 
                     <View style={styles.bannerTextContainer}>
-                        <Text style={styles.bannerTitle}>{title}</Text>
-                        <Text style={styles.bannerText}>{text}</Text>
+                        <Text style={[styles.bannerTitle, { color: darkMode ? darkTheme.lightShade : lightTheme.lightShade } ]}>{title}</Text>
+                        <Text style={[styles.bannerText, { color: darkMode ? darkTheme.lightShade : lightTheme.lightShade } ]}>{text}</Text>
                     </View>
-                    <Feather name="help-circle" size={20} color={color.white} />
+                    <Feather name="help-circle" size={20} color={darkMode ? darkTheme.lightShade : lightTheme.lightShade} />
+
                 </View>
             </ImageBackground>
 
@@ -57,16 +58,13 @@ const styles = StyleSheet.create({
     },
     bannerTitle: {
         fontSize: 20,
-        color: color.white,
         fontWeight: 'bold',
         paddingVertical: 5,
     },
     bannerText: {
-        color: color.white,
         textAlign: 'justify',
 
     },
-
 });
 
 export default BannerContainer;

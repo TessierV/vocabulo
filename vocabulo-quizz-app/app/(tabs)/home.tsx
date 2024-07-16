@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import { darkTheme, lightTheme, test } from '@/constants/Colors';
+import { darkTheme, lightTheme } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
 const Page = () => {
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -8,9 +8,9 @@ const Page = () => {
   return (
     <View style={[
       styles.container,
-      { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }
+      { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }
     ]}>
-      <Text style={{ color: darkMode ? darkTheme.text : lightTheme.text }}>home</Text>
+      <Text style={{ color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>Home</Text>
     </View>
   );
 }
@@ -22,6 +22,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    color: lightTheme.text,
   }
 });

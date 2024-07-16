@@ -10,7 +10,7 @@ export default function Layout() {
   const [darkMode, toggleDarkMode] = useDarkMode();
 
   return (
-    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
+    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
       <Tabs screenOptions={({ route }) => ({
         tabBarStyle: ((route) => {
           const routesToHideTabBar = ['profile'];
@@ -19,10 +19,10 @@ export default function Layout() {
           }
           return [
             styles.tabBar,
-            { backgroundColor: darkMode ? darkTheme.container : lightTheme.container }
+            { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.lightShade }
           ];
         })(route),
-        tabBarInactiveTintColor: darkMode ? darkTheme.icons : lightTheme.icon_container,
+        tabBarInactiveTintColor: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade,
         tabBarActiveTintColor: color.darkGreen,
         tabBarShowLabel: false,
       })}>
@@ -52,12 +52,12 @@ export default function Layout() {
             tabBarIcon: ({ focused }) => (
               <View style={[
                 styles.middleContainer,
-                { borderColor: darkMode ? darkTheme.background : lightTheme.background },
+                { borderColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade },
                 focused && { backgroundColor: color.lightPlum }
               ]}>
                 <Image source={logoImage} style={[
                   styles.logoImage,
-                  { tintColor: darkMode ? darkTheme.background : lightTheme.background }
+                  { tintColor: darkMode ? darkTheme.darkShade : lightTheme.lightShade }
                 ]} />
               </View>
             ),

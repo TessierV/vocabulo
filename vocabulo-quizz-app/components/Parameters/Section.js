@@ -9,10 +9,10 @@ const Section = ({ title, iconName, children, darkMode }) => {
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
-        <Feather name={iconName} style={styles.icon} size={18} color={darkMode ? darkTheme.icon : lightTheme.icon} />
-        <Text style={[styles.sectionTitle, { color: darkMode ? darkTheme.icon_title : lightTheme.icon_title }]}>{title}</Text>
+        <Feather name={iconName} style={styles.icon} size={18} color={darkMode ? darkTheme.lightShade : lightTheme.darkShade} />
+        <Text style={[styles.sectionTitle, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>{title}</Text>
       </View>
-      <View style={[styles.sectionContent, { backgroundColor: darkMode ? darkTheme.container : lightTheme.container }]}>
+      <View style={[styles.sectionContent, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.lightShade }]}>
         {childrenArray.map((child, index) =>
           React.cloneElement(child, { isLast: index === childrenArray.length - 1, darkMode })
         )}
