@@ -4,51 +4,37 @@
 
 export const color = {
   white: '#FFF',
-  lightGreen: "#C5E0E0",
-  darkGreen: "#A2CBC4",
-  lightCoral: "#E8B2A2",
+
   darkCoral: "#E18D73",
-  lightPlum: "#D1BBE8",
+  neutralCoral: '#FFA381',
+  lightCoral: "#FACDBC",
+
+  darkGreen: "#99CDBD",
+  neutralGreen: "#BFDFD2",
+  lightGreen: "#DCE6E2",
+
+  darkBlue: "#7DAED6",
+  neutralBlue: "#ABCDE8",
+  lightBlue: "#D1E6F6",
+
   darkPlum: "#AC83C8",
-  lightYellow: "#EEDC99",
-  darkYellow: "#E9A75D",
+  neutralPlum: "#BE9EDF",
+  lightPlum: "#EFE0FF",
 };
 
 export const lightTheme = {
-  background: '#F5F2F1',
-  container: '#FFF',
+  darkShade: '#313941',
+  light_darkShade: "#6D768B",
 
-  title: '#3C385F',
-  title_reverse: '#F5F2F1',
-
-  text: '#243559',
-  text_reverse: '#EBECE9',
-
-  icon: '#262D34',
-  icon_title: '#262D34',
-
-  icon_container: '#6D768B',
-  text_container: '#6D768B',
-
-  icon_reverse: '#F5F2F1',
+  lightShade: '#FFF',
+  dark_lightShade: '#F5F2F1',
 };
 
 export const darkTheme = {
-  background: '#0D1320',
-  container: '#262D34',
+  darkShade: '#0D1320',
+  light_darkShade: "#262D34",
 
-  title: 'yellow',
-  title_reverse: 'green',
-
-  text: '#DAE0E4',
-  text_reverse: 'plum',
-
-  icon: '#FFF',
-  icon_title: '#FFF',
-
-  icon_container: '#DAE0E4',
-  text_container: '#DAE0E4',
-
-  icon_reverse: 'purple',
+  lightShade: '#FFF',
+  dark_lightShade: '#DAE0E4',
 };
 
