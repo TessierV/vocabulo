@@ -2,26 +2,31 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, FlatList, Dimensions, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import logoImage from '../assets/images/Logo_transparent.png';
-import color from '../constants/Colors';
+import useCustomFonts from '../constants/useCustomFonts';
 
 const slides = [
   {
     id: '1',
-    title: 'Bienvenue à notre App',
+    title: 'Bienvenue',
+    text: '1ère application pour aidez la communauté sourde.',
+
     image: require('../assets/images/Onboarding/Onboarding1.png'),
-    backgroundColor: "#99CDBD",
-  },
-  {
-    id: '2',
-    title: 'Mémorisez les Signes',
-    image: require('../assets/images/Onboarding/Onboarding2.png'),
     backgroundColor: "#7DAED6",
   },
   {
-    id: '3',
-    title: 'Jouez et Apprenez',
-    image: require('../assets/images/Onboarding/Onboarding3.png'),
+    id: '2',
+    title: 'Jouez et Mémorisez',
+    text: 'Testez et améliorez vos connaissances avec des quizz',
+
+    image: require('../assets/images/Onboarding/Onboarding2.png'),
     backgroundColor: "#AC83C8",
+  },
+  {
+    id: '3',
+    title: 'Vos Données',
+    text: 'Testez vos connaissances et suivez votre progression.',
+    image: require('../assets/images/Onboarding/Onboarding3.png'),
+    backgroundColor: '#99CDBD',
   },
 ];
 
@@ -32,6 +37,7 @@ const Onboarding = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const flatListRef = useRef(null);
   const scrollX = useRef(new Animated.Value(0)).current;
+  const fontsLoaded = useCustomFonts();
 
   useEffect(() => {
     Animated.timing(scrollX, {
@@ -67,10 +73,12 @@ const Onboarding = () => {
     <View style={styles.slideContainer}>
       <ImageBackground source={item.image} style={styles.slide} imageStyle={styles.image}>
         <View style={styles.header}>
-          <Image source={logoImage} style={styles.logo} />
+          <Image source={logoImage} style={styles.logo} tintColor={'#FFF'} />
         </View>
         <View style={styles.content}>
           <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.text}>{item.text}</Text>
+
         </View>
         <View style={styles.footer}>
           <TouchableOpacity style={styles.button} onPress={goToNextSlide}>
@@ -95,6 +103,10 @@ const Onboarding = () => {
       ))}
     </View>
   );
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <Animated.View style={[styles.container, { backgroundColor }]}>
@@ -127,6 +139,7 @@ const styles = StyleSheet.create({
   slide: {
     flex: 1,
     justifyContent: 'space-between',
+    paddingVertical: 20,
   },
   image: {
     resizeMode: 'contain',
@@ -149,10 +162,23 @@ const styles = StyleSheet.create({
     height: 35,
   },
   title: {
-    fontSize: 28,
+    fontSize: 56,
     color: '#FFF',
     textAlign: 'center',
-    fontWeight: 'bold',
+    fontFamily: 'font-h1-bold',
+    lineHeight: 75,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+  text: {
+    color: '#FFF',
+    textAlign: 'center',
+    fontFamily: 'font-base-bold',
+    paddingHorizontal: 20,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
   },
   footer: {
     alignItems: 'center',
@@ -180,12 +206,12 @@ const styles = StyleSheet.create({
   paginationDot: {
     height: 10,
     width: 10,
-    backgroundColor: "#FACDBC",
+    backgroundColor: "#DAE0E4",
     borderRadius: 5,
     marginHorizontal: 5,
   },
   paginationDotActive: {
-    backgroundColor: '#FF7F50',
+    backgroundColor: '#FFF',
   },
 });
 
