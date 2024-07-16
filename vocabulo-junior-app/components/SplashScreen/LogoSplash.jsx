@@ -53,29 +53,32 @@ export default function LogoSplash() {
             zIndex: 1,
             alignSelf: 'center',
             marginTop: 60,
-            transform: [{ translateY: moveAnim }]
+            transform: [{ translateY: moveAnim }],
+            tintColor: Colors.darkCoral
           }}
         />
       </View>
       <View style={styles.Position}>
         <Animated.Image source={require('./../../assets/images/Algea3.png')}
           style={{
-            width: 150,
-            height: 175,
+            width: 180,
+            height: 177,
             zIndex: -1,
-            marginLeft: -120,
-            marginTop: 10
+            marginLeft: -160,
+            marginTop: 20,
+            tintColor: Colors.neutralGreen
           }}
         />
       </View>
       <View style={styles.Position}>
-        <Animated.Image source={require('./../../assets/images/Algea1.png')}
+        <Animated.Image source={require('./../../assets/images/Algea2.png')}
           style={{
-            width: 100,
-            height: 100,
+            width: 60,
+            height: 80,
             zIndex: -1,
             marginLeft: 230,
-            marginTop: 115,
+            marginTop: 130,
+            tintColor: Colors.neutralGreen
           }}
         />
       </View>
@@ -87,7 +90,8 @@ export default function LogoSplash() {
             zIndex: 0,
             alignSelf: 'center',
             marginTop: 245,
-            transform: [{ scale: scaleAnim }]
+            transform: [{ scale: scaleAnim }],
+            tintColor: Colors.lightCoral
           }}
         />
       </View>
@@ -99,7 +103,8 @@ export default function LogoSplash() {
             zIndex: 0,
             alignSelf: 'center',
             marginTop: -80,
-            transform: [{ scale: scaleAnim }]
+            transform: [{ scale: scaleAnim }],
+            tintColor: Colors.darkBlue
           }}
         />
       </View>
