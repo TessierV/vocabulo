@@ -1,38 +1,54 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, FlatList, Dimensions, Animated } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import logoImage from '../assets/images/Logo_transparent.png';
+import color from '../constants/Colors';
 
 const slides = [
   {
     id: '1',
     title: 'Bienvenue à notre App',
     image: require('../assets/images/Onboarding/Onboarding1.png'),
+    backgroundColor: "#99CDBD",
   },
   {
     id: '2',
-    title: 'Explorez les fonctionnalités',
+    title: 'Mémorisez les Signes',
     image: require('../assets/images/Onboarding/Onboarding2.png'),
+    backgroundColor: "#7DAED6",
   },
   {
     id: '3',
-    title: 'Commencez votre aventure',
+    title: 'Jouez et Apprenez',
     image: require('../assets/images/Onboarding/Onboarding3.png'),
+    backgroundColor: "#AC83C8",
   },
 ];
 
 const { width, height } = Dimensions.get('window');
 
-const Onboarding = ({ navigation }) => {
+const Onboarding = () => {
+  const navigation = useNavigation();
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const flatListRef = useRef(null);
+  const scrollX = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(scrollX, {
+      toValue: currentSlideIndex * width,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [currentSlideIndex]);
 
   const goToNextSlide = () => {
     const nextSlideIndex = currentSlideIndex + 1;
-    if (nextSlideIndex != slides.length) {
+    if (nextSlideIndex !== slides.length) {
       const offset = nextSlideIndex * width;
       flatListRef?.current.scrollToOffset({ offset });
       setCurrentSlideIndex(nextSlideIndex);
     } else {
-      navigation.replace('/home');
+      navigation.navigate('home');
     }
   };
 
@@ -42,16 +58,28 @@ const Onboarding = ({ navigation }) => {
     setCurrentSlideIndex(currentIndex);
   };
 
+  const backgroundColor = scrollX.interpolate({
+    inputRange: slides.map((_, index) => index * width),
+    outputRange: slides.map(slide => slide.backgroundColor),
+  });
+
   const Slide = ({ item }) => (
-    <ImageBackground source={item.image} style={styles.slide} imageStyle={{ resizeMode: 'cover' }}>
-      <Text style={styles.title}>{item.title}</Text>
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.button} onPress={goToNextSlide}>
-          <Text style={styles.buttonText}>{currentSlideIndex === slides.length - 1 ? 'Get Started' : 'Next'}</Text>
-        </TouchableOpacity>
-        <Pagination />
-      </View>
-    </ImageBackground>
+    <View style={styles.slideContainer}>
+      <ImageBackground source={item.image} style={styles.slide} imageStyle={styles.image}>
+        <View style={styles.header}>
+          <Image source={logoImage} style={styles.logo} />
+        </View>
+        <View style={styles.content}>
+          <Text style={styles.title}>{item.title}</Text>
+        </View>
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.button} onPress={goToNextSlide}>
+            <Text style={styles.buttonText}>{currentSlideIndex === slides.length - 1 ? 'Commencez' : 'Suivant'}</Text>
+          </TouchableOpacity>
+          <Pagination />
+        </View>
+      </ImageBackground>
+    </View>
   );
 
   const Pagination = () => (
@@ -69,7 +97,7 @@ const Onboarding = ({ navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, { backgroundColor }]}>
       <FlatList
         ref={flatListRef}
         onMomentumScrollEnd={updateCurrentSlideIndex}
@@ -79,22 +107,46 @@ const Onboarding = ({ navigation }) => {
         pagingEnabled
         renderItem={({ item }) => <Slide item={item} />}
         keyExtractor={(item) => item.id}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          { useNativeDriver: false }
+        )}
       />
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
   },
-  slide: {
+  slideContainer: {
     width,
     height,
+  },
+  slide: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  image: {
+    resizeMode: 'contain',
+    width: '100%',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  content: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  logo: {
+    width: 35,
+    height: 35,
   },
   title: {
     fontSize: 28,
@@ -103,14 +155,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footer: {
-    width: '100%',
     alignItems: 'center',
+    paddingBottom: 20,
   },
   button: {
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#FF7F50',
-    borderRadius: 5,
+    borderRadius: 8,
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    minHeight: 50,
+    width: 170,
     marginVertical: 20,
   },
   buttonText: {
@@ -125,12 +180,12 @@ const styles = StyleSheet.create({
   paginationDot: {
     height: 10,
     width: 10,
-    backgroundColor: '#FF7F50',
+    backgroundColor: "#FACDBC",
     borderRadius: 5,
     marginHorizontal: 5,
   },
   paginationDotActive: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#FF7F50',
   },
 });
 
