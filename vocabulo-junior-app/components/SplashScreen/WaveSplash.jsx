@@ -9,7 +9,7 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-import {  mix } from 'react-native-redash';
+import { mix } from 'react-native-redash';
 import { Colors } from '@/constants/Colors';
 
 
