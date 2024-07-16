@@ -5,9 +5,9 @@
 export const color = {
   white: '#FFF',
 
-  darkCoral: "#E18D73",
-  neutralCoral: '#FFA381',
-  lightCoral: "#FACDBC",
+  darkCoral: "#E85B27",
+  neutralCoral: '#FF7F50',
+  lightCoral: "#FFA381",
 
   darkGreen: "#99CDBD",
   neutralGreen: "#BFDFD2",
