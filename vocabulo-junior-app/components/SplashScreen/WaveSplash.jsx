@@ -9,7 +9,7 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-import {  mix } from 'react-native-redash';
+import { mix } from 'react-native-redash';
 import { Colors } from '@/constants/Colors';
 
 
@@ -85,29 +85,29 @@ const WaveSplash = () => {
         alignItems: 'center',
       }}
     >
-        <Svg
-          width={SIZEheight}
-          height= {SIZEheight}
-          viewBox="0 0 1 1"
-        >
-          <AnimatedPath fill={Colors.lightBlue} animatedProps={path2} />
-          <AnimatedPath fill={Colors.neutralBlue} animatedProps={path1} />
-        </Svg>
-        <View
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: Colors.neutralBlue
-
-
-      }}
-    >
       <Svg
+        width={SIZEheight}
+        height={SIZEheight}
+        viewBox="0 0 1 1"
+      >
+        <AnimatedPath fill={Colors.lightBlue} animatedProps={path2} />
+        <AnimatedPath fill={Colors.neutralBlue} animatedProps={path1} />
+      </Svg>
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: Colors.neutralBlue
+
+
+        }}
+      >
+        <Svg
           width={SIZEwidth}
-          height= {SIZEheight}
+          height={SIZEheight}
         >
         </Svg>
-    </View>
+      </View>
     </View>
 
   );

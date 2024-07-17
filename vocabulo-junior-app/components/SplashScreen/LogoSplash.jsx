@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Image, Animated, StyleSheet } from 'react-native';
 import { Colors } from '@/constants/Colors'
+import { Redirect } from 'expo-router';
 
 export default function LogoSplash() {
 
@@ -46,7 +47,7 @@ export default function LogoSplash() {
   return (
     <View style={styles.Position}>
       <View style={styles.Position}>
-        <Animated.Image source={require('./../../assets/images/Logo-red.png')}
+        <Animated.Image source={require('./../../assets/images/Logo.png')}
           style={{
             width: 180,
             height: 171,
@@ -54,7 +55,6 @@ export default function LogoSplash() {
             alignSelf: 'center',
             marginTop: 60,
             transform: [{ translateY: moveAnim }],
-            tintColor: Colors.darkCoral
           }}
         />
       </View>
@@ -66,7 +66,7 @@ export default function LogoSplash() {
             marginTop: -350,
             zIndex: 1,
             transform: [{ scale: scaleAnim }],
-            tintColor: Colors.beige
+            tintColor: Colors.white
           }}
         />
       </View>
@@ -116,7 +116,7 @@ export default function LogoSplash() {
             alignSelf: 'center',
             marginTop: -80,
             transform: [{ scale: scaleAnim }],
-            tintColor: Colors.beigeTransparent
+            tintColor: Colors.whiteTransparent
           }}
         />
       </View>

@@ -6,14 +6,14 @@ import { Colors } from '@/constants/Colors';
 
 export default function SplashScreen() {
 
-const moveAnim = useRef(new Animated.Value(800)).current;
+  const moveAnim = useRef(new Animated.Value(800)).current;
 
   useEffect(() => {
-        Animated.timing(moveAnim, {
-          toValue: -500,
-          duration: 15000,
-          useNativeDriver: true,
-        },
+    Animated.timing(moveAnim, {
+      toValue: -500,
+      duration: 15000,
+      useNativeDriver: true,
+    },
     ).start();
   }, [moveAnim]);
 
@@ -21,8 +21,8 @@ const moveAnim = useRef(new Animated.Value(800)).current;
     <View style={{
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: Colors.beige,
-      marginBottom: -100
+      backgroundColor: Colors.white,
+      marginBottom: -200
     }}>
       <Animated.View
         style={{
