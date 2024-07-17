@@ -59,6 +59,18 @@ export default function LogoSplash() {
         />
       </View>
       <View style={styles.Position}>
+        <Animated.Image source={require('./../../assets/images/Logo-typo.png')}
+          style={{
+            width: 250,
+            height: 205,
+            marginTop: -350,
+            zIndex: 1,
+            transform: [{ scale: scaleAnim }],
+            tintColor: Colors.beige
+          }}
+        />
+      </View>
+      <View style={styles.Position}>
         <Animated.Image source={require('./../../assets/images/Algea3.png')}
           style={{
             width: 180,
@@ -78,7 +90,7 @@ export default function LogoSplash() {
             zIndex: -1,
             marginLeft: 230,
             marginTop: 130,
-            tintColor: Colors.neutralGreen
+            tintColor: Colors.darkGreen
           }}
         />
       </View>
@@ -100,11 +112,11 @@ export default function LogoSplash() {
           style={{
             width: 280,
             height: 162,
-            zIndex: 0,
+            zIndex: 2,
             alignSelf: 'center',
             marginTop: -80,
             transform: [{ scale: scaleAnim }],
-            tintColor: Colors.darkBlue
+            tintColor: Colors.beigeTransparent
           }}
         />
       </View>

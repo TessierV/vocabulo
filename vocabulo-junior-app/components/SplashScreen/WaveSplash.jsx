@@ -9,13 +9,14 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-import { mix } from 'react-native-redash';
+import {  mix } from 'react-native-redash';
 import { Colors } from '@/constants/Colors';
 
 
 // Taille de l'animation, calculée en fonction de la largeur de la fenêtre
 
 const SIZEheight = Dimensions.get('window').height;
+const SIZEwidth = Dimensions.get('window').width;
 
 // Création d'un composant animé pour le Path SVG
 const AnimatedPath = Animated.createAnimatedComponent(Path);
@@ -89,10 +90,26 @@ const WaveSplash = () => {
           height= {SIZEheight}
           viewBox="0 0 1 1"
         >
-          <AnimatedPath fill={Colors.darkBlueTransparent} animatedProps={path2} />
-          <AnimatedPath fill={Colors.neutralBlueTransparent} animatedProps={path1} />
+          <AnimatedPath fill={Colors.lightBlue} animatedProps={path2} />
+          <AnimatedPath fill={Colors.neutralBlue} animatedProps={path1} />
+        </Svg>
+        <View
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Colors.neutralBlue
+
+
+      }}
+    >
+      <Svg
+          width={SIZEwidth}
+          height= {SIZEheight}
+        >
         </Svg>
     </View>
+    </View>
+
   );
 };
 
