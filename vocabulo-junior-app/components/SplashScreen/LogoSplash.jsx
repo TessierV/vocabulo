@@ -1,14 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Image, Animated, StyleSheet } from 'react-native';
-import { Colors } from '@/constants/Colors'
-import { Redirect } from 'expo-router';
+import { View, Animated, StyleSheet } from 'react-native';
+import { Colors } from '@/constants/Colors';
 
 export default function LogoSplash() {
-
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const moveAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.loop(
+    const scaleAnimation = Animated.loop(
       Animated.sequence([
         Animated.timing(scaleAnim, {
           toValue: 1.1,
@@ -21,14 +20,9 @@ export default function LogoSplash() {
           useNativeDriver: true,
         }),
       ]),
-    ).start();
-  }, [scaleAnim]);
+    );
 
-
-  const moveAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.loop(
+    const moveAnimation = Animated.loop(
       Animated.sequence([
         Animated.timing(moveAnim, {
           toValue: -15,
@@ -41,92 +35,102 @@ export default function LogoSplash() {
           useNativeDriver: true,
         }),
       ]),
-    ).start();
-  }, [moveAnim]);
+    );
+
+    scaleAnimation.start();
+    moveAnimation.start();
+  }, [scaleAnim, moveAnim]);
 
   return (
-    <View style={styles.Position}>
-      <View style={styles.Position}>
-        <Animated.Image source={require('./../../assets/images/Logo.png')}
-          style={{
-            width: 180,
-            height: 171,
-            zIndex: 1,
-            alignSelf: 'center',
-            marginTop: 60,
-            transform: [{ translateY: moveAnim }],
-          }}
-        />
-      </View>
-      <View style={styles.Position}>
-        <Animated.Image source={require('./../../assets/images/Logo-typo.png')}
-          style={{
-            width: 250,
-            height: 205,
-            marginTop: -350,
-            zIndex: 1,
-            transform: [{ scale: scaleAnim }],
-            tintColor: Colors.white
-          }}
-        />
-      </View>
-      <View style={styles.Position}>
-        <Animated.Image source={require('./../../assets/images/Algea3.png')}
-          style={{
-            width: 180,
-            height: 177,
-            zIndex: -1,
-            marginLeft: -160,
-            marginTop: 20,
-            tintColor: Colors.neutralGreen
-          }}
-        />
-      </View>
-      <View style={styles.Position}>
-        <Animated.Image source={require('./../../assets/images/Algea2.png')}
-          style={{
-            width: 60,
-            height: 80,
-            zIndex: -1,
-            marginLeft: 230,
-            marginTop: 130,
-            tintColor: Colors.darkGreen
-          }}
-        />
-      </View>
-      <View style={styles.Position}>
-        <Animated.Image source={require('./../../assets/images/Shadow-logo.png')}
-          style={{
-            width: 150,
-            height: 17,
-            zIndex: 0,
-            alignSelf: 'center',
-            marginTop: 245,
-            transform: [{ scale: scaleAnim }],
-            tintColor: Colors.lightCoral
-          }}
-        />
-      </View>
-      <View style={styles.Position}>
-        <Animated.Image source={require('./../../assets/images/Bubbles.png')}
-          style={{
-            width: 280,
-            height: 162,
-            zIndex: 2,
-            alignSelf: 'center',
-            marginTop: -80,
-            transform: [{ scale: scaleAnim }],
-            tintColor: Colors.whiteTransparent
-          }}
-        />
-      </View>
+    <View>
+      <Animated.Image 
+        source={require('./../../assets/images/Logo-coral.png')}
+        style={[styles.logoCoral, { transform: [{ translateY: moveAnim }] }]}
+      />
+      <Animated.Image 
+        source={require('./../../assets/images/Logo-typo.png')}
+        style={[styles.logoTypo, { transform: [{ scale: scaleAnim }] }]}
+      />
+      <Animated.Image 
+        source={require('./../../assets/images/graphicElements/Algea3.png')}
+        style={styles.algea3}
+      />
+      <Animated.Image 
+        source={require('./../../assets/images/graphicElements/Algea2.png')}
+        style={styles.algea2}
+      />
+      <Animated.Image 
+        source={require('./../../assets/images/graphicElements/Shadow-logo.png')}
+        style={[styles.shadowLogo, { transform: [{ scale: scaleAnim }] }]}
+      />
+      <Animated.Image 
+        source={require('./../../assets/images/graphicElements/Bubbles.png')}
+        style={[styles.bubbles, { transform: [{ scale: scaleAnim }] }]}
+      />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  Position: {
+  logoCoral: {
     position: 'absolute',
-    alignItems: 'center'
-  }
-})
+    width: 180,
+    height: 171,
+    zIndex: 1,
+    alignSelf: 'center',
+    top: 0,
+    marginTop: 600,
+  },
+  logoTypo: {
+    position: 'absolute',
+    width: 250,
+    height: 205,
+    zIndex: 1,
+    top: 0,
+    marginTop: 150,
+    alignSelf: 'center',
+    tintColor: Colors.white,
+  },
+  algea3: {
+    position: 'absolute',
+    width: 180,
+    height: 177,
+    zIndex: -1,
+    top: 0,
+    left: 0,
+    marginLeft: 20,
+    marginTop: 575,
+    tintColor: Colors.neutralGreen,
+  },
+  algea2: {
+    position: 'absolute',
+    width: 60,
+    height: 80,
+    zIndex: -1,
+    top: 0,
+    right: 0,
+    marginRight: 50,
+    marginTop: 660,
+    tintColor: Colors.darkGreen,
+  },
+  shadowLogo: {
+    position: 'absolute',
+    width: 150,
+    height: 17,
+    zIndex: 0,
+    top: 0,
+    marginTop: 790,
+    alignSelf: 'center',
+    tintColor: Colors.lightCoral,
+  },
+  bubbles: {
+    position: 'absolute',
+    width: 280,
+    height: 162,
+    zIndex: 2,
+    top: 0,
+    marginTop: 400,
+    alignSelf: 'center',
+    tintColor: Colors.whiteTransparent,
+  },
+});
