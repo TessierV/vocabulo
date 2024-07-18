@@ -5,7 +5,7 @@ import useCustomFonts from './../../constants/useCustomFonts';
 import { useFonts } from 'expo-font';
 import { useRouter } from 'expo-router';
 
-export default function Login() {
+export default function backgroundLogin() {
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const moveAnim = useRef(new Animated.Value(0)).current;
     const move2Anim = useRef(new Animated.Value(0)).current;
@@ -93,42 +93,42 @@ export default function Login() {
         <View>
             <View style={styles.headerBackground} />
 
-            <Animated.Image 
+            <Animated.Image
                 source={require('./../../assets/images/Logo-plum.png')}
                 style={[styles.logo, { transform: [{ translateY: moveAnim }] }]}
             />
 
-            <Animated.Image 
+            <Animated.Image
                 source={require('./../../assets/images/graphicElements/Shadow-logo.png')}
                 style={[styles.shadowLogo, { transform: [{ scale: scaleAnim }] }]}
             />
 
-            <Image 
+            <Image
                 source={require('./../../assets/images/graphicElements/element7.png')}
                 style={styles.element7}
             />
 
-            <Image 
+            <Image
                 source={require('./../../assets/images/graphicElements/element3.png')}
                 style={styles.element3First}
             />
 
-            <Image 
+            <Image
                 source={require('./../../assets/images/graphicElements/element3.png')}
                 style={styles.element3Second}
             />
 
-            <Image 
+            <Image
                 source={require('./../../assets/images/graphicElements/Algea2.png')}
                 style={styles.algea}
             />
 
-            <Animated.Image 
+            <Animated.Image
                 source={require('./../../assets/images/graphicElements/element2.png')}
                 style={[styles.element2, { transform: [{ translateX: move2Anim }, { translateY: move3Anim }] }]}
             />
 
-            <Animated.Image 
+            <Animated.Image
                 source={require('./../../assets/images/graphicElements/element1.png')}
                 style={[styles.element1, { transform: [{ translateX: move4Anim }, { translateY: move5Anim }] }]}
             />
@@ -139,7 +139,7 @@ export default function Login() {
 const styles = StyleSheet.create({
     headerBackground: {
         width: '100%',
-        height: 500,
+        height: 550,
         backgroundColor: Colors.neutralPlum,
     },
     logo: {
@@ -147,15 +147,18 @@ const styles = StyleSheet.create({
         width: 180,
         height: 171,
         zIndex: 1,
+        marginTop: 260,
+        top: 0,
         alignSelf: 'center',
-        marginTop: 250,
     },
     shadowLogo: {
+        position: 'absolute',
         width: 150,
         height: 17,
         zIndex: 0,
+        marginTop: 460,
+        top: 0,
         alignSelf: 'center',
-        marginTop: -50,
         tintColor: Colors.lightPlum,
     },
     element7: {
