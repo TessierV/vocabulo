@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "678873659196",
+    "project_id": "vocabul-o",
+    "storage_bucket": "vocabul-o.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:678873659196:android:ed971ed29f47c6e81c9039",
+        "android_client_info": {
+          "package_name": "com.amandineassenat.vocabulojuniorapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDL8a9Ns6WfHJzrzpYSmLL62st9w_gS50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
