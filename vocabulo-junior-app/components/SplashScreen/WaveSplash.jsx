@@ -97,6 +97,7 @@ const WaveSplash = () => {
         style={{
           justifyContent: 'center',
           alignItems: 'center',
+          marginTop: -20,
           backgroundColor: Colors.neutralBlue
 
 

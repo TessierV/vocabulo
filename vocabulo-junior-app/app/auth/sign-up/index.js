@@ -6,9 +6,11 @@ import { useNavigation } from "@react-navigation/native";
 import { Colors } from '@/constants/Colors';
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { HeaderTitle, Title } from '@/constants/StyledText';
+import HeaderHide from './../../../components/HeaderHide'
 
 
 const PHONE_NUMBER_LENGTH = 10;
+
 
 const Signup = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -46,6 +48,7 @@ const Signup = () => {
 
   return (
     <View style={styles.container}>
+      <HeaderHide />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={24} color="black" />
@@ -57,7 +60,7 @@ const Signup = () => {
       {!confirm ? (
         <>
           <View style={styles.iconTitleContainer}>
-            <MaterialIcons name="sms" size={24} color={Colors.darkGreen} />
+            <MaterialIcons name="sms" size={24} color={Colors.darkCoral} />
             <Title style={styles.title}>Ton numéro de téléphone</Title>
           </View>
           <TextInput
@@ -67,22 +70,22 @@ const Signup = () => {
             maxLength={PHONE_NUMBER_LENGTH}
             onChangeText={setPhoneNumber}
             keyboardType="phone-pad"
-            selectionColor={Colors.darkGreen}
+            selectionColor={Colors.darkCoral}
           />
           <TouchableOpacity
             onPress={signInWithPhoneNumber}
             style={[
               styles.button,
               {
-                backgroundColor: isPhoneNumberValid ? Colors.darkGreen : Colors.white,
-                borderColor: isPhoneNumberValid ? Colors.darkGreen : Colors.darkGreen,
+                backgroundColor: isPhoneNumberValid ? Colors.darkCoral : Colors.white,
+                borderColor: isPhoneNumberValid ? Colors.darkCoral : Colors.darkCoral,
               },
             ]}
           >
             <Title
               style={[
                 styles.buttonText,
-                { color: isPhoneNumberValid ? Colors.white : Colors.darkGreen }
+                { color: isPhoneNumberValid ? Colors.white : Colors.darkCoral }
               ]}
             >
               Recevoir un code
@@ -92,7 +95,7 @@ const Signup = () => {
       ) : (
         <>
           <View style={styles.iconTitleContainer}>
-            <FontAwesome name="eye" size={24} color={Colors.neutralPlum} />
+            <FontAwesome name="eye" size={24} color={Colors.darkCoral} />
             <Title style={styles.title}>Ton code secret</Title>
           </View>
           <TextInput
@@ -119,8 +122,7 @@ const Signup = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 25,
-    paddingTop: 40,
-    marginTop: 20,
+    paddingTop: 60,
     backgroundColor: Colors.white,
     height: '100%',
     width: '100%',
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginLeft: 10,
-    color: Colors.darkGreen,
+    color: Colors.darkCoral,
   },
   inputContainer: {
     paddingHorizontal: 20,

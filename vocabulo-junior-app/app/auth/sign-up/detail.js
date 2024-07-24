@@ -4,6 +4,8 @@ import firestore from "@react-native-firebase/firestore";
 import { Colors } from '@/constants/Colors';
 import { HeaderTitle, Title } from '@/constants/StyledText';
 import { Ionicons } from '@expo/vector-icons';
+import HeaderHide from './../../../components/HeaderHide'
+
 
 const Detail = ({ route, navigation }) => {
   const { uid } = route.params;
@@ -25,6 +27,7 @@ const Detail = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <HeaderHide />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={24} color="black" />
@@ -62,8 +65,7 @@ const Detail = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 25,
-    paddingTop: 40,
-    marginTop: 20,
+    paddingTop: 60,
     backgroundColor: Colors.white,
     height: '100%',
     width: '100%',

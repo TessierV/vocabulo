@@ -5,6 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 import { Colors } from '@/constants/Colors';
 import { HeaderTitle, Title } from '@/constants/StyledText';
 import { Ionicons } from '@expo/vector-icons';
+import HeaderHide from './../../../components/HeaderHide'
+
 
 const Dashboard = () => {
     const navigation = useNavigation();
@@ -24,6 +26,7 @@ const Dashboard = () => {
 
     return (
         <View style={styles.container}>
+            <HeaderHide />
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="chevron-back" size={24} color="black" />
@@ -43,8 +46,7 @@ const Dashboard = () => {
 const styles = StyleSheet.create({
     container: {
         padding: 25,
-        paddingTop: 40,
-        marginTop: 20,
+        paddingTop: 60,
         backgroundColor: Colors.white,
         height: '100%',
         width: '100%',
