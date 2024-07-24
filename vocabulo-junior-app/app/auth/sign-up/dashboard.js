@@ -3,8 +3,8 @@ import { View, TouchableOpacity, StyleSheet } from "react-native";
 import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { Colors } from '@/constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
 import { HeaderTitle, Title } from '@/constants/StyledText';
+import { Ionicons } from '@expo/vector-icons';
 
 const Dashboard = () => {
     const navigation = useNavigation();

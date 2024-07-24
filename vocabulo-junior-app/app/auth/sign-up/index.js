@@ -7,6 +7,7 @@ import { Colors } from '@/constants/Colors';
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { HeaderTitle, Title } from '@/constants/StyledText';
 
+
 const PHONE_NUMBER_LENGTH = 10;
 
 const Signup = () => {
@@ -14,9 +15,6 @@ const Signup = () => {
   const [code, setCode] = useState("");
   const [confirm, setConfirm] = useState(null);
   const navigation = useNavigation();
-
-  const handlePhoneNumberChange = (text) => setPhoneNumber(text);
-  const handleCodeChange = (text) => setCode(text);
 
   const signInWithPhoneNumber = async () => {
     try {
@@ -67,12 +65,12 @@ const Signup = () => {
             placeholder="0612345678"
             value={phoneNumber}
             maxLength={PHONE_NUMBER_LENGTH}
-            onChangeText={handlePhoneNumberChange}
+            onChangeText={setPhoneNumber}
             keyboardType="phone-pad"
             selectionColor={Colors.darkGreen}
           />
           <TouchableOpacity
-            onPress={isPhoneNumberValid ? signInWithPhoneNumber : null}
+            onPress={signInWithPhoneNumber}
             style={[
               styles.button,
               {
@@ -80,7 +78,6 @@ const Signup = () => {
                 borderColor: isPhoneNumberValid ? Colors.darkGreen : Colors.darkGreen,
               },
             ]}
-            disabled={!isPhoneNumberValid}
           >
             <Title
               style={[
@@ -103,7 +100,7 @@ const Signup = () => {
             placeholder="Entrez le code"
             value={code}
             keyboardType="number-pad"
-            onChangeText={handleCodeChange}
+            onChangeText={setCode}
           />
           <TouchableOpacity
             onPress={confirmCode}

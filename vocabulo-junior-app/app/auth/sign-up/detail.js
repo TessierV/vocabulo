@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import { Colors } from '@/constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
 import { HeaderTitle, Title } from '@/constants/StyledText';
+import { Ionicons } from '@expo/vector-icons';
 
 const Detail = ({ route, navigation }) => {
   const { uid } = route.params;
