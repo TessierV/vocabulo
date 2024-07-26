@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { darkTheme, lightTheme } from '@/constants/Colors';
+import {ContainerTitle} from '@/constants/StyledText';
 
 const Section = ({ title, iconName, children, darkMode }) => {
   const childrenArray = React.Children.toArray(children);
@@ -10,7 +11,7 @@ const Section = ({ title, iconName, children, darkMode }) => {
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <Feather name={iconName} style={styles.icon} size={18} color={darkMode ? darkTheme.lightShade : lightTheme.darkShade} />
-        <Text style={[styles.sectionTitle, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>{title}</Text>
+        <ContainerTitle style={[styles.sectionTitle, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>{title}</ContainerTitle>
       </View>
       <View style={[styles.sectionContent, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.lightShade }]}>
         {childrenArray.map((child, index) =>
