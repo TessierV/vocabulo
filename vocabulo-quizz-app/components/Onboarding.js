@@ -1,32 +1,34 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, FlatList, Dimensions, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import logoImage from '../assets/images/Logo_transparent.png';
+import logoImage from '@/assets/images/Logo_transparent.png';
+import logoText from '../assets/images/Logo_vocabuloText.png';
 import useCustomFonts from '../constants/useCustomFonts';
 
 const slides = [
   {
     id: '1',
     title: 'Bienvenue',
-    text: '1ère application pour aidez la communauté sourde.',
-
-    image: require('../assets/images/Onboarding/Onboarding1.png'),
-    backgroundColor: "#7DAED6",
+    text: '1ère application pour aider la communauté sourde.',
+    image: require('../assets/images/Onboarding/1.png'),
+    backgroundImage: require('@/assets/images/Onboarding/2.png'),
+    backgroundColor: "#99CDBD",
   },
   {
     id: '2',
     title: 'Jouez et Mémorisez',
     text: 'Testez et améliorez vos connaissances avec des quizz',
-
-    image: require('../assets/images/Onboarding/Onboarding2.png'),
-    backgroundColor: "#AC83C8",
+    image: require('../assets/images/Onboarding/2.png'),
+    backgroundImage: require('../assets/images/Onboarding/1.png'),
+    backgroundColor: "#7DAED6",
   },
   {
     id: '3',
     title: 'Vos Données',
     text: 'Testez vos connaissances et suivez votre progression.',
-    image: require('../assets/images/Onboarding/Onboarding3.png'),
-    backgroundColor: '#99CDBD',
+    image: require('../assets/images/Onboarding/3.png'),
+    backgroundImage: require('../assets/images/Onboarding/3.png'),
+    backgroundColor: '#AF7DD6',
   },
 ];
 
@@ -70,15 +72,14 @@ const Onboarding = () => {
   });
 
   const Slide = ({ item }) => (
-    <View style={styles.slideContainer}>
-      <ImageBackground source={item.image} style={styles.slide} imageStyle={styles.image}>
-        <View style={styles.header}>
-          <Image source={logoImage} style={styles.logo} tintColor={'#FFF'} />
-        </View>
+    <ImageBackground source={item.backgroundImage} style={styles.slideContainer} imageStyle={{ resizeMode: 'cover' }}>
+      <View style={styles.header}>
+        <Image source={logoImage} style={styles.logo}  tintColor={'#313941'}/>
+      </View>
+      <View style={{margin:20, bottom: 0, flex: 1, height: '40%',}}>
         <View style={styles.content}>
-          <Text style={styles.title}>{item.title}</Text>
+          <Image source={logoText} style={styles.logotext}  />
           <Text style={styles.text}>{item.text}</Text>
-
         </View>
         <View style={styles.footer}>
           <TouchableOpacity style={styles.button} onPress={goToNextSlide}>
@@ -86,8 +87,8 @@ const Onboarding = () => {
           </TouchableOpacity>
           <Pagination />
         </View>
-      </ImageBackground>
-    </View>
+      </View>
+    </ImageBackground>
   );
 
   const Pagination = () => (
@@ -97,7 +98,7 @@ const Onboarding = () => {
           key={index}
           style={[
             styles.paginationDot,
-            currentSlideIndex === index && styles.paginationDotActive,
+            currentSlideIndex === index && styles.paginationDotActive
           ]}
         />
       ))}
@@ -139,18 +140,18 @@ const styles = StyleSheet.create({
   slide: {
     flex: 1,
     justifyContent: 'space-between',
-    paddingVertical: 20,
   },
   image: {
     resizeMode: 'contain',
     width: '100%',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flex: 1,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    height: '60%',
   },
   content: {
     flex: 1,
@@ -158,27 +159,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 35,
-    height: 35,
+    width: 40,
+    height: 40,
   },
-  title: {
-    fontSize: 56,
-    color: '#FFF',
-    textAlign: 'center',
-    fontFamily: 'font-h1-bold',
-    lineHeight: 75,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
+  logotext: {
+    width: 206,
+    height: 50,
   },
   text: {
-    color: '#FFF',
+    color: '#313941',
     textAlign: 'center',
-    fontFamily: 'font-base-bold',
-    paddingHorizontal: 20,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
+    fontFamily: 'font-base',
+    padding: 20,
+    fontSize: 18,
   },
   footer: {
     alignItems: 'center',
