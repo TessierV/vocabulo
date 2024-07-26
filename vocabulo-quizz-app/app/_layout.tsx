@@ -1,7 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { SplashScreen, Stack } from "expo-router";
-import React, { useEffect } from "react";
-import { useFonts } from "expo-font";
+import React, { useEffect, useState } from "react";
+import useCustomFonts from '@/constants/useCustomFonts';
 import useDarkMode from '@/components/useDarkMode';
 
 export {
@@ -15,35 +15,34 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/Arima-Medium.ttf'), ...FontAwesome.font,
-  });
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [darkMode, toggleDarkMode] = useDarkMode();
 
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    async function loadFonts() {
+      const fontsSuccessfullyLoaded = await useCustomFonts();
+      if (fontsSuccessfullyLoaded) {
+        setFontsLoaded(true);
+        SplashScreen.hideAsync();
+      } else {
+      }
     }
-  }, [loaded]);
+    loadFonts();
+  }, []);
 
-  if (!loaded) {
+  if (!fontsLoaded) {
     return null;
   }
-  return <RootLayoutNav />
+
+  return <RootLayoutNav />;
 }
 
 function RootLayoutNav() {
-  const [darkMode, toggleDarkMode] = useDarkMode();
-
-
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="parameter" options={{ headerShown: false, title: 'Test Screen' }} />
+      <Stack.Screen name="index" options={{ headerShown: false, title: 'Test Screen' }} />
     </Stack>
   );
 }
-

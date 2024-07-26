@@ -13,7 +13,7 @@ export default function Layout() {
     <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
       <Tabs screenOptions={({ route }) => ({
         tabBarStyle: ((route) => {
-          const routesToHideTabBar = ['profile'];
+          const routesToHideTabBar = ['profile', 'index'];
           if (routesToHideTabBar.includes(route.name)) {
             return { display: 'none' };
           }
@@ -53,7 +53,7 @@ export default function Layout() {
               <View style={[
                 styles.middleContainer,
                 { borderColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade },
-                focused && { backgroundColor: color.lightPlum }
+                focused && { backgroundColor: color.neutralPlum }
               ]}>
                 <Image source={logoImage} style={[
                   styles.logoImage,
