@@ -6,26 +6,32 @@ import Setting from '../../components/Parameters/Setting';
 import BannerContainer from '../../components/Banner';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
+import { texts } from '@/constants/texts';
 
 const ProfileScreen = () => {
   const [darkMode, toggleDarkMode] = useDarkMode();
 
   return (
-    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
+    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
       <Header darkMode={darkMode} firstLink="/home" secondLink="/parameter" />
-      <BannerContainer title="Profil" text="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi non quis exercitationem culpa nesciunt nihil aut nostrum explicabo reprehenderit " darkMode={darkMode} />
+      <BannerContainer
+        title={texts.profilScreen.banner.title}
+        text={texts.profilScreen.banner.text}
+        popuptitle={texts.profilScreen.banner.popup.title}
+        popuptext={texts.profilScreen.banner.popup.text}
+        popupbutton={texts.profilScreen.banner.popup.button}
+        darkMode={darkMode}
+      />
       <ScrollView style={{ width: '100%' }}>
-        <Section title="Profil" iconName="user" darkMode={darkMode}>
+        <Section title={texts.profilScreen.section.title} iconName="user" darkMode={darkMode}>
           <Setting
             iconName="edit-3"
-            text="Edit Profile"
-            buttonText="Edit"
+            text={texts.profilScreen.section.editProfile}
             onPress={() => console.log('Edit profile pressed')}
           />
           <Setting
             iconName="lock"
-            text="Change Password"
-            buttonText="Change"
+            text={texts.profilScreen.section.changePassword}
             onPress={() => console.log('Change password pressed')}
           />
         </Section>

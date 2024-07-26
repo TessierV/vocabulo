@@ -6,6 +6,7 @@ import Setting from '@/components/Parameters/Setting';
 import BannerContainer from '@/components/Banner';
 import useDarkMode from '@/components/useDarkMode';
 import { darkTheme, lightTheme } from '@/constants/Colors';
+import { texts } from '@/constants/texts';
 
 
 const ParameterScreen = () => {
@@ -13,31 +14,37 @@ const ParameterScreen = () => {
 
 
   return (
-    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
+    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
       <Header darkMode={darkMode} title="Parametres" firstLink="/profile" secondLink="none" />
-      <BannerContainer title="Parametre" text="Lorem ipsum dolor sit amet, consectetur adipisicing elit" darkMode={darkMode} />
+      <BannerContainer
+        title={texts.parameterScreen.banner.title}
+        text={texts.parameterScreen.banner.text}
+        popuptitle={texts.parameterScreen.banner.popup.title}
+        popuptext={texts.parameterScreen.banner.popup.text}
+        popupbutton={texts.parameterScreen.banner.popup.button}
+        darkMode={darkMode} />
 
       <ScrollView style={{ width: '100%' }}>
-        <Section title="Profil" iconName="user" darkMode={darkMode}>
+        <Section title={texts.parameterScreen.section.title} iconName="user" darkMode={darkMode}>
           <Setting
             iconName="edit-3"
-            text="Modifier Profil"
-            buttonText=">"
+            text={texts.parameterScreen.section.editProfile}
+            buttonText=""
             onPress={() => console.log('Edit profile pressed')}
           />
           <Setting
             iconName="lock"
-            text="Modifier mot de passe"
-            buttonText=">"
+            text={texts.parameterScreen.section.changePassword}
+            buttonText=""
             onPress={() => console.log('Change password pressed')}
           />
         </Section>
 
-        <Section title="Personnalisation" iconName="sliders" darkMode={darkMode}>
+        <Section title={texts.parameterScreen.section_second.title} iconName="sliders" darkMode={darkMode}>
           <Setting
             iconName={darkMode ? "moon": "sun"}
-            text={darkMode ? "Thème Sombre": "Thème Clair"}
-            buttonText=">"
+            text={darkMode ? texts.parameterScreen.section_second.themeDark : texts.parameterScreen.section_second.themeLight}
+            buttonText=""
             onPress={toggleDarkMode}
             children={
               <Switch
@@ -50,29 +57,29 @@ const ParameterScreen = () => {
           />
           <Setting
             iconName="type"
-            text="Taille Texte"
-            buttonText="Edit"
+            text={texts.parameterScreen.section_second.sizeText}
+            buttonText=""
             onPress={() => console.log('Edit text size pressed')}
           />
         </Section>
 
-        <Section title="Settings" iconName="paperclip" darkMode={darkMode}>
+        <Section title={texts.parameterScreen.section_third.title} iconName="paperclip" darkMode={darkMode}>
           <Setting
             iconName="help-circle"
-            text="FAQ"
-            buttonText="View"
+            text={texts.parameterScreen.section_third.ask}
+            buttonText=""
             onPress={() => console.log('FAQ pressed')}
           />
           <Setting
             iconName="mail"
-            text="Contactez-nous"
-            buttonText="Contact"
+            text={texts.parameterScreen.section_third.contact}
+            buttonText=""
             onPress={() => console.log('Contact us pressed')}
           />
           <Setting
             iconName="layers"
-            text="Version"
-            buttonText="View"
+            text={texts.parameterScreen.section_third.version}
+            buttonText=""
             onPress={() => console.log('View version pressed')}
           />
         </Section>
