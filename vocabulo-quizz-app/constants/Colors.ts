@@ -17,9 +17,9 @@ export const color = {
   neutralBlue: "#ABCDE8",
   lightBlue: "#D1E6F6",
 
-  darkPlum: "#AC83C8",
-  neutralPlum: "#BE9EDF",
-  lightPlum: "#EFE0FF",
+  darkPlum: "#AF7DD6",
+  neutralPlum: "#CA99FF",
+  lightPlum: "#E8D3FF",
 };
 
 export const lightTheme = {
@@ -27,7 +27,7 @@ export const lightTheme = {
   light_darkShade: "#6D768B",
 
   lightShade: '#FFF',
-  dark_lightShade: '#F5F2F1',
+  dark_lightShade: '#F3F3F3',
 };
 
 export const darkTheme = {
