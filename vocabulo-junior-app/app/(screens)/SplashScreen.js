@@ -3,7 +3,6 @@ import { View, Animated } from 'react-native';
 import LogoSplash from '../../components/SplashScreen/LogoSplash';
 import WaveSplash from '../../components/SplashScreen/WaveSplash';
 import { Colors } from '@/constants/Colors';
-import HeaderHide from '../../components/HeaderHide'
 import { useRouter } from 'expo-router';
 
 
@@ -34,7 +33,6 @@ export default function SplashScreen() {
         backgroundColor: Colors.white,
       }}
     >
-      <HeaderHide />
       <Animated.View
         style={{
           position: 'absolute',
