@@ -5,8 +5,7 @@
     "plugins": [
       "expo-router",
       "@react-native-firebase/app",
-      "@react-native-firebase/auth",
-      "@react-native-firebase/firestore"
+      "@react-native-firebase/auth"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
