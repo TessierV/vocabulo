@@ -1,7 +1,12 @@
 {
   "expo": {
-    "name": "vocabulo-quizz-app",
-    "slug": "vocabulo-quizz-app",
+    "name": "vocabulo-junior-app",
+    "slug": "vocabulo-junior-app",
+    "plugins": [
+      "expo-router",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -11,21 +16,28 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.amandineassenat.vocabulojuniorapp"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-router"
-    ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "eb7fa3dd-0e34-478b-8cf4-beb2454c37ad"
+      }
     }
   }
 }

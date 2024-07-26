@@ -1,4 +1,11 @@
 export const Colors = {
+    white: "#ffffff",
+    whiteTransparent: "#ffffff80",
+
+    black: "000000",
+
+    lightGrey: "#F3F3F3",
+
     darkCoral: "#E18D73",
     neutralCoral: '#FFA381',
     lightCoral: "#FACDBC",
@@ -16,6 +23,7 @@ export const Colors = {
     darkPlum: "#AC83C8",
     neutralPlum: "#BE9EDF",
     lightPlum: "#EFE0FF",
+    lightPlumTransparent: "#EFE0FF50",
 };
 
 export const lightTheme = {
