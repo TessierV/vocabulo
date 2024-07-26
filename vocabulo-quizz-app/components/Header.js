@@ -17,16 +17,16 @@ const Header = ({ darkMode, title, firstLink, secondLink }) => {
   };
 
   return (
-    <View style={[styles.header, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
+    <View style={[styles.header, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
       <TouchableOpacity onPress={() => navigateTo(firstLink)}>
         {firstLink !== "none" && (
-          <Feather name="chevron-left" size={24} color={darkMode ? darkTheme.icon : lightTheme.icon} />
+          <Feather name="chevron-left" size={24} color={darkMode ? darkTheme.lightShade : lightTheme.darkShade} />
         )}
       </TouchableOpacity>
       <Image source={darkMode ? logoImage_white : logoImage } style={styles.logo} />
       <TouchableOpacity onPress={() => navigateTo(secondLink)}>
         {secondLink !== "none" && (
-          <Feather name="settings" size={24} color={darkMode ? darkTheme.icon : lightTheme.icon} />
+          <Feather name="settings" size={24} color={darkMode ? darkTheme.lightShade : lightTheme.darkShade} />
         )}
       </TouchableOpacity>
     </View>
