@@ -3,6 +3,7 @@ import React from 'react';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
 import { Paragraph } from '@/constants/StyledText';
+import HomeScreen from '../screens/HomeScreen';
 
 const Page = () => {
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -12,7 +13,8 @@ const Page = () => {
       styles.container,
       { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }
     ]}>
-      <Paragraph style={{ color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>Home</Paragraph>
+
+      <HomeScreen darkMode={darkMode} />
     </View>
   );
 }
@@ -22,7 +24,5 @@ export default Page;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   }
 });

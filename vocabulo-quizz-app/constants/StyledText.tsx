@@ -8,11 +8,9 @@ const createThemedStyles = (darkMode: boolean | (() => Promise<void>)) => StyleS
   bigtitle: {
     fontFamily: 'font-h1-bold',
     fontSize: 36,
-    color: color.darkCoral,
     letterSpacing: 1,
     textTransform: 'capitalize',
-    lineHeight: 44,
-    paddingVertical: 10,
+    height: 50,
   },
   title: {
     fontFamily: 'font-base-bold',
@@ -22,6 +20,7 @@ const createThemedStyles = (darkMode: boolean | (() => Promise<void>)) => StyleS
   subtitle: {
     fontFamily: 'font-base-bold',
     fontSize: 20,
+    lineHeight: 20,
   },
   text: {
     fontFamily: 'font-base',
