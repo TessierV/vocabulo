@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { View, StyleSheet, FlatList, Dimensions } from 'react-native';
 import { BigTitle, Subtitle } from '@/constants/StyledText';
 import useDarkMode from '@/components/useDarkMode';
-import { darkTheme, lightTheme } from '@/constants/Colors';
+import { color, darkTheme, lightTheme } from '@/constants/Colors';
 import WeeklyOverview from '@/components/Home/WeeklyOverview';
 import DailyGoals from '@/components/Home/DailyGoals';
 import UpcomingEvents from '@/components/Home/UpcomingEvents';
+import SectionTitle from '@/components/SectionTitle';
 
 const HomeScreen = () => {
   const [darkMode] = useDarkMode();
@@ -32,13 +33,13 @@ const HomeScreen = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
-      <BigTitle style={{ color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>Welcome</BigTitle>
-      <Subtitle style={{ color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>Amandine</Subtitle>
+      <BigTitle style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }}>Welcome</BigTitle>
+      <Subtitle style={{ color: darkMode ? darkTheme.lightShade : lightTheme.light_darkShade }}>Amandine</Subtitle>
       <View style={styles.sliderContainer}>
         <FlatList
           data={data}
           renderItem={({ item }) => (
-            <View style={styles.sliderItem}>
+            <View style={[styles.sliderItem, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }]}>
               {item.component}
             </View>
           )}
@@ -59,12 +60,35 @@ const HomeScreen = () => {
             style={[
               styles.paginationDot,
               {
-                backgroundColor: currentIndex === index ? 'orange' : (darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade)
+                backgroundColor: currentIndex === index ? color.darkGreen : (darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade)
               }
             ]}
           />
         ))}
       </View>
+
+      <SectionTitle
+        title="Exercice"
+        text="aide"
+        iconName="help-circle"
+        popupTitle="À propos"
+        popupText="Ceci est une explication détaillée apparaissant dans le pop-up lorsque vous cliquez sur l'icône."
+        popupButtonText="Fermer"
+        darkMode={darkMode}
+      />
+
+      <SectionTitle
+        title="Populaire"
+        text="aide"
+        iconName="help-circle"
+        popupTitle="À propos 2"
+        popupText="Ceci est une explication détaillée apparaissant dans le pop-up lorsque vous cliquez sur l'icône."
+        popupButtonText="Fermer"
+        darkMode={darkMode}
+      />
+
+
+
     </View>
   );
 };
