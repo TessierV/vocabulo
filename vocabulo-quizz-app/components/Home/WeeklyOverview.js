@@ -1,41 +1,47 @@
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import { AnnonceTitle } from '@/constants/StyledText';
+// WeeklyOverview.js
+import React, { useState } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { AnnonceTitle } from '@/constants/StyledText';
 import { color, darkTheme, lightTheme } from '@/constants/Colors';
+import InfoModal from '@/components/Slider/SlideModal';
+import TitleSlider from '@/components/Slider/SliderTitleWithInfo';
+import { texts } from '@/constants/texts';
+
 
 const WeeklyOverview = ({ darkMode }) => {
+    const [modalVisible, setModalVisible] = useState(false);
     const days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
-    // Get current day index (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
     const today = new Date().getDay();
+    const todayIndex = today === 0 ? 6 : today - 1;
 
-    // Custom mapping: 1 for Monday to 7 for Sunday
-    const todayIndex = today === 0 ? 6 : today - 1; // 0 (Sunday) => 6, 1 (Monday) => 0, ..., 6 (Saturday) => 5
+    const handlePress = () => {
+        setModalVisible(true);
+    };
 
     return (
-        <View style={styles.cardContainer}>
-            <View style={styles.header}>
-                <AnnonceTitle style={{ color: darkMode ? darkTheme.lightShade : lightTheme.lightShade }}>Semainier</AnnonceTitle>
-                <TouchableOpacity onPress={{}}>
-                    <Feather style={styles.bannerInfo} name="info" size={20} color={darkMode ? darkTheme.lightShade : lightTheme.lightShade} />
-                </TouchableOpacity>
-            </View>
+        <View style={[styles.cardContainer, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }]}>
+            <TitleSlider
+                title={texts.homeScreen.slider.weeklyOverview.title}
+                iconName="info"
+                onPress={handlePress}
+                darkMode={darkMode}
+            />
             <View style={styles.daysContainer}>
                 {days.map((day, index) => {
                     let backgroundColor = 'transparent';
                     let borderStyle = styles.futureBorder;
-                    // Default style for future days
-                    let iconName = 'moon'; // Default icon for future days
+                    let iconName = 'moon';
 
                     if (index === todayIndex) {
-                        backgroundColor = color.darkGreen; // Current day
-                        borderStyle = styles.currentBorder; // Transparent border
-                        iconName = 'sun'; // Icon for today
+                        backgroundColor = color.darkGreen;
+                        borderStyle = styles.currentBorder;
+                        iconName = 'sun';
                     } else if (index < todayIndex) {
-                        backgroundColor = 'transparent'; // Past days
-                        borderStyle = styles.pastBorder; // Solid border
-                        iconName = 'heart'; // Icon for past days
+                        backgroundColor = 'transparent';
+                        borderStyle = styles.pastBorder;
+                        iconName = 'heart';
                     }
 
                     return (
@@ -46,31 +52,28 @@ const WeeklyOverview = ({ darkMode }) => {
                     );
                 })}
             </View>
+
+            <InfoModal
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                title={texts.homeScreen.slider.weeklyOverview.popup.title}
+                text={texts.homeScreen.slider.weeklyOverview.popup.text}
+                button={texts.homeScreen.slider.weeklyOverview.popup.button}
+
+                darkMode={darkMode}
+            />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     cardContainer: {
-        width: '90%',
+        width: '100%',
+        height: '100%',
+        paddingHorizontal: 20,
+        paddingVertical: 8,
+        borderRadius: 8,
         alignSelf: 'center',
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    infoIcon: {
-        fontWeight: 'bold',
-        color: '#000',
-        borderRadius: 15,
-        borderColor: '#000',
-        borderWidth: 1,
-        textAlign: 'center',
-        width: 20,
-        height: 20,
-        lineHeight: 20,
     },
     daysContainer: {
         flexDirection: 'row',

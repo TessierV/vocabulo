@@ -1,28 +1,35 @@
 // DailyGoals.js
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { AnnonceTitle } from '@/constants/StyledText';
 import { color, darkTheme, lightTheme } from '@/constants/Colors';
-import { Feather } from '@expo/vector-icons';
+import InfoModal from '@/components/Slider/SlideModal';
+import TitleSlider from '@/components/Slider/SliderTitleWithInfo';
+import { texts } from '@/constants/texts';
 
 
 const DailyGoals = ({ darkMode }) => {
-  // Categories and their respective completion statuses
+  const [modalVisible, setModalVisible] = useState(false);
+
   const goals = [
-    { label: 'Finis', completed: 7, total: 12 },
-    { label: 'Facile', completed: 2, total: 4 },
-    { label: 'Moyen', completed: 3, total: 4 },
-    { label: 'Difficile', completed: 1, total: 4 },
+    { label: texts.homeScreen.slider.dailyGoals.column.firstColumn, completed: 7, total: 12 },
+    { label: texts.homeScreen.slider.dailyGoals.column.secondColumn, completed: 2, total: 4 },
+    { label: texts.homeScreen.slider.dailyGoals.column.thirdColumn, completed: 3, total: 4 },
+    { label: texts.homeScreen.slider.dailyGoals.column.fourColumn, completed: 1, total: 4 },
   ];
 
+  const handlePress = () => {
+    setModalVisible(true);
+  };
+
   return (
-    <View style={styles.cardContainer}>
-      <View style={styles.header}>
-        <AnnonceTitle style={{ color: darkMode ? darkTheme.lightShade : lightTheme.lightShade }}>Objectifs du jour</AnnonceTitle>
-        <TouchableOpacity onPress={{}}>
-                    <Feather style={styles.bannerInfo} name="info" size={20} color={darkMode ? darkTheme.lightShade : lightTheme.lightShade} />
-                </TouchableOpacity>
-      </View>
+    <View style={[styles.cardContainer, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }]}>
+      <TitleSlider
+        title={texts.homeScreen.slider.dailyGoals.title}
+        iconName="info"
+        onPress={handlePress}
+        darkMode={darkMode}
+      />
       <View style={styles.goalsContainer}>
         {goals.map((goal, index) => (
           <View key={index} style={styles.goalCard}>
@@ -31,34 +38,37 @@ const DailyGoals = ({ darkMode }) => {
           </View>
         ))}
       </View>
+      <InfoModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title={texts.homeScreen.slider.dailyGoals.popup.title}
+        text={texts.homeScreen.slider.dailyGoals.popup.text}
+        button={texts.homeScreen.slider.dailyGoals.popup.button}
+        darkMode={darkMode}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: '90%',
+    width: '100%',
+    height: '100%',
+    padding: 10,
+    borderRadius: 8,
+    alignSelf: 'center',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  infoIcon: {
-    fontWeight: 'bold',
-    color: '#000',
-    borderRadius: 15,
-    borderColor: '#000',
-    borderWidth: 1,
-    textAlign: 'center',
-    width: 20,
+    marginBottom: 10,
   },
   goalsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
     gap: 5,
-
   },
   goalCard: {
     width: 70,
