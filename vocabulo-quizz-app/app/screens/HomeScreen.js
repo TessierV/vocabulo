@@ -7,6 +7,8 @@ import WeeklyOverview from '@/components/Home/WeeklyOverview';
 import DailyGoals from '@/components/Home/DailyGoals';
 import UpcomingEvents from '@/components/Home/UpcomingEvents';
 import SectionTitle from '@/components/SectionTitle';
+import { texts } from '@/constants/texts';
+
 
 const HomeScreen = () => {
   const [darkMode] = useDarkMode();
@@ -33,8 +35,8 @@ const HomeScreen = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
-      <BigTitle style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }}>Welcome</BigTitle>
-      <Subtitle style={{ color: darkMode ? darkTheme.lightShade : lightTheme.light_darkShade }}>Amandine</Subtitle>
+      <BigTitle style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }}>{texts.homeScreen.bigTitle.title}</BigTitle>
+      <Subtitle style={{ color: darkMode ? darkTheme.lightShade : lightTheme.light_darkShade }}>{texts.homeScreen.bigTitle.text}</Subtitle>
       <View style={styles.sliderContainer}>
         <FlatList
           data={data}
@@ -68,27 +70,24 @@ const HomeScreen = () => {
       </View>
 
       <SectionTitle
-        title="Exercice"
-        text="aide"
+        title={texts.homeScreen.section.title}
+        text={texts.homeScreen.section.text}
         iconName="help-circle"
-        popupTitle="À propos"
-        popupText="Ceci est une explication détaillée apparaissant dans le pop-up lorsque vous cliquez sur l'icône."
-        popupButtonText="Fermer"
+        popupTitle={texts.homeScreen.section.popup.title}
+        popupText={texts.homeScreen.section.popup.text}
+        popupButtonText={texts.homeScreen.section.popup.button}
         darkMode={darkMode}
       />
 
       <SectionTitle
-        title="Populaire"
-        text="aide"
+        title={texts.homeScreen.section_second.title}
+        text={texts.homeScreen.section_second.text}
         iconName="help-circle"
-        popupTitle="À propos 2"
-        popupText="Ceci est une explication détaillée apparaissant dans le pop-up lorsque vous cliquez sur l'icône."
-        popupButtonText="Fermer"
+        popupTitle={texts.homeScreen.section_second.popup.title}
+        popupText={texts.homeScreen.section_second.popup.text}
+        popupButtonText={texts.homeScreen.section_second.popup.button}
         darkMode={darkMode}
       />
-
-
-
     </View>
   );
 };
