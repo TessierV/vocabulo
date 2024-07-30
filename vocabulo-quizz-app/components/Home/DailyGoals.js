@@ -1,7 +1,10 @@
 // DailyGoals.js
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { AnnonceTitle } from '@/constants/StyledText';
+import { color, darkTheme, lightTheme } from '@/constants/Colors';
+import { Feather } from '@expo/vector-icons';
+
 
 const DailyGoals = ({ darkMode }) => {
   // Categories and their respective completion statuses
@@ -15,8 +18,10 @@ const DailyGoals = ({ darkMode }) => {
   return (
     <View style={styles.cardContainer}>
       <View style={styles.header}>
-        <AnnonceTitle style={{ color: darkMode ? 'white' : 'black' }}>Objectifs du jour</AnnonceTitle>
-        <Text style={styles.infoIcon}>i</Text>
+        <AnnonceTitle style={{ color: darkMode ? darkTheme.lightShade : lightTheme.lightShade }}>Objectifs du jour</AnnonceTitle>
+        <TouchableOpacity onPress={{}}>
+                    <Feather style={styles.bannerInfo} name="info" size={20} color={darkMode ? darkTheme.lightShade : lightTheme.lightShade} />
+                </TouchableOpacity>
       </View>
       <View style={styles.goalsContainer}>
         {goals.map((goal, index) => (
@@ -32,7 +37,6 @@ const DailyGoals = ({ darkMode }) => {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: 'yellow',
     width: '90%',
   },
   header: {
@@ -59,7 +63,7 @@ const styles = StyleSheet.create({
   goalCard: {
     width: 70,
     height: 70,
-    backgroundColor: 'lightgray',
+    backgroundColor: lightTheme.dark_lightShade,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
