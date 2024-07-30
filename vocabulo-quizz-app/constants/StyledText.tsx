@@ -26,6 +26,11 @@ const createThemedStyles = (darkMode: boolean | (() => Promise<void>)) => StyleS
     fontFamily: 'font-base',
     fontSize: 16,
   },
+  gridText:{
+    fontFamily: 'font-base',
+    fontSize: 10,
+    textAlign: 'center',
+  },
   button: {
     fontFamily: 'font-base',
     fontSize: 18,
@@ -78,6 +83,12 @@ const Paragraph = ({ children, style, ...props }: TextComponentProps) => {
   return <Text style={[styles.text, style]} {...props}>{children}</Text>;
 };
 
+const GridText = ({ children, style, ...props }: TextComponentProps) => {
+  const [ darkMode ] = useDarkMode();
+  const styles = createThemedStyles(darkMode);
+  return <Text style={[styles.gridText, style]} {...props}>{children}</Text>;
+};
+
 const ButtonText = ({ children, style, ...props }: TextComponentProps) => {
   const [ darkMode ] = useDarkMode();
   const styles = createThemedStyles(darkMode);
@@ -113,6 +124,7 @@ export {
   Title,
   Subtitle,
   Paragraph,
+  GridText,
   ButtonText,
   AnnonceTitle,
   AnnonceParagraph,
