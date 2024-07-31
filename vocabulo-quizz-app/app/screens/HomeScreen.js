@@ -1,22 +1,24 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { BigTitle, Subtitle } from '@/constants/StyledText';
 import useDarkMode from '@/components/useDarkMode';
-import { color, darkTheme, lightTheme } from '@/constants/Colors';
+import { darkTheme, lightTheme } from '@/constants/Colors';
 import WeeklyOverview from '@/components/Home/WeeklyOverview';
 import DailyGoals from '@/components/Home/DailyGoals';
 import SectionTitle from '@/components/SectionTitle';
 import { texts } from '@/constants/texts';
 import CategoryGrid from '@/components/CategoryGrid';
 import Slider from '@/components/Slider/Slider';
+import CategoryCard from '@/components/CategoryCard';
 
 const HomeScreen = () => {
   const [darkMode] = useDarkMode();
   const { width } = Dimensions.get('window');
 
-
   return (
-    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
+    <ScrollView
+      contentContainerStyle={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}
+    >
       <BigTitle style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }}>
         {texts.homeScreen.bigTitle.title}
       </BigTitle>
@@ -57,13 +59,13 @@ const HomeScreen = () => {
         popupButtonText={texts.homeScreen.section_second.popup.button}
         darkMode={darkMode}
       />
-    </View>
+      <CategoryCard categories={texts.categories} darkMode={darkMode} />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingVertical: 40,
     paddingHorizontal: 25,
   },
