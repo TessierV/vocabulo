@@ -41,8 +41,8 @@ function RootLayoutNav() {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="parameter" options={{ headerShown: false, title: 'Test Screen' }} />
-      <Stack.Screen name="index" options={{ headerShown: false, title: 'Test Screen' }} />
+      <Stack.Screen name="parameter" options={{ headerShown: false, title: 'Paramètre' }} />
+      <Stack.Screen name="index" options={{ headerShown: false, title: 'Index' }} />
     </Stack>
   );
 }
