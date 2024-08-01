@@ -6,156 +6,167 @@ import { useRouter } from 'expo-router';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import CategoryModal from '@/components/CategoryModal';
 
-const starFill = '<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.17038 0.326399L4.74158 2.2C4.81771 2.44966 4.95407 2.67678 5.13863 2.86134C5.3232 3.04591 5.55031 3.18226 5.79998 3.2584L7.67358 3.8296C7.84158 3.8808 7.84158 4.1192 7.67358 4.1704L5.79998 4.7416C5.55025 4.81761 5.32307 4.95392 5.13848 5.1385C4.9539 5.32309 4.81759 5.55027 4.74158 5.8L4.17038 7.6736C4.11918 7.8416 3.88078 7.8416 3.82958 7.6736L3.25838 5.8C3.18237 5.55027 3.04606 5.32309 2.86147 5.1385C2.67689 4.95392 2.44971 4.81761 2.19998 4.7416L0.326378 4.1704C0.158378 4.1192 0.158378 3.8808 0.326378 3.8296L2.19998 3.2584C2.44964 3.18226 2.67676 3.04591 2.86132 2.86134C3.04589 2.67678 3.18224 2.44966 3.25838 2.2L3.82958 0.326399C3.88078 0.157599 4.11918 0.157599 4.17038 0.326399Z" fill="url(#paint0_linear_284_720)"/><defs><linearGradient id="paint0_linear_284_720" x1="-0.125861" y1="-0.121361" x2="8.14382" y2="8.13936" gradientUnits="userSpaceOnUse"><stop offset="0.204633" stop-color="#99CDBD"/><stop offset="0.532819" stop-color="#7DAED6"/><stop offset="0.787645" stop-color="#AF7DD6"/></linearGradient></defs></svg>';
-const starEmpty = '<svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.80082 8.78397C4.7557 8.78398 4.71176 8.76949 4.6755 8.74264C4.63923 8.71579 4.61255 8.678 4.59939 8.63483L3.9353 6.4568C3.87739 6.26628 3.77344 6.09296 3.63263 5.95215C3.49182 5.81135 3.31849 5.7074 3.12796 5.6495L0.949823 4.98544C0.906691 4.97227 0.868927 4.94559 0.842096 4.90935C0.815264 4.8731 0.800781 4.82919 0.800781 4.7841C0.800781 4.739 0.815264 4.6951 0.842096 4.65885C0.868927 4.6226 0.906691 4.59593 0.949823 4.58276L3.12787 3.91869C3.3184 3.86079 3.49173 3.75684 3.63254 3.61604C3.77335 3.47524 3.87731 3.30192 3.93521 3.1114L4.59939 0.933278C4.61252 0.890081 4.63918 0.852249 4.67545 0.825364C4.71172 0.798479 4.75568 0.783966 4.80082 0.783966C4.84597 0.783966 4.88992 0.798479 4.92619 0.825364C4.96247 0.852249 4.98913 0.890081 5.00226 0.933278L5.66635 3.11131C5.72426 3.30183 5.82821 3.47515 5.96902 3.61596C6.10983 3.75676 6.28316 3.86071 6.47369 3.91861L8.65174 4.58267C8.69487 4.59584 8.73264 4.62252 8.75947 4.65876C8.7863 4.69501 8.80078 4.73892 8.80078 4.78401C8.80078 4.82911 8.7863 4.87302 8.75947 4.90926C8.73264 4.94551 8.69487 4.97218 8.65174 4.98535L6.47369 5.64942C6.28316 5.70732 6.10983 5.81127 5.96902 5.95207C5.82821 6.09287 5.72426 6.2662 5.66635 6.45672L5.00226 8.63492C4.98908 8.67807 4.9624 8.71584 4.92613 8.74267C4.88987 8.76951 4.84594 8.78398 4.80082 8.78397ZM1.73316 4.7841L3.25082 5.24682C3.50738 5.32484 3.74078 5.46484 3.93039 5.65446C4.12 5.84408 4.25999 6.07747 4.338 6.33403L4.80082 7.85179L5.26357 6.33411C5.34159 6.07756 5.4816 5.84418 5.67122 5.65457C5.86085 5.46497 6.09426 5.32499 6.35082 5.24699L7.86849 4.7841L6.35082 4.32138C6.09426 4.24336 5.86087 4.10335 5.67126 3.91374C5.48164 3.72412 5.34165 3.49072 5.26365 3.23417L4.80082 1.71641L4.33808 3.23409C4.26006 3.49063 4.12005 3.72402 3.93042 3.91362C3.7408 4.10322 3.50739 4.24321 3.25082 4.32121L1.73316 4.7841Z" fill="#313941"/></svg>';
 
 const CategoryCard = ({ categories, darkMode }) => {
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const router = useRouter();
 
-    const screenWidth = Dimensions.get('window').width;
-    const squareSize = screenWidth / 3 - 25;
+  const oneStar = darkMode ? darkTheme.darkShade : color.darkGreen;
+  const twoStar = darkMode ? darkTheme.darkShade : color.neutralBlue;
+  const twoStarDark = darkMode ? darkTheme.darkShade : color.darkBlue;
+  const thirdStar = darkMode ? darkTheme.darkShade : color.neutralPlum;
+  const thirdStarDark = darkMode ? darkTheme.darkShade : color.darkPlum;
 
-    const handlePress = (category) => {
-      setSelectedCategory(category);
-      setIsModalVisible(true);
-    };
 
-    const handleConfirm = () => {
-      if (selectedCategory) {
-        router.push(selectedCategory.route);
-      }
-      setIsModalVisible(false);
-    };
+  const oneStarSVG = `  <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.88977 0.83237L6.64142 3.2977C6.7416 3.6262 6.92106 3.92506 7.16391 4.1679C7.40678 4.41078 7.70567 4.59017 8.0342 4.69035L10.4997 5.44197C10.7208 5.50934 10.7208 5.82302 10.4997 5.89038L8.0342 6.642C7.70558 6.742 7.40661 6.92137 7.1637 7.16424C6.92083 7.40712 6.74146 7.70607 6.64142 8.03466L5.88977 10.5C5.82241 10.7211 5.50868 10.7211 5.44129 10.5L4.68964 8.03466C4.5896 7.70607 4.41023 7.40712 4.16733 7.16424C3.92445 6.92137 3.62548 6.742 3.29686 6.642L0.831334 5.89038C0.610258 5.82302 0.610258 5.50934 0.831334 5.44197L3.29686 4.69035C3.62539 4.59017 3.92428 4.41078 4.16713 4.1679C4.41 3.92506 4.58943 3.6262 4.68964 3.2977L5.44129 0.83237C5.50868 0.610259 5.82241 0.610259 5.88977 0.83237Z" fill="${oneStar}"/></svg>`;
+  const twoStarSVG = `<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_354_1338)"><path d="M5.64459 4.08707L6.41774 6.75159C6.52079 7.10664 6.70536 7.42964 6.95517 7.69211C7.20499 7.9546 7.5124 8.1485 7.85034 8.25679L10.3864 9.06911C10.6137 9.14193 10.6137 9.48096 10.3864 9.55378L7.85034 10.3661C7.51232 10.4742 7.20482 10.6681 6.95497 10.9306C6.70513 11.1931 6.52062 11.5161 6.41774 11.8713L5.64459 14.5358C5.57529 14.7747 5.25261 14.7747 5.1833 14.5358L4.41016 11.8713C4.30727 11.5161 4.12277 11.1931 3.87292 10.9306C3.62308 10.6681 3.31558 10.4742 2.97756 10.3661L0.441543 9.55378C0.214147 9.48096 0.214147 9.14193 0.441543 9.06911L2.97756 8.25679C3.31549 8.1485 3.6229 7.9546 3.87272 7.69211C4.12254 7.42964 4.3071 7.10664 4.41016 6.75159L5.1833 4.08707C5.25261 3.84701 5.57529 3.84701 5.64459 4.08707Z" fill="${twoStarDark}" /></g><path d="M10.9696 0.135525L11.4922 2.14122C11.5619 2.40848 11.6867 2.65161 11.8555 2.84918C12.0244 3.04676 12.2322 3.19273 12.4606 3.27423L14.1748 3.88571C14.3285 3.94051 14.3285 4.19572 14.1748 4.25053L12.4606 4.862C12.2321 4.94337 12.0243 5.08929 11.8554 5.28688C11.6865 5.48449 11.5618 5.72768 11.4922 5.99502L10.9696 8.00071C10.9228 8.18055 10.7047 8.18055 10.6578 8.00071L10.1352 5.99502C10.0657 5.72768 9.94097 5.48449 9.77209 5.28688C9.60321 5.08929 9.39536 4.94337 9.16688 4.862L7.45268 4.25053C7.29898 4.19572 7.29898 3.94051 7.45268 3.88571L9.16688 3.27423C9.3953 3.19273 9.60309 3.04676 9.77195 2.84918C9.94082 2.65161 10.0656 2.40848 10.1352 2.14122L10.6578 0.135525C10.7047 -0.0451751 10.9228 -0.0451751 10.9696 0.135525Z" fill="${twoStar}"/><defs><clipPath id="clip0_354_1338"><rect width="10.8284" height="11.3771" fill="white" transform="translate(0 3.62288)"/></clipPath></defs></svg>`;
+  const thirdStarSVG = `<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_354_1326)"><path d="M5.6446 4.08705L6.41773 6.75159C6.52078 7.10663 6.70537 7.42964 6.95516 7.6921C7.20498 7.9546 7.51241 8.14849 7.85034 8.25677L10.3863 9.06912C10.6137 9.14192 10.6137 9.48095 10.3863 9.55376L7.85034 10.3661C7.51232 10.4742 7.2048 10.668 6.95495 10.9305C6.70513 11.193 6.52063 11.5162 6.41773 11.8713L5.6446 14.5358C5.57531 14.7747 5.25261 14.7747 5.18329 14.5358L4.41016 11.8713C4.30726 11.5162 4.12276 11.193 3.87291 10.9305C3.62309 10.668 3.31557 10.4742 2.97756 10.3661L0.441543 9.55376C0.214147 9.48095 0.214147 9.14192 0.441543 9.06912L2.97756 8.25677C3.31548 8.14849 3.62291 7.9546 3.8727 7.6921C4.12253 7.42964 4.30708 7.10663 4.41016 6.75159L5.18329 4.08705C5.25261 3.84702 5.57531 3.84702 5.6446 4.08705Z" fill="${thirdStarDark}"/><path d="M12.6403 9.39826L13.0117 10.6831C13.0612 10.8544 13.1498 11.0101 13.2698 11.1367C13.3898 11.2633 13.5375 11.3568 13.6998 11.409L14.918 11.8007C15.0272 11.8358 15.0272 11.9993 14.918 12.0344L13.6998 12.4262C13.5375 12.4783 13.3897 12.5718 13.2697 12.6984C13.1497 12.8249 13.0611 12.9808 13.0117 13.152L12.6403 14.4369C12.607 14.5521 12.452 14.5521 12.4187 14.4369L12.0473 13.152C11.9979 12.9808 11.9093 12.8249 11.7893 12.6984C11.6693 12.5718 11.5215 12.4783 11.3592 12.4262L10.141 12.0344C10.0318 11.9993 10.0318 11.8358 10.141 11.8007L11.3592 11.409C11.5215 11.3568 11.6692 11.2633 11.7892 11.1367C11.9092 11.0101 11.9978 10.8544 12.0473 10.6831L12.4187 9.39826C12.452 9.28249 12.607 9.28249 12.6403 9.39826Z" fill="${thirdStarDark}"/><path d="M10.9697 0.135525L11.4922 2.14122C11.5619 2.40848 11.6867 2.65161 11.8555 2.84918C12.0244 3.04676 12.2322 3.19271 12.4606 3.27423L14.1748 3.8857C14.3285 3.94052 14.3285 4.19571 14.1748 4.25053L12.4606 4.862C12.2321 4.94336 12.0243 5.08929 11.8554 5.2869C11.6865 5.4845 11.5618 5.72768 11.4922 5.99501L10.9697 8.00072C10.9228 8.18056 10.7047 8.18056 10.6579 8.00072L10.1352 5.99501C10.0657 5.72768 9.94099 5.4845 9.77208 5.2869C9.60321 5.08929 9.39537 4.94336 9.16688 4.862L7.45268 4.25053C7.29898 4.19571 7.29898 3.94052 7.45268 3.8857L9.16688 3.27423C9.39531 3.19271 9.60309 3.04676 9.77197 2.84918C9.94081 2.65161 10.0656 2.40848 10.1352 2.14122L10.6579 0.135525C10.7047 -0.0451751 10.9228 -0.0451751 10.9697 0.135525Z" fill="${thirdStar}"/></g><defs><clipPath id="clip0_354_1326"><rect width="15" height="15" fill="white"/></clipPath></defs></svg>`;
 
-    const handleCancel = () => {
-      setIsModalVisible(false);
-    };
 
-    const getStyleForDifficulty = (difficulty) => {
-      switch (difficulty) {
-        case 'easy':
-          return {
-            contentContainerColor: color.lightGreen,
-            iconContainerColor: color.neutralGreen,
-            stars: [starFill, starEmpty, starEmpty],
-          };
-        case 'middle':
-          return {
-            contentContainerColor: color.lightBlue,
-            iconContainerColor: color.neutralBlue,
-            stars: [starFill, starFill, starEmpty],
-          };
-        case 'hard':
-          return {
-            contentContainerColor: color.lightPlum,
-            iconContainerColor: color.neutralPlum,
-            stars: [starFill, starFill, starFill],
-          };
-        default:
-          return {
-            contentContainerColor: darkMode ? darkTheme.light_darkShade : lightTheme.lightShade,
-            iconContainerColor: darkMode ? darkTheme.darkShade : lightTheme.darkShade,
-            stars: [],
-          };
-      }
-    };
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const router = useRouter();
 
-    return (
-      <View style={styles.grid}>
-        {categories.map((category, index) => {
-          const { contentContainerColor, iconContainerColor, stars } = getStyleForDifficulty(category.difficulty);
-          return (
-            <TouchableOpacity
-              key={index}
-              style={styles.itemContainer}
-              onPress={() => handlePress(category)}
+  const screenWidth = Dimensions.get('window').width;
+  const squareSize = screenWidth / 3 - 25;
+
+  const handlePress = (category) => {
+    setSelectedCategory(category);
+    setIsModalVisible(true);
+  };
+
+  const handleConfirm = () => {
+    if (selectedCategory) {
+      router.push(selectedCategory.route);
+    }
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const getStyleForDifficulty = (difficulty) => {
+    switch (difficulty) {
+      case 'easy':
+        return {
+          contentContainerColor: darkMode ? color.lightGreen : lightTheme.lightShade,
+          iconContainerColor: darkMode ? color.lightGreen : lightTheme.lightShade,
+          stars: [oneStarSVG],
+        };
+      case 'middle':
+        return {
+          contentContainerColor: darkMode ? color.lightBlue : lightTheme.lightShade,
+          iconContainerColor: darkMode ? color.lightBlue : lightTheme.lightShade,
+          stars: [twoStarSVG],
+        };
+      case 'hard':
+        return {
+          contentContainerColor: darkMode ? color.lightPlum : lightTheme.lightShade,
+          iconContainerColor: darkMode ? color.lightPlum : lightTheme.lightShade,
+          stars: [thirdStarSVG],
+        };
+      default:
+        return {
+          contentContainerColor: darkMode ? darkTheme.light_darkShade : lightTheme.lightShade,
+          iconContainerColor: darkMode ? darkTheme.darkShade : lightTheme.darkShade,
+          stars: [],
+        };
+    }
+  };
+
+  return (
+    <View style={styles.grid}>
+      {categories.map((category, index) => {
+        const { contentContainerColor, iconContainerColor, stars } = getStyleForDifficulty(category.difficulty);
+        return (
+          <TouchableOpacity
+            key={index}
+            style={styles.itemContainer}
+            onPress={() => handlePress(category)}
+          >
+            <View
+              style={[
+                styles.contentContainer,
+                {
+                  width: squareSize,
+                  height: squareSize,
+                  backgroundColor: contentContainerColor,
+                }
+              ]}
             >
               <View
                 style={[
-                  styles.contentContainer,
+                  styles.iconContainer,
                   {
-                    width: squareSize,
-                    height: squareSize * 1.35,
-                    backgroundColor: contentContainerColor,
+                    backgroundColor: iconContainerColor,
+                    width: squareSize * 0.5,
+                    height: squareSize * 0.5,
+                    borderRadius: squareSize * 0.6 / 2,
                   }
                 ]}
               >
-                <View
-                  style={[
-                    styles.iconContainer,
-                    {
-                      backgroundColor: iconContainerColor,
-                      width: squareSize * 0.5,
-                      height: squareSize * 0.5,
-                      borderRadius: squareSize * 0.6 / 2,
-                    }
-                  ]}
-                >
-                  <SvgXml xml={category.icon} width="70%" height="70%" />
-                </View>
-                <Text style={[styles.label, { color: darkMode ? darkTheme.darkShade : lightTheme.light_darkShade }]}>
-                  {category.textLabel || 'Unknown'}
-                </Text>
-                <Text style={[styles.label, { color: darkMode ? darkTheme.darkShade : lightTheme.light_darkShade }, styles.ratioText]}>
-                  {category.ratio || '0/0'}
-                </Text>
-                <View style={styles.starsContainer}>
-                  {stars.map((star, starIndex) => (
-                    <SvgXml key={starIndex} xml={star} width={12} height={12} />
-                  ))}
-                </View>
+                <SvgXml xml={category.icon} width="70%" height="70%" />
               </View>
-            </TouchableOpacity>
-          );
-        })}
+              <Text style={[styles.label, { color: darkMode ? darkTheme.darkShade : lightTheme.light_darkShade }]}>
+                {category.textLabel || 'Unknown'}
+              </Text>
+              <Text style={[styles.label, { color: darkMode ? darkTheme.darkShade : lightTheme.light_darkShade }, styles.ratioText]}>
+                {category.ratio || '0/0'}
+              </Text>
+              <View style={styles.starsContainer}>
+                {stars.map((star, starIndex) => (
+                  <SvgXml key={starIndex} xml={star} width={12} height={12} />
+                ))}
+              </View>
+            </View>
+          </TouchableOpacity>
+        );
+      })}
 
-        <CategoryModal
-          isVisible={isModalVisible}
-          onClose={handleCancel}
-          category={selectedCategory}
-          onConfirm={handleConfirm}
-          darkMode={darkMode}
-        />
-      </View>
-    );
-  };
+      <CategoryModal
+        isVisible={isModalVisible}
+        onClose={handleCancel}
+        category={selectedCategory}
+        onConfirm={handleConfirm}
+        darkMode={darkMode}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    grid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      alignItems: 'flex-start',
-      gap: 10,
-    },
-    iconContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      overflow: 'hidden',
-      marginVertical: 10,
-    },
-    contentContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 8,
-      overflow: 'hidden',
-      position: 'relative',
-      padding: 10,
-    },
-    ratioText: {
-      fontSize: 12,
-    },
-    starsContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-evenly',
-      paddingVertical: 10,
-      width: '100%',
-    },
-    label: {
-      textAlign: 'center',
-      fontSize: 14,
-    },
-  });
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    gap: 10,
+  },
+  iconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  contentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    overflow: 'hidden',
+    position: 'relative',
+    padding: 10,
+  },
+  ratioText: {
+    fontSize: 12,
+  },
+  starsContainer: {
+    position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    top: 7,
+    width: '100%',
+  },
+  label: {
+    textAlign: 'center',
+    fontSize: 14,
+  },
+});
 
 export default CategoryCard;
