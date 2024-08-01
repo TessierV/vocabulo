@@ -1,13 +1,10 @@
-// WeeklyOverview.js
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import { AnnonceTitle } from '@/constants/StyledText';
-import { color, darkTheme, lightTheme } from '@/constants/Colors';
+import { View, StyleSheet, Text } from 'react-native';
+import { SvgXml } from 'react-native-svg';
+import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import InfoModal from '@/components/Slider/SlideModal';
 import TitleSlider from '@/components/Slider/SliderTitleWithInfo';
 import { texts } from '@/constants/texts';
-
 
 const WeeklyOverview = ({ darkMode }) => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -30,24 +27,47 @@ const WeeklyOverview = ({ darkMode }) => {
             />
             <View style={styles.daysContainer}>
                 {days.map((day, index) => {
-                    let backgroundColor = 'transparent';
-                    let borderStyle = styles.futureBorder;
-                    let iconName = 'moon';
+                    let borderStyle, svgContent, textStyle;
 
                     if (index === todayIndex) {
-                        backgroundColor = color.darkGreen;
                         borderStyle = styles.currentBorder;
-                        iconName = 'sun';
+                        svgContent = texts.homeScreen.slider.weeklyOverview.icons.today;
+                        textStyle = [styles.cardText, styles.todayText];
                     } else if (index < todayIndex) {
-                        backgroundColor = 'transparent';
                         borderStyle = styles.pastBorder;
-                        iconName = 'heart';
+                        svgContent = texts.homeScreen.slider.weeklyOverview.icons.past;
+                        textStyle = styles.cardText;
+                    } else {
+                        borderStyle = styles.futureBorder;
+                        svgContent = texts.homeScreen.slider.weeklyOverview.icons.futur;
+                        textStyle = styles.cardText;
                     }
 
                     return (
-                        <View key={index} style={[styles.card, { backgroundColor }, borderStyle]}>
-                            <Text style={styles.cardText}>{day}</Text>
-                            <Feather name={iconName} size={18} color="#fff" style={styles.icon} />
+                        <View key={index} style={[styles.card, borderStyle]}>
+                            {index === todayIndex && (
+                                <SvgXml
+                                    xml={`
+                                        <svg width=70 height=70 viewBox="0 0 100 100">
+                                            <defs>
+                                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" style="stop-color:${color.lightGreen};stop-opacity:1" />
+                                                    <stop offset="50%" style="stop-color:${color.lightBlue};stop-opacity:1" />
+                                                    <stop offset="100%" style="stop-color:${color.lightPlum};stop-opacity:1" />
+                                                </linearGradient>
+                                            </defs>
+                                            <rect width="100%" height="100%" fill="url(#gradient)" />
+                                        </svg>
+                                    `}
+                                    style={styles.svgBackground}
+                                />
+                            )}
+                            <Text style={textStyle}>{day}</Text>
+                            {svgContent ? (
+                                <SvgXml xml={svgContent} width={20} height={40} />
+                            ) : (
+                                <Text style={styles.cardText}>...</Text>
+                            )}
                         </View>
                     );
                 })}
@@ -59,7 +79,6 @@ const WeeklyOverview = ({ darkMode }) => {
                 title={texts.homeScreen.slider.weeklyOverview.popup.title}
                 text={texts.homeScreen.slider.weeklyOverview.popup.text}
                 button={texts.homeScreen.slider.weeklyOverview.popup.button}
-
                 darkMode={darkMode}
             />
         </View>
@@ -85,14 +104,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 8,
+        position: 'relative',
+        overflow: 'hidden',
     },
     cardText: {
         color: '#fff',
         fontSize: 14,
         fontWeight: 'bold',
+        zIndex: 1,
     },
-    icon: {
-        marginTop: 10,
+    todayText: {
+        color: lightTheme.darkShade,
     },
     futureBorder: {
         borderWidth: 1,
@@ -107,6 +129,17 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: color.darkGreen,
         borderStyle: 'solid',
+    },
+    svgBackground: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        borderRadius: 8,
+        zIndex: 0,
     },
 });
 

@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     height: 10,
     width: 10,
     backgroundColor: "#DAE0E4",
-    borderRadius: 5,
+    borderRadius: 8,
     marginHorizontal: 5,
   },
   paginationDotActive: {

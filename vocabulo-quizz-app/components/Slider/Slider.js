@@ -42,7 +42,7 @@ const Slider = ({ data, darkMode }) => {
             style={[
               styles.paginationDot,
               {
-                backgroundColor: currentIndex === index ? color.darkGreen : (darkMode ? darkTheme.dark_lightShade :  darkTheme.dark_lightShade)
+                backgroundColor: currentIndex === index ? lightTheme.darkShade : (darkMode ? darkTheme.dark_lightShade :  darkTheme.dark_lightShade)
               }
             ]}
           />
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   paginationDot: {
     width: 8,
     height: 8,
-    borderRadius: 4,
+    borderRadius: 8,
     margin: 3,
   },
 });

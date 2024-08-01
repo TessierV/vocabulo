@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   sectionContent: {
-    borderRadius: 7,
+    borderRadius: 8,
   },
 });
 

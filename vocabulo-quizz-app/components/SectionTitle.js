@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { SvgXml } from 'react-native-svg';
 import { Subtitle, Paragraph } from '@/constants/StyledText';
-import { darkTheme, lightTheme } from '@/constants/Colors';
+import { color, darkTheme, lightTheme } from '@/constants/Colors';
+import { texts } from '@/constants/texts';
 
 const SectionTitle = ({ title, text, iconName = 'info', popupTitle, popupText, popupButtonText, darkMode }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -16,9 +17,9 @@ const SectionTitle = ({ title, text, iconName = 'info', popupTitle, popupText, p
       <View style={styles.row}>
         <Subtitle style={{ color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }}>{title}</Subtitle>
         <View style={styles.rightColumn}>
-          <Paragraph style={{ color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }}>{text}</Paragraph>
+          <Paragraph style={[styles.textRight, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>{text}</Paragraph>
           <TouchableOpacity onPress={handleIconPress}>
-            <Feather name={iconName} size={18} color={darkMode ? darkTheme.lightShade : lightTheme.darkShade} style={styles.icon} />
+          <SvgXml xml={texts.sectionTitle.icons} width={15} height={15} />
           </TouchableOpacity>
         </View>
       </View>
@@ -56,8 +57,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  icon: {
-    marginLeft: 10,
+  textRight: {
+    marginRight: 10,
+    fontSize: 14,
+    color: '#6B7280',
   },
   modalOverlay: {
     flex: 1,
@@ -67,7 +70,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 8,
     width: '80%',
     alignItems: 'center',
   },

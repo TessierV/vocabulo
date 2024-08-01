@@ -57,12 +57,12 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 7,
+        borderRadius: 8,
     },
     bannerContainer: {
         width: '100%',
         alignSelf: 'center',
-        borderRadius: 7,
+        borderRadius: 8,
         padding: 10,
     },
     bannerTextContainer: {
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         padding: 20,
-        borderRadius: 10,
+        borderRadius: 8,
         width: '80%',
         alignItems: 'center',
     },
