@@ -1,50 +1,46 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
 import React from 'react';
+import { View, Image, StyleSheet } from 'react-native';
 import { Tabs } from 'expo-router';
-import { Octicons, Feather, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import logoImage from '../../assets/images/Logo_typo.png';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
+import FooterSVG from '@/constants/svg';
 
-export default function Layout() {
-  const [darkMode, toggleDarkMode] = useDarkMode();
+const Layout = () => {
+  const [darkMode] = useDarkMode();
+
+  const getFillColor = (focused) => {
+    const { neutralBlue, neutralPlum } = color;
+    const { dark_lightShade, light_darkShade } = darkMode ? darkTheme : lightTheme;
+    return focused ? (darkMode ? neutralBlue : neutralPlum) : (darkMode ? dark_lightShade : light_darkShade);
+  };
+
+  const tabBarBackgroundColor = darkMode ? darkTheme.light_darkShade : lightTheme.lightShade;
+  const routesToHideTabBar = ['profile', 'index'];
 
   return (
     <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
       <Tabs screenOptions={({ route }) => ({
-        tabBarStyle: ((route) => {
-          const routesToHideTabBar = ['profile', 'index'];
-          if (routesToHideTabBar.includes(route.name)) {
-            return { display: 'none' };
-          }
-          return [
-            styles.tabBar,
-            { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.lightShade }
-          ];
-        })(route),
+        tabBarStyle: routesToHideTabBar.includes(route.name) ? { display: 'none' } : [styles.tabBar, { backgroundColor: tabBarBackgroundColor }],
         tabBarInactiveTintColor: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade,
         tabBarActiveTintColor: color.darkGreen,
         tabBarShowLabel: false,
       })}>
-        <Tabs.Screen
-          name='home'
-          options={{
-            headerShown: false,
-
-            tabBarIcon: ({ color }) => (
-              <Feather name="home" size={28} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name='category'
-          options={{
-            headerShown: false,
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="food-apple-outline" style={styles.categoryIcon} size={32} color={color} />
-            ),
-          }}
-        />
+        {['home', 'category'].map((screen) => (
+          <Tabs.Screen
+            key={screen}
+            name={screen}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
+                <FooterSVG
+                  icon={screen}
+                  fillColor={getFillColor(focused)}
+                />
+              ),
+            }}
+          />
+        ))}
         <Tabs.Screen
           name='game'
           options={{
@@ -63,28 +59,27 @@ export default function Layout() {
             ),
           }}
         />
-        <Tabs.Screen
-          name='dictionary'
-          options={{
-            headerShown: false,
-            tabBarIcon: ({ color }) => (
-              <Feather name="book-open" size={26} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name='profile'
-          options={{
-            headerShown: false,
-            tabBarIcon: ({ color }) => (
-              <FontAwesome5 name="user" size={24} color={color} />
-            ),
-          }}
-        />
+        {['dictionary', 'profile'].map((screen) => (
+          <Tabs.Screen
+            key={screen}
+            name={screen}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
+                <FooterSVG
+                  icon={screen}
+                  fillColor={getFillColor(focused)}
+                  width={screen === 'dictionary' ? 30 : 24}
+                  height={screen === 'dictionary' ? 30 : 24}
+                />
+              ),
+            }}
+          />
+        ))}
       </Tabs>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -94,9 +89,10 @@ const styles = StyleSheet.create({
     padding: 0,
     borderTopWidth: 0,
     height: 75,
-    margin: 5,
-    borderRadius: 7,
+    marginBottom: 5,
+    borderRadius: 8,
     elevation: 0,
+    marginHorizontal: 5,
   },
   middleContainer: {
     backgroundColor: color.darkGreen,
@@ -108,12 +104,11 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 5,
   },
-  categoryIcon: {
-    bottom: 3,
-  },
   logoImage: {
     width: 50,
     height: 41,
     right: 2,
   },
 });
+
+export default Layout;
