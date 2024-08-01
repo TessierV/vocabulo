@@ -39,7 +39,7 @@ const SelectDifficulty = ({ darkMode, onFilterChange }) => {
       />
       <View style={styles.goalsContainer}>
         <TouchableOpacity
-          style={styles.goalCard}
+          style={[styles.goalCard, styles.goalAllCard]}
           onPress={() => handlePress('all')}
         >
           <SvgXml
@@ -65,7 +65,7 @@ const SelectDifficulty = ({ darkMode, onFilterChange }) => {
             style={[styles.goalCard, { backgroundColor: getButtonStyle(goal.value) }]}
             onPress={() => handlePress(goal.value)}
           >
-            <SvgXml style={styles.goalSvg} xml={goal.icon} width={15} height={15} />
+            <SvgXml style={styles.goalSvg} xml={goal.icon} width={20} height={20} />
             <Text style={styles.goalLabel}>{goal.label}</Text>
             <Text style={styles.goalStatus}>{goal.total}</Text>
           </TouchableOpacity>
@@ -87,14 +87,14 @@ const styles = StyleSheet.create({
   cardContainer: {
     width: '100%',
     minHeight: 150,
-    padding: 5,
+    padding: 15,
     borderRadius: 8,
     alignSelf: 'center',
   },
   goalsContainer: {
+
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 10,
     gap: 10,
   },
   goalCard: {
@@ -102,10 +102,13 @@ const styles = StyleSheet.create({
     height: 70,
     borderRadius: 8,
     alignItems: 'center',
-    alignContent: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     overflow: 'hidden',
     position: 'relative',
+  },
+  goalAllCard: {
+    justifyContent: 'center',
+
   },
   svgBackground: {
     position: 'absolute',
@@ -116,8 +119,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   goalSvg:{
-    marginVertical: 5,
-    backgroundColor: 'red',
+    marginBottom: 5,
   },
   goalLabel: {
     fontSize: 12,
