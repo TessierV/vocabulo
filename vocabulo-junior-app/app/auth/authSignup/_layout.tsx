@@ -7,7 +7,7 @@ import Login from "../authLogin/Login";
 
 const Stack = createStackNavigator();
 
-export default function RootLayout() {
+export default function SignupLayout() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {

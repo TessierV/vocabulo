@@ -33,10 +33,10 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return <AuthLayout />;
 }
 
-function RootLayoutNav() {
+function AuthLayout() {
   return (
     <Stack>
       <Stack.Screen name="authSignup" options={{ headerShown: false }} />
