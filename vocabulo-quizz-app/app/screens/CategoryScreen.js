@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Button } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import useDarkMode from '@/components/useDarkMode';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import SelectDifficulty from '@/components/Category/SelectDifficulty';
@@ -8,7 +8,6 @@ import { texts } from '@/constants/texts';
 import CategoryCard from '@/components/CategoryCard';
 import Header from '@/components/Header';
 import FilterBar from '@/components/FilterBar';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Page = () => {
   const [darkMode] = useDarkMode();
@@ -34,10 +33,17 @@ const Page = () => {
       category.textLabel.toLowerCase().includes(searchText.toLowerCase())
     )
     .sort((a, b) => {
-      if (sortOption === 'A-Z') {
-        return a.textLabel.localeCompare(b.textLabel);
-      } else {
-        return b.textLabel.localeCompare(a.textLabel);
+      switch (sortOption) {
+        case 'A-Z':
+          return a.textLabel.localeCompare(b.textLabel);
+        case 'Z-A':
+          return b.textLabel.localeCompare(a.textLabel);
+        case 'OLD':
+          return a.id - b.id; // Ascending by ID
+        case 'NEW':
+          return b.id - a.id; // Descending by ID
+        default:
+          return 0;
       }
     });
 
@@ -47,7 +53,11 @@ const Page = () => {
       <ScrollView
         contentContainerStyle={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}
       >
-        <SelectDifficulty darkMode={darkMode} onFilterChange={handleFilterChange} />
+        <SelectDifficulty
+          darkMode={darkMode}
+          onFilterChange={handleFilterChange}
+          categories={texts.categories}
+        />
         <FilterBar onSearchChange={handleSearchChange} onSortChange={handleSortChange} darkMode={darkMode}/>
         <SectionTitle
           title={texts.categoryScreen.Category.title}

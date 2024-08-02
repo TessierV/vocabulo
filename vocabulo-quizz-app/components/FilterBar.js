@@ -4,10 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
 
-
-const FilterBar = ({ onSearchChange, onSortChange }) => {
-    const [darkMode] = useDarkMode();
-
+const FilterBar = ({ onSearchChange, onSortChange, darkMode }) => {
   const [searchText, setSearchText] = useState('');
   const [sortOption, setSortOption] = useState('A-Z');
   const [modalVisible, setModalVisible] = useState(false);
@@ -25,31 +22,31 @@ const FilterBar = ({ onSearchChange, onSortChange }) => {
 
   const sortOptions = [
     { label: 'A-Z', value: 'A-Z' },
-    { label: 'Z-A', value: 'Z-A' }
+    { label: 'Z-A', value: 'Z-A' },
+    { label: 'Ancienneté', value: 'OLD' },
+    { label: 'Nouveauté', value: 'NEW' }
   ];
 
   return (
     <View style={styles.container}>
-      <View style={[styles.searchContainer, { backgroundColor: darkMode ? darkTheme.lightShade : lightTheme.lightShade} ]}>
-      <Feather name="search" size={20} color={ darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade} style={styles.searchIcon} />
-      <TextInput
+      <View style={[styles.searchContainer, { backgroundColor: darkMode ? darkTheme.lightShade : lightTheme.lightShade }]}>
+        <Feather name="search" size={20} color={darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade} style={styles.searchIcon} />
+        <TextInput
           style={[styles.searchInput, { color: darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade }]}
-          placeholder="Rechercher ..."
+          placeholder="Search ..."
           value={searchText}
           onChangeText={handleSearchChange}
         />
       </View>
-      <View style={[styles.sortContainer, { backgroundColor: darkMode ? darkTheme.light_darkShade  : lightTheme.darkShade}]}>
+      <View style={[styles.sortContainer, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }]}>
         <TouchableOpacity
           style={styles.pickerButton}
           onPress={() => setModalVisible(true)}
         >
-            <View style={styles.pickerIconContainer}>
-            <Feather name="filter" size={20} color={ darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade}  />
-
-            </View>
-          <Text style={[styles.selectedOption, {color: darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade}]}>{sortOption}</Text>
-
+          <View style={styles.pickerIconContainer}>
+            <Feather name="filter" size={20} color={darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade} />
+          </View>
+          <Text style={[styles.selectedOption, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade }]}>{sortOption}</Text>
         </TouchableOpacity>
       </View>
 
@@ -70,9 +67,9 @@ const FilterBar = ({ onSearchChange, onSortChange }) => {
             <FlatList
               data={sortOptions}
               keyExtractor={(item) => item.value}
-              renderItem={({ item }) => (
+              renderItem={({ item, index }) => (
                 <Pressable
-                  style={styles.modalItem}
+                  style={[styles.modalItem, { borderBottomWidth: index < sortOptions.length - 1 ? 1 : 0 }]}
                   onPress={() => handleSortChange(item.value)}
                 >
                   <Text style={styles.modalItemText}>{item.label}</Text>
@@ -101,7 +98,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 8,
     width: '80%',
-
   },
   searchInput: {
     flex: 1,
@@ -115,10 +111,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '20%',
     borderRadius: 8,
-
     height: 40,
-    borderRadius: 8,
-
   },
   pickerButton: {
     flexDirection: 'row',
@@ -126,10 +119,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     width: '100%',
     height: '100%',
-
   },
-
-  pickerIconContainer:{
+  pickerIconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -139,11 +130,14 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingRight: 25,
+    top: 20,
   },
   modalContent: {
-    width: '90%',
+    width: '60%',
+    height: '30%',
     backgroundColor: 'white',
     borderRadius: 8,
     padding: 10,
@@ -154,7 +148,6 @@ const styles = StyleSheet.create({
   },
   modalItem: {
     padding: 10,
-    borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
   modalItemText: {
