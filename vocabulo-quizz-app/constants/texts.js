@@ -62,7 +62,7 @@ export const texts = {
                 column2: {
                     title: 'Personnalisé',
                     svg: interfaceIcons.personalized,
-                    route: '/game',
+                    route: '/customize',
                 },
                 column3: {
                     title: 'Aléatoire',
@@ -182,6 +182,22 @@ export const texts = {
     },
 
     categories: [
+        {
+            id: 11,
+            icon: themes.work,
+            textLabel: 'Bureau',
+            difficulty: 'easy',
+            ratio: '50/100',
+            route: '/game',
+        },
+        {
+            id: 10,
+            icon: themes.organ,
+            textLabel: 'Organe',
+            difficulty: 'hard',
+            ratio: '70/100',
+            route: '/game',
+        },
         {
             id: 9,
             icon: themes.car,
