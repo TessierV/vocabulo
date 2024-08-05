@@ -46,7 +46,7 @@ const Signup = () => {
   };
 
   const isPhoneNumberValid = phoneNumber.length === PHONE_NUMBER_LENGTH;
-  const isCodeValid = phoneNumber.length === CODE_LENGTH;
+  const isCodeValid = code.length === CODE_LENGTH;
 
   return (
     <View style={styles.container}>

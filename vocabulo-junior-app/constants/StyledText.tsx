@@ -1,9 +1,7 @@
 import * as React from "react";
 import { ReactNode } from 'react';
-import * as ReactDOM from "react-dom";
 import { Text, StyleSheet, TextProps } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import useCustomFonts from './useCustomFonts';
 
 
 // Fonction pour créer des styles thématisés

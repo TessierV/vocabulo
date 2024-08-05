@@ -3,7 +3,7 @@ import useCustomFonts from '@/constants/useCustomFonts';
 import { Stack } from "expo-router";
 
 
-export default function RootLayout() {
+export default function LoginLayout() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -24,7 +24,6 @@ export default function RootLayout() {
 
     <Stack>
       <Stack.Screen name="Login" options={{ headerShown: false }} />
-      <Stack.Screen name="screens" options={{ headerShown: false }} />
     </Stack>
   );
 }

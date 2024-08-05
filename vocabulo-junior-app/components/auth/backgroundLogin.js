@@ -1,9 +1,6 @@
 import { View, Image, Animated, StyleSheet } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 import { Colors } from '@/constants/Colors';
-import useCustomFonts from '../../constants/useCustomFonts';
-import { useFonts } from 'expo-font';
-import { useRouter } from 'expo-router';
 
 
 export default function BackgroundLogin() {
