@@ -1,0 +1,84 @@
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
+import { SvgXml } from 'react-native-svg';
+import { Feather } from '@expo/vector-icons';
+
+import { darkTheme, lightTheme } from '@/constants/Colors';
+import { MaterialIcons } from '@expo/vector-icons'; // Assurez-vous d'avoir installé @expo/vector-icons
+
+const CustomizeRow = ({ category, darkMode, onSelect, onRemove }) => {
+  const theme = darkMode ? darkTheme : lightTheme;
+
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={[styles.card, { backgroundColor: theme.cardBackground }]}
+        onPress={onSelect}
+      >
+        {category.icon ? (
+          <SvgXml xml={category.icon} width={30} height={30} />
+        ) : (
+          <Feather name="search" size={25} color={darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade} style={styles.searchIcon} />
+        )}
+        {category.difficulty ? (
+        <Text style={[styles.label, { color: theme.textColor }]}>
+        {category.difficulty }
+      </Text>) : <></> }
+
+      </TouchableOpacity>
+      {onRemove && (
+        <TouchableOpacity
+          style={styles.removeButton}
+          onPress={onRemove}
+        >
+          <MaterialIcons name="cancel" size={20} color={theme.textColor} />
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+};
+
+CustomizeRow.propTypes = {
+  category: PropTypes.shape({
+    textLabel: PropTypes.string,
+    icon: PropTypes.string,
+  }).isRequired,
+  darkMode: PropTypes.bool.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onRemove: PropTypes.func,
+};
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'relative',
+    position: 'flex',
+    width: 80,
+    height: 80,
+    justifyContent: 'space-between',
+
+  },
+  card: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  questionMark: {
+    fontSize: 40,
+  },
+  label: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  removeButton: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+  },
+});
+
+export default CustomizeRow;
