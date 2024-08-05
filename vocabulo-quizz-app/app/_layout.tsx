@@ -43,6 +43,8 @@ function RootLayoutNav() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="parameter" options={{ headerShown: false, title: 'Paramètre' }} />
       <Stack.Screen name="random" options={{ headerShown: false, title: 'Random' }} />
+      <Stack.Screen name="customize" options={{ headerShown: false, title: 'Customize' }} />
+
       <Stack.Screen name="index" options={{ headerShown: false, title: 'Index' }} />
     </Stack>
   );
