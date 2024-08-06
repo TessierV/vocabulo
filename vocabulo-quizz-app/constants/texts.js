@@ -236,7 +236,7 @@ export const texts = {
             textLabel: 'Jardin',
             difficulty: 'hard',
             ratio: '50/100',
-            route: '/game',
+            route: '/random',
         },
         {
             id: 4,
