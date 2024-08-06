@@ -5,29 +5,42 @@ import { SvgXml } from 'react-native-svg';
 import { Feather } from '@expo/vector-icons';
 
 import { darkTheme, lightTheme } from '@/constants/Colors';
-import { MaterialIcons } from '@expo/vector-icons'; // Assurez-vous d'avoir installé @expo/vector-icons
-
+import { MaterialIcons } from '@expo/vector-icons';
+// CustomizeRow component for displaying a customizable row
 const CustomizeRow = ({ category, darkMode, onSelect, onRemove }) => {
+  // Determine the theme based on darkMode prop
   const theme = darkMode ? darkTheme : lightTheme;
+
+  // Check if a category is selected
+  const isCategorySelected = category && category.textLabel;
 
   return (
     <View style={styles.container}>
+      {/* TouchableOpacity for category selection */}
       <TouchableOpacity
         style={[styles.card, { backgroundColor: theme.cardBackground }]}
         onPress={onSelect}
       >
-        {category.icon ? (
+        {/* Display category icon if available, otherwise show a search icon */}
+        {category && category.icon ? (
           <SvgXml xml={category.icon} width={30} height={30} />
         ) : (
-          <Feather name="search" size={25} color={darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade} style={styles.searchIcon} />
+          <Feather
+            name="search"
+            size={25}
+            color={darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade}
+            style={styles.searchIcon}
+          />
         )}
-        {category.difficulty ? (
-        <Text style={[styles.label, { color: theme.textColor }]}>
-        {category.difficulty }
-      </Text>) : <></> }
-
+        {/* Display category difficulty if available */}
+        {category && category.difficulty ? (
+          <Text style={[styles.label, { color: theme.textColor }]}>
+            {category.difficulty}
+          </Text>
+        ) : null}
       </TouchableOpacity>
-      {onRemove && (
+      {/* Display remove button if a category is selected and onRemove prop is provided */}
+      {isCategorySelected && onRemove && (
         <TouchableOpacity
           style={styles.removeButton}
           onPress={onRemove}
@@ -39,6 +52,7 @@ const CustomizeRow = ({ category, darkMode, onSelect, onRemove }) => {
   );
 };
 
+// PropTypes validation for CustomizeRow component
 CustomizeRow.propTypes = {
   category: PropTypes.shape({
     textLabel: PropTypes.string,
@@ -52,11 +66,9 @@ CustomizeRow.propTypes = {
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
-    position: 'flex',
     width: 80,
     height: 80,
     justifyContent: 'space-between',
-
   },
   card: {
     flex: 1,
