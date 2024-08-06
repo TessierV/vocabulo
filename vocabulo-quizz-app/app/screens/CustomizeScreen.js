@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Button, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import useDarkMode from '@/components/useDarkMode';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import SelectDifficulty from '@/components/Category/SelectDifficulty';
 import SectionTitle from '@/components/SectionTitle';
 import { texts } from '@/constants/texts';
 import CategoryCard from '@/components/Customize/CategoryCard';
-import CustomizeRow from '@/components/Customize/CustomizeRow';
 import Header from '@/components/Header';
 import FilterBar from '@/components/FilterBar';
-import { SvgXml } from 'react-native-svg';
+import SelectedCategoryRow from '@/components/Customize/SelectedCategoryRow';
+import SummaryModal from '@/components/Customize/SummaryModal';
+import { GradientBackgroundButton } from '@/components/Button';
 
 const Page = () => {
   const [darkMode] = useDarkMode();
@@ -17,7 +18,6 @@ const Page = () => {
   const [searchText, setSearchText] = useState('');
   const [sortOption, setSortOption] = useState('A-Z');
   const [selectedColumns, setSelectedColumns] = useState([null, null, null, null]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [summaryModalVisible, setSummaryModalVisible] = useState(false);
 
   const handleFilterChange = (difficulty) => {
@@ -33,7 +33,12 @@ const Page = () => {
   };
 
   const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
+    const index = selectedColumns.indexOf(null);
+    if (index !== -1) {
+      const newSelectedColumns = [...selectedColumns];
+      newSelectedColumns[index] = category;
+      setSelectedColumns(newSelectedColumns);
+    }
   };
 
   const handleRemoveCategory = (index) => {
@@ -44,7 +49,9 @@ const Page = () => {
 
   const handleValidation = () => {
     console.log("Validate button clicked");
-    setSummaryModalVisible(true);
+    if (selectedColumns.some(col => col !== null)) {
+      setSummaryModalVisible(true);
+    }
   };
 
   const handleSummaryModalClose = () => {
@@ -94,72 +101,36 @@ const Page = () => {
           popupButtonText={texts.categoryScreen.Category.popup.button}
           darkMode={darkMode}
         />
-        <View style={styles.selectedCategories}>
-          {selectedColumns.map((category, index) => (
-            <CustomizeRow
-              key={index}
-              category={category || { textLabel: '?', icon: null }}
-              darkMode={darkMode}
-              onSelect={() => handleCategorySelect(category)}
-              onRemove={() => handleRemoveCategory(index)}
-            />
-          ))}
-        </View>
+        <SelectedCategoryRow
+          categories={selectedColumns}
+          darkMode={darkMode}
+          onCategorySelect={handleCategorySelect}
+          onRemoveCategory={handleRemoveCategory}
+        />
         {allColumnsFilled && (
-          <TouchableOpacity
-            style={[styles.validateButton, { backgroundColor: darkMode ? 'yellow' : 'yellow' }]}
+          <View style={styles.buttonContainer}>
+          <GradientBackgroundButton
+            text="Validate Selection"
+            textColor={darkMode ? 'light' : 'dark'}
             onPress={handleValidation}
-          >
-            <Text style={[styles.validateButtonText, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>
-              Validate Selection
-            </Text>
-          </TouchableOpacity>
+          />
+        </View>
         )}
         <CategoryCard
           categories={filteredCategories}
           darkMode={darkMode}
           selectedColumns={selectedColumns}
-          onCategorySelect={(category) => {
-            handleCategorySelect(category);
-            const index = selectedColumns.indexOf(null);
-            if (index !== -1) {
-              const newSelectedColumns = [...selectedColumns];
-              newSelectedColumns[index] = category;
-              setSelectedColumns(newSelectedColumns);
-            }
-          }}
+          onCategorySelect={handleCategorySelect}
         />
       </ScrollView>
-      {summaryModalVisible && (
-        <View style={styles.modalContainer}>
+      <SummaryModal
+        visible={summaryModalVisible}
+        categories={selectedColumns.filter(Boolean)}
+        darkMode={darkMode}
+        onClose={handleSummaryModalClose}
+      />
 
-          <View style={styles.modalContent}>
-          <Button style={styles.modalCancel} title="x" onPress={handleSummaryModalClose} />
-
-            <Text style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade }}>
-              {`You are about to start your exercise with the following ${selectedColumns.filter(Boolean).length} categories:`}
-            </Text>
-            {selectedColumns.map((category, index) => (
-              category ? (
-                <View key={index} style={styles.categoryRow}>
-                  <View style={styles.categoryRowIcon}>
-                  <SvgXml xml={category.icon} width={30} height={30} />
-                  <Text style={{ color: darkMode ? darkTheme.lightShade : lightTheme.lightShade, marginLeft: 10 }}>
-                    {category.textLabel}
-                  </Text>
-
-                  </View>
-
-                  <Text style={{ color: darkMode ? darkTheme.lightShade : lightTheme.lightShade, marginLeft: 10 }}>
-                    {`${category.difficulty}`}
-                  </Text>
-                </View>
-              ) : null
-            ))}
-            <Button title="Start Exercise" onPress={handleSummaryModalClose} />
-          </View>
-        </View>
-      )}
+      
     </>
   );
 };
@@ -169,59 +140,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingBottom: 40,
   },
-  selectedCategories: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 20,
-  },
-  validateButton: {
-    marginBottom: 20,
-    padding: 15,
-    borderRadius: 5,
+  buttonContainer: {
     alignItems: 'center',
-  },
-  validateButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  modalContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalCancel: {
-    
-    justifyContent: 'flex-end',
-    right: 0,
-  },
-  modalContent: {
-    width: 280,
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  categoryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 5,
-    backgroundColor: darkTheme.darkShade,
-    justifyContent: 'space-between',
-    width: '100%',
-    padding: 10,
-    borderRadius:8,
-
-  },
-  categoryRowIcon:{
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
   },
 });
 
