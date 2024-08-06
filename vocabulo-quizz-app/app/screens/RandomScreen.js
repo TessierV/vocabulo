@@ -9,7 +9,7 @@ import Header from '@/components/Header';
 import SectionTitle from '@/components/SectionTitle';
 import { interfaceIcons } from '@/constants/svg';
 import { ContainerParagraph, Subtitle } from '@/constants/StyledText';
-
+import { GradientBorderButton } from '@/components/Button';
 
 const categories = texts.categories;
 
@@ -199,9 +199,7 @@ const RandomScreen = () => {
 
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.validateButton} onPress={handleValidate}>
-          <Text style={styles.validateButtonText}>Validate</Text>
-        </TouchableOpacity>
+      <GradientBorderButton text="Gradient Border" background={darkMode ? 'dark' : 'light'} textColor={darkMode ? 'light' : 'dark'} onPress={handleValidate} />
       </View>
 
       <Modal
@@ -212,17 +210,15 @@ const RandomScreen = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
+            <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.modalButtonText}>x</Text>
+            </TouchableOpacity>
             <Text style={styles.modalTitle}>Récapitulatif</Text>
             <Text>Thème: {randomCategory.textLabel}</Text>
             <Text>Difficulté: {randomCategory.difficulty}</Text>
             <Text>Bonne chance !</Text>
             <View style={styles.modalButtonContainer}>
-              <TouchableOpacity style={styles.modalButton} onPress={handleConfirm}>
-                <Text style={styles.modalButtonText}>Commencer</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
-                <Text style={styles.modalButtonText}>Annuler</Text>
-              </TouchableOpacity>
+            <GradientBorderButton text="Gradient Border" background={darkMode ? 'dark' : 'light'} textColor={darkMode ? 'light' : 'dark'} onPress={handleConfirm} />
             </View>
           </View>
         </View>

@@ -10,9 +10,11 @@ import { texts } from '@/constants/texts';
 import CategoryGrid from '@/components/CategoryGrid';
 import Slider from '@/components/Slider/Slider';
 import CategoryCard from '@/components/CategoryCard';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const [darkMode] = useDarkMode();
+  const navigation = useNavigation();
   const { width } = Dimensions.get('window');
 
   return (

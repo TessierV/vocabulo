@@ -77,6 +77,7 @@ const Page = () => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 25,
+    paddingBottom: 40,
   },
 });
 
