@@ -10,9 +10,9 @@ const Layout = () => {
   const [darkMode] = useDarkMode();
 
   const getFillColor = (focused) => {
-    const { neutralBlue, neutralPlum } = color;
+    const { neutralBlue, darkPlum } = color;
     const { dark_lightShade, light_darkShade } = darkMode ? darkTheme : lightTheme;
-    return focused ? (darkMode ? neutralBlue : neutralPlum) : (darkMode ? dark_lightShade : light_darkShade);
+    return focused ? (darkMode ? neutralBlue : darkPlum) : (darkMode ? dark_lightShade : light_darkShade);
   };
 
   const tabBarBackgroundColor = darkMode ? darkTheme.light_darkShade : lightTheme.lightShade;
@@ -49,7 +49,7 @@ const Layout = () => {
               <View style={[
                 styles.middleContainer,
                 { borderColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade },
-                focused && { backgroundColor: color.neutralPlum }
+                focused && { backgroundColor: color.darkPlum }
               ]}>
                 <Image source={logoImage} style={[
                   styles.logoImage,
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   middleContainer: {
-    backgroundColor: color.darkGreen,
+    backgroundColor: '#313941',
     justifyContent: 'center',
     alignItems: 'center',
     height: 80,
