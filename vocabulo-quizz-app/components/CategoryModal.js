@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Modal, Button, TouchableOpacity } from 'react-n
 import { SvgXml } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/Feather';
 import { color, darkTheme, lightTheme } from '@/constants/Colors';
+import { GradientBackgroundButton } from './Button';
 
 const CategoryModal = ({ isVisible, onClose, category, onConfirm, darkMode }) => {
   if (!category) return null;
@@ -37,7 +38,7 @@ const CategoryModal = ({ isVisible, onClose, category, onConfirm, darkMode }) =>
             { color: darkMode ? darkTheme.text : lightTheme.text }
           ]}>Tu as choisi ce thème. Voulez-vous continuer ?</Text>
           <View style={styles.modalButtons}>
-            <Button title="Commencer" onPress={onConfirm} color={color.neutralBlue} />
+            <GradientBackgroundButton text="Commencer" textColor={darkMode ? 'light' : 'dark'} onPress={onConfirm} />
           </View>
         </View>
       </View>
@@ -80,12 +81,11 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'center',
-    width: '100%',
+    width: '70%',
   },
   closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
+    alignSelf: 'flex-end',
+    padding: 10,
   },
 });
 

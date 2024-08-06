@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-
   },
   itemContainer: {
     flexDirection: 'column',

@@ -62,7 +62,7 @@ const FilterBar = ({ onSearchChange, onSortChange, darkMode }) => {
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
             >
-              <Feather name="x" size={24} color="#000" />
+              <Feather name="x" size={24} color="#333" />
             </TouchableOpacity>
             <FlatList
               data={sortOptions}
