@@ -1,4 +1,3 @@
-// CategoryCard.js
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { SvgXml } from 'react-native-svg';
