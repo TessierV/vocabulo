@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Papa from 'papaparse';
 import Section from '@/components/Dictionary/Section';
-import { darkTheme, lightTheme } from '@/constants/Colors';
+import { color, darkTheme, lightTheme } from '@/constants/Colors';
 import csvData from '@/constants/data';
 import FilterBar from '@/components/FilterBar';
 import BannerContainer from '@/components/Banner';
 import { texts } from '@/constants/texts';
 import Header from '@/components/Header';
+import { AnnonceTitle, BigTitle } from '@/constants/StyledText';
 
 const DictionaryScreen = () => {
   const [data, setData] = useState([]);
-  const [darkMode, setDarkMode] = useState(false); // Example state for dark mode
+  const [darkMode, setDarkMode] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [sortOption, setSortOption] = useState('A-Z');
   const [selectedLetter, setSelectedLetter] = useState(null);
@@ -21,11 +22,10 @@ const DictionaryScreen = () => {
 
   useEffect(() => {
     Papa.parse(csvData, {
-      delimiter: ',', // Specify the delimiter
-      header: true, // Indicates that the first row contains headers
+      delimiter: ',',
+      header: true,
       skipEmptyLines: true,
       complete: (results) => {
-        // Group data by word and grammatical category
         const groupedData = results.data.reduce((acc, item) => {
           const key = `${item.mot}-${item.categorie_grammaticale}`;
           if (!acc[key]) {
@@ -39,7 +39,6 @@ const DictionaryScreen = () => {
           return acc;
         }, {});
 
-        // Convert the object to an array
         setData(Object.values(groupedData));
       },
       error: (error) => {
@@ -48,72 +47,62 @@ const DictionaryScreen = () => {
     });
   }, []);
 
-  // Handle changes to the search input
   const handleSearchChange = (text) => {
     setSearchText(text);
   };
 
-  // Handle changes to the sort option
   const handleSortChange = (option) => {
     setSortOption(option);
   };
 
-  // Toggle selection of a letter filter
   const handleLetterClick = (letter) => {
     setSelectedLetter(selectedLetter === letter ? null : letter);
   };
 
-  // Toggle selection of a category filter
   const handleCategoryClick = (category) => {
     setSelectedCategory(selectedCategory === category ? null : category);
   };
 
-  // Toggle visibility of the alphabetical filter
   const toggleAlphabeticalFilter = () => {
     setShowAlphabeticalFilter(!showAlphabeticalFilter);
   };
 
-  // Toggle visibility of the category filter
   const toggleCategoryFilter = () => {
     setShowCategoryFilter(!showCategoryFilter);
   };
 
-  // Get the description for a grammatical category
   const getCategoryDescription = (category) => {
     switch (category) {
       case 'n.m.':
-        return 'Masculine noun';
+        return 'Nom masculin';
       case 'n.f.':
-        return 'Feminine noun';
+        return 'Nom féminin';
       case 'n.':
-        return 'Noun';
+        return 'Nom';
       case 'n.prop.':
-        return 'Proper noun';
+        return 'Nom propre';
       case 'adj.':
-        return 'Adjective';
+        return 'Adjectif';
       case 'adv.':
-        return 'Adverb';
+        return 'Adverbe';
       case 'v.':
-        return 'Verb';
+        return 'Verbe';
       case 'Faute Ortho':
-        return 'Orthographic Errors';
+        return 'Erreurs orthographiques';
       default:
-        return 'Other';
+        return 'Autre';
     }
   };
 
-  // Generate a sorted array of unique alphabetical letters
   const alphabeticalIndex = Array.from(new Set(data.map(group => group.mot[0].toUpperCase()))).sort();
-  // Generate a sorted array of unique grammatical categories
   const categories = Array.from(new Set(data.map(group => group.categorie_grammaticale))).sort();
 
-  // Filter and sort the data based on user selections
   const filteredData = data
     .filter(group =>
       (selectedLetter ? group.mot[0].toUpperCase() === selectedLetter : true) &&
       (selectedCategory ? group.categorie_grammaticale === selectedCategory : true) &&
       (group.mot.toLowerCase().includes(searchText.toLowerCase()) ||
-       group.categorie_grammaticale.toLowerCase().includes(searchText.toLowerCase()))
+        group.categorie_grammaticale.toLowerCase().includes(searchText.toLowerCase()))
     )
     .sort((a, b) => {
       switch (sortOption) {
@@ -130,6 +119,28 @@ const DictionaryScreen = () => {
       }
     });
 
+  const renderItem = ({ item, index }) => {
+    const currentLetter = item.mot[0].toUpperCase();
+    const previousLetter = index > 0 ? filteredData[index - 1].mot[0].toUpperCase() : null;
+
+    return (
+      <View>
+        {currentLetter !== previousLetter && (
+          <BigTitle style={[styles.letterTitle, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }]}>
+            {currentLetter}.
+          </BigTitle>
+        )}
+        <Section
+          mot={item.mot}
+          categorie_grammaticale={item.categorie_grammaticale}
+          items={item.items}
+          iconName="book"
+          darkMode={darkMode}
+        />
+      </View>
+    );
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
       <Header darkMode={darkMode} firstLink="/home" secondLink="/parameter" />
@@ -141,13 +152,13 @@ const DictionaryScreen = () => {
         popupbutton={texts.profilScreen.banner.popup.button}
         darkMode={darkMode}
       />
-      <FilterBar
-        onSearchChange={handleSearchChange}
-        onSortChange={handleSortChange}
-        darkMode={darkMode}
-        sortOption={sortOption}
-      />
-      <ScrollView horizontal style={styles.filtersScrollView}>
+      <View style={styles.section}>
+        <FilterBar
+          onSearchChange={handleSearchChange}
+          onSortChange={handleSortChange}
+          darkMode={darkMode}
+          sortOption={sortOption}
+        />
         <View style={styles.filtersContainer}>
           <TouchableOpacity
             onPress={toggleAlphabeticalFilter}
@@ -168,9 +179,7 @@ const DictionaryScreen = () => {
             <Text style={styles.filterToggleText}>Grammatical Category</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
-      {showAlphabeticalFilter && (
-        <ScrollView horizontal style={styles.alphabeticalFilterScrollView}>
+        {showAlphabeticalFilter && (
           <View style={styles.alphabeticalFilterContainer}>
             {alphabeticalIndex.map(letter => (
               <TouchableOpacity
@@ -187,10 +196,8 @@ const DictionaryScreen = () => {
               </TouchableOpacity>
             ))}
           </View>
-        </ScrollView>
-      )}
-      {showCategoryFilter && (
-        <ScrollView horizontal style={styles.categoryFilterScrollView}>
+        )}
+        {showCategoryFilter && (
           <View style={styles.categoryFilterContainer}>
             {categories.map(category => (
               <TouchableOpacity
@@ -207,20 +214,14 @@ const DictionaryScreen = () => {
               </TouchableOpacity>
             ))}
           </View>
-        </ScrollView>
-      )}
-      <ScrollView>
-        {filteredData.map((group, index) => (
-          <Section
-            key={index}
-            mot={group.mot}
-            categorie_grammaticale={group.categorie_grammaticale}
-            items={group.items}
-            iconName="book"
-            darkMode={darkMode}
-          />
-        ))}
-      </ScrollView>
+        )}
+        <FlatList
+          data={filteredData}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={styles.sectionList}
+        />
+      </View>
     </View>
   );
 };
@@ -228,20 +229,16 @@ const DictionaryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
-    padding: 10,
   },
-  filtersScrollView: {
-    paddingBottom: 10,
-    alignContent: 'flex-start',
-    marginBottom: 10,
-    height: 90,
+  section: {
+    width: '90%',
+    alignSelf: 'center',
   },
   filtersContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   filterToggleButton: {
     paddingHorizontal: 20,
@@ -250,30 +247,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: lightTheme.darkShade,
+    borderColor: lightTheme.light_darkShade,
     borderRadius: 100,
     marginHorizontal: 5,
   },
   selectedFilterToggleButton: {
-    backgroundColor: 'pink',
+    backgroundColor: lightTheme.darkShade,
+    color: 'white',
   },
   filterToggleText: {
-    fontSize: 14,
-    color: '#333',
-  },
-  alphabeticalFilterScrollView: {
-    marginBottom: 10,
+    fontSize: 12,
+    color: lightTheme.light_darkShade,
   },
   alphabeticalFilterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  categoryFilterScrollView: {
-    marginBottom: 10,
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    paddingBottom: 10,
   },
   categoryFilterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingBottom: 10,
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
   filterButton: {
     padding: 8,
@@ -287,10 +285,15 @@ const styles = StyleSheet.create({
   },
   selectedFilterButton: {
     backgroundColor: 'orange',
+
   },
   filterText: {
-    fontSize: 16,
+    fontSize: 12,
     textAlign: 'center',
+  },
+  sectionList: {
+    flexGrow: 1,
+    paddingBottom: 400,
   },
 });
 
