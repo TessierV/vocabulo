@@ -39,4 +39,5 @@ abeille travailleuse,n.,"abeille stérile d'une ruche, ou fourmi et guêpe neutr
 abeille ventileuse,n.f.,abeille qui assure l'aération d'une ruche en battant ses ailes.,https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/abeilleventileuse_nf_1.mp4,Non spécifié,https://dico.elix-lsf.fr/dictionnaire/abeille%20ventileuse/n.f.-125500
 b,n.f.,abeille qui assure l'aération d'une ruche en battant ses ailes.,https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/abeilleventileuse_nf_1.mp4,Non spécifié,https://dico.elix-lsf.fr/dictionnaire/abeille%20ventileuse/n.f.-125500`;
 
+
 export default csvData;
