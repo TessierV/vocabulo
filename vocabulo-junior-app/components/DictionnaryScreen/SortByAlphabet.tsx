@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         margin: '1%',
     },
     selectedButton: {
-        backgroundColor: Colors.neutralGreen,
+        backgroundColor: Colors.lightCoral,
     },
     buttonText: {
         color: Colors.black,
