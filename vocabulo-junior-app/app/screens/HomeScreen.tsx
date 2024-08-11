@@ -1,16 +1,17 @@
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 import React from 'react';
-import TopNavBar from '@/components/navigation/TopNavBar';
+import TopNavBar from '@/components/Navigation/TopNavBar';
 import GoToStart from '@/components/HomeScreen/GoToStart';
 import { Colors } from '@/constants/Colors';
-import DisplayProfile from '@/components/HomeScreen/DisplayProfile';
+import DisplaySettings from '@/components/HomeScreen/DisplaySettings';
 
 export default function HomeScreen() {
   return (
+    
     <SafeAreaView style={styles.container}>
       <TopNavBar title="Accueil" tintColor={Colors.darkBlue} color={Colors.darkBlue} />
-      <View style={styles.DisplayProfileComponent}>
-      <DisplayProfile />
+      <View style={styles.DisplaySettingsComponent}>
+      <DisplaySettings />
       </View>
       <View style={styles.GoToStartComponent}>
         <GoToStart />
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.lightGrey,
   },
-  DisplayProfileComponent: {
+  DisplaySettingsComponent: {
     marginTop: 20
   },
   GoToStartComponent: {

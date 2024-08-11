@@ -3,7 +3,7 @@ import React from 'react';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 import BackgroundLogin from '../../components/auth/backgroundLogin'
-import { HeaderTitle, Title, BigTitle } from '@/constants/StyledText';
+import { ButtonText, BigTitle } from '@/constants/StyledText';
 
 
 export default function LoginScreen() {
@@ -18,10 +18,10 @@ export default function LoginScreen() {
                 <BigTitle>Bienvenue</BigTitle>
                 <Text style={styles.loremText}>lorem ipsum</Text>
                 <TouchableOpacity style={styles.button} onPress={() => router.push('./../auth/authLogin/Login')}>
-                    <Title style={styles.buttonText}>Se connecter</Title>
+                    <ButtonText style={styles.buttonText}>Se connecter</ButtonText>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={() => router.push('./../auth/authSignup/Signup')}>
-                    <Title style={styles.buttonText}>Créer un compte</Title>
+                    <ButtonText style={styles.buttonText}>Créer un compte</ButtonText>
                 </TouchableOpacity>
             </View>
         </View>
