@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     marginTop: -25,
     width: '90%',
     borderRadius: 100,
-    backgroundColor: Colors.darkGreen,
+    backgroundColor: Colors.darkCoral,
     alignItems: 'center',
   },
   permissionsButtontext: {
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.white,
     justifyContent: 'center',
     alignSelf: 'center',
-    marginBottom: 50,
+    bottom: '14%',
   },
   photoContainer: {
     flex: 1,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     marginTop: -25,
     width: 200,
     borderRadius: 100,
-    backgroundColor: Colors.darkGreen,
+    backgroundColor: Colors.darkCoral,
     alignItems: 'center',
   },
   buttonText: {
