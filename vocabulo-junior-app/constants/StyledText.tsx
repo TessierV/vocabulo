@@ -6,20 +6,34 @@ import { Colors } from '@/constants/Colors';
 
 // Fonction pour créer des styles thématisés
 const createThemedStyles = () => StyleSheet.create({
-  bigtitle: {
+  bigTitle: {
     fontFamily: 'Chewy',
     fontSize: 50,
-    color: Colors.black,
     letterSpacing: 2,
-    textAlign: 'center'
   },
   HeaderTitle: {
     fontFamily: 'MontserratSemiBold',
-    fontSize: 24,
+    fontSize: 20,
+  },
+  ButtonText: {
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 18,
+  },
+  BasicText: {
+    fontFamily: 'MontserratRegular',
+    fontSize: 18,
   },
   Title: {
     fontFamily: 'MontserratSemiBold',
     fontSize: 18,
+  },
+  InformationText: {
+    fontFamily: 'MontserratRegular',
+    fontSize: 12,
+  },
+  UserNameText: {
+    fontFamily: 'Chewy',
+    fontSize: 24,
   },
   OnboardingTitle: {
     fontFamily: 'Chewy',
@@ -40,7 +54,7 @@ interface TextComponentProps extends TextProps {
 
 const BigTitle = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
-  return <Text style={[styles.bigtitle, style]} {...props}>{children}</Text>;
+  return <Text style={[styles.bigTitle, style]} {...props}>{children}</Text>;
 };
 
 const HeaderTitle = ({ children, style, ...props }: TextComponentProps) => {
@@ -48,9 +62,25 @@ const HeaderTitle = ({ children, style, ...props }: TextComponentProps) => {
   return <Text style={[styles.HeaderTitle, style]} {...props}>{children}</Text>;
 };
 
+const ButtonText = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.ButtonText, style]} {...props}>{children}</Text>;
+};
+const BasicText = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.BasicText, style]} {...props}>{children}</Text>;
+};
 const Title = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
   return <Text style={[styles.Title, style]} {...props}>{children}</Text>;
+};
+const InformationText = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.InformationText, style]} {...props}>{children}</Text>;
+};
+const UserNameText = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.UserNameText, style]} {...props}>{children}</Text>;
 };
 const OnboardingTitle = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
@@ -63,7 +93,11 @@ const OnboardingText = ({ children, style, ...props }: TextComponentProps) => {
 export {
   BigTitle,
   HeaderTitle,
+  ButtonText,
+  BasicText,
   Title,
+  InformationText,
+  UserNameText,
   OnboardingTitle,
   OnboardingText
 };

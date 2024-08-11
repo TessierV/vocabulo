@@ -12,7 +12,7 @@ export const Colors = {
 
   black: "000000",
 
-  lightGrey: "#F3F3F3",
+  lightGrey: "#EBEBEB",
 
   darkCoral: "#E18D73",
   neutralCoral: '#FFA381',
