@@ -1,39 +1,80 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useState, useRef } from 'react';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { Colors } from '@/constants/Colors';
+import { ButtonText, InformationText } from '@/constants/StyledText';
+import { router } from 'expo-router';
 
 export default function MyCamera() {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const cameraRef = useRef<CameraView>(null);
 
   if (!permission) {
-    // Camera permissions are still loading.
     return <View />;
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <InformationText style={styles.permissionsMessage}>
+          Nous avons besoin de votre permission pour afficher la caméra
+        </InformationText>
+        <TouchableOpacity
+          style={styles.permissionsButton}
+          onPress={() => router.push('./../../screens/ScannedTextScreen')}
+        >
+          <ButtonText style={styles.permissionsButtontext}>
+            Autoriser l'accès à la caméra
+          </ButtonText>
+        </TouchableOpacity>
       </View>
     );
   }
 
-  function toggleCameraFacing() {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
-  }
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      try {
+        const photo = await cameraRef.current.takePictureAsync();
+        if (photo?.uri) {
+          setPhotoUri(photo.uri);
+        } else {
+          console.error('Échec de la prise de photo');
+        }
+      } catch (error) {
+        console.error('Erreur lors de la prise de photo', error);
+      }
+    }
+  };
+
+  const closePhoto = () => {
+    setPhotoUri(null);
+  };
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip Camera</Text>
+      {photoUri ? (
+        <View style={styles.photoContainer}>
+          <TouchableOpacity onPress={closePhoto} style={styles.closeButton}>
+            <AntDesign name="close" size={24} color="black" />
+          </TouchableOpacity>
+          <Image source={{ uri: photoUri }} style={styles.photo} />
+          <TouchableOpacity
+            style={styles.scanButton}
+            onPress={() => router.push('./../../screens/ScannedTextScreen')}
+          >
+            <ButtonText style={styles.buttonText}>Scanner le texte</ButtonText>
           </TouchableOpacity>
         </View>
-      </CameraView>
+      ) : (
+        <CameraView style={styles.camera} ref={cameraRef}>
+          <View style={styles.takePhotoButtonContainer}>
+            <TouchableOpacity onPress={takePicture} style={styles.takePhotobutton} />
+          </View>
+        </CameraView>
+      )}
     </View>
   );
 }
@@ -43,27 +84,69 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  message: {
+  permissionsMessage: {
+    color: Colors.white,
     textAlign: 'center',
-    paddingBottom: 10,
+  },
+  permissionsButton: {
+    paddingVertical: 15,
+    marginTop: -25,
+    width: '90%',
+    borderRadius: 100,
+    backgroundColor: Colors.darkGreen,
+    alignItems: 'center',
+  },
+  permissionsButtontext: {
+    textAlign: 'center',
+    color: Colors.white,
   },
   camera: {
     flex: 1,
   },
-  buttonContainer: {
+  takePhotoButtonContainer: {
     flex: 1,
-    flexDirection: 'row',
     backgroundColor: 'transparent',
-    margin: 64,
+    justifyContent: 'flex-end',
   },
-  button: {
+  takePhotobutton: {
+    width: 70,
+    height: 70,
+    backgroundColor: Colors.whiteTransparent,
+    borderRadius: 35,
+    borderWidth: 2,
+    borderColor: Colors.white,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 50,
+  },
+  photoContainer: {
     flex: 1,
-    alignSelf: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.lightGrey,
+  },
+  photo: {
+    width: '90%',
+    height: 470,
+    resizeMode: 'contain',
+  },
+  scanButton: {
+    paddingVertical: 15,
+    marginTop: -25,
+    width: 200,
+    borderRadius: 100,
+    backgroundColor: Colors.darkGreen,
     alignItems: 'center',
   },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
+  buttonText: {
+    textAlign: 'center',
+    color: Colors.white,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    left: 15,
+    padding: 10,
+    borderRadius: 50,
   },
 });
