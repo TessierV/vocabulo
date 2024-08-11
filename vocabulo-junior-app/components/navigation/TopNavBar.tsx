@@ -28,29 +28,31 @@ export default function TopNavBar({ title = "Accueil", tintColor = Colors.darkPl
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        height: '100%',
+        height: '15%',
         justifyContent: 'flex-start',
         top: 0,
+        zIndex: 1,
     },
     topContainer: {
         width: '100%',
-        height: '5%',
+        height: '30%',
     },
     headerBackground: {
         position: 'absolute',
         width: '100%',
-        height: '20%',
-        justifyContent: 'flex-start',
+        height: '100%',
         top: 0,
         resizeMode: 'contain',
     },
     iconTextContainer: {
         marginTop: 20,
         flexDirection: 'row',
-        position: 'relative',
-        marginHorizontal: 15,
+        position: 'absolute',
+        width: '100%',
+        paddingHorizontal: 15,
         justifyContent: 'space-between',
         alignItems: 'center',
+        top: 20, // Ajustez pour le positionnement vertical
     },
     text: {
         alignItems: 'center',
