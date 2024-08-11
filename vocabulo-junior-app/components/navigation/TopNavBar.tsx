@@ -1,11 +1,11 @@
 import React from 'react';
-import { useNavigation } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { HeaderTitle } from '@/constants/StyledText';
 
-export default function TopNavBar({ title = "Accueil", tintColor = Colors.darkPlum, color = Colors.darkPlum }) {
+export default function TopNavBar({ title = "Accueil", tintColor = Colors.black, color = Colors.black }) {
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
@@ -16,10 +16,12 @@ export default function TopNavBar({ title = "Accueil", tintColor = Colors.darkPl
             />
             <View style={styles.iconTextContainer}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="chevron-back" style={styles.iconBack} />
+                    <Ionicons name="arrow-back-outline" style={styles.iconLeft} />
                 </TouchableOpacity>
                 <HeaderTitle style={[styles.text, { color: Colors.white }]}>{title}</HeaderTitle>
-                <View></View>
+                <TouchableOpacity onPress={() => router.push('./../screens/HomeScreen')}>
+                    <Ionicons name="home" style={styles.iconRight} />
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -49,19 +51,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         position: 'absolute',
         width: '100%',
-        paddingHorizontal: 15,
+        paddingHorizontal: '7%',
         justifyContent: 'space-between',
         alignItems: 'center',
-        top: 20, // Ajustez pour le positionnement vertical
+        top: 20,
     },
     text: {
         alignItems: 'center',
         justifyContent: 'center',
-        alignSelf: "center",
-        marginRight: 30
+        alignSelf: "center"
     },
-    iconBack: {
+    iconLeft: {
         color: Colors.white,
         fontSize: 24,
+    },
+    iconRight: {
+        color: Colors.white,
+        fontSize: 22,
     },
 });
