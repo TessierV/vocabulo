@@ -18,7 +18,7 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon-app-green-plum.png",
+        "foregroundImage": "./assets/images/icon-app-junior-blue-plum.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.amandineassenat.Vocabulojuniorapp"

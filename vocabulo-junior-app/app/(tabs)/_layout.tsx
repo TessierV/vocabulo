@@ -1,32 +1,46 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { StyleSheet, View } from 'react-native';
+import { TabBarIonicons, TabBarMaterialIcon } from '@/components/Navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 
 export default function TabLayout() {
-
   return (
-    <Tabs screenOptions={({ route }) => ({
-      tabBarStyle: ((route) => {
-        const routesToHideTabBar = [''];
-        if (routesToHideTabBar.includes(route.name)) {
-          return { display: 'none' };
-        }
-        return [
-          styles.TapBarContainer
-        ];
-      })(route),
+    <Tabs
+      screenOptions={() => ({
+        tabBarStyle: {
+          backgroundColor: Colors.darkCoral,
+          borderRadius: 100,
+          height: 45,
+          paddingLeft: 0,
+          paddingRight: 0,
+          position: 'absolute',
+          left: '10%',
+          right: '10%',
+          bottom: '3%',
+          shadowColor: 'transparent',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          borderWidth: 1,
+          borderColor: Colors.darkCoral
+        },
         tabBarActiveTintColor: Colors.white,
         tabBarInactiveTintColor: Colors.white,
         headerShown: false,
-      })}>
+      })}
+    >
       <Tabs.Screen
         name="Dictionnary"
         options={{
           title: '',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'book' : 'book-outline'} color={color} />
+            <View style={styles.iconLeft}>
+              <TabBarIonicons
+                name='book'
+                color={color}
+                style={[focused && styles.activeIcon]}
+              />
+            </View>
           ),
         }}
       />
@@ -35,7 +49,13 @@ export default function TabLayout() {
         options={{
           title: '',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'scan-circle' : 'scan-circle-outline'} color={color} />
+            <View style={styles.iconCenter}>
+              <TabBarMaterialIcon
+                name='enhance-photo-translate'
+                color={color}
+                style={[focused && styles.activeIcon]}
+              />
+            </View>
           ),
         }}
       />
@@ -44,20 +64,39 @@ export default function TabLayout() {
         options={{
           title: '',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'document-text' : 'document-text-outline'} color={color} />
+            <View style={styles.iconRight}>
+              <TabBarIonicons
+                name='document-text'
+                color={color}
+                style={[focused && styles.activeIcon]}
+              />
+            </View>
           ),
         }}
       />
     </Tabs>
+    
   );
 }
 
 const styles = StyleSheet.create({
-  TapBarContainer: {
-    backgroundColor: Colors.darkGreen,
-    height: 80,
-    padding: 0,
-    paddingLeft: 30,
-    paddingRight: 30,
-  }
+  activeIcon: {
+    backgroundColor: Colors.neutralCoral,
+    borderRadius: 50,
+    height: 60,
+    width: 60,
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center'
+  },
+  iconLeft: {
+    marginLeft: '20%',
+  },
+  iconCenter: {
+  },
+  iconRight: {
+    marginRight: '20%',
+  },
 });

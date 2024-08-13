@@ -1,7 +1,8 @@
 import { Stack, useNavigation } from 'expo-router';
 import { Text, View } from 'react-native';
 import { useEffect } from 'react';
-import LoginScreen from './screens/LoginScreen';
+import HomeScreen from './screens/HomeScreen';
+import TopNavBar from '@/components/navigation/TopNavBar';
 
 export default function Index() {
 
@@ -17,7 +18,7 @@ export default function Index() {
         flex: 1
       }}
     >
-      <LoginScreen />
+      <HomeScreen />
     </View>
   );
 }

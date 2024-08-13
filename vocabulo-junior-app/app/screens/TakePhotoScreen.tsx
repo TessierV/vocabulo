@@ -1,19 +1,28 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
 import React from 'react'
 import MyCamera from '@/components/Scan/MyCamera'
+import TopNavBar from '@/components/Navigation/TopNavBar';
+import { Colors } from '@/constants/Colors';
 
 
 export default function TakePhotoScreen() {
   return (
-    <View style={styles.BackgroundContainer}>
+    <SafeAreaView style={styles.container}>
+      <TopNavBar title="Scanner un texte" tintColor={Colors.darkCoral} color={Colors.darkCoral} />
+      <View style={styles.MyCameraComponent}>
       <MyCamera />
-    </View>
-  )
+      </View>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-    BackgroundContainer: {
-        width: '100%',
-        height: '100%'
-    }
+  container: {
+    flex: 1,
+  },
+  MyCameraComponent: {
+    marginTop: -50,
+    flex: 1
+  },
+
 });
