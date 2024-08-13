@@ -64,13 +64,14 @@ export default function SortByAlphabet() {
                 renderItem={renderItem}
                 keyExtractor={(item) => item}
                 numColumns={10}
+                style={styles.alphabetContainer}
             />
             {selectedLetter && (
                 <FlatList
                     data={words}
                     renderItem={renderWordItem}
                     keyExtractor={(item) => item.id}  // Utilisez l'ID comme clé
-                    style={styles.wordList}
+                    style={styles.DictionnaryContainer}
                 />
             )}
         </View>
@@ -83,6 +84,10 @@ const styles = StyleSheet.create({
         height: '100%',
         justifyContent: 'space-between',
         marginHorizontal: 'auto',
+    },
+    alphabetContainer: {
+        height: 230,
+        marginBottom: '5%',
     },
     button: {
         backgroundColor: Colors.white,
@@ -100,7 +105,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: Colors.black,
     },
-    wordList: {
-        marginTop: 20,
+    DictionnaryContainer: {
+        marginBottom: '14%'
     },
 });

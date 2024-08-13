@@ -16,10 +16,6 @@ export default function DictionnaryScreen() {
         <View style={styles.SortByAphabetComponent}>
           <SortByAlphabet />
         </View>
-        <View style={styles.DictionnaryCardComponent}>
-          <DictionnaryCard />
-        </View>
-
       </SafeAreaView>
     );
   }
@@ -28,13 +24,10 @@ export default function DictionnaryScreen() {
       flex: 1,
       backgroundColor: Colors.lightGrey,
     },
-    SortByAphabetComponent: {
-      marginTop: 20,
-    },
     SortByCategoryComponent: {
       marginTop: 20,
     },
-    DictionnaryCardComponent: {
-      marginTop: 20,
-    },
+    SortByAphabetComponent: {
+      marginTop: 20
+    }
   });

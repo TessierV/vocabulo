@@ -1,9 +1,9 @@
-// WordCard.tsx
+// DictionnaryCard.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '@/constants/Colors'; // Assurez-vous que le chemin est correct
 
-interface DictionnaryCard {
+interface InformationData {
     mot: string;
     categorie: string;
     definition: string;
@@ -12,7 +12,7 @@ interface DictionnaryCard {
     urlSource: string;
 }
 
-const WordCard: React.FC<DictionnaryCard> = ({ mot, categorie, definition, urlVideoDef, urlVideoMot, urlSource }) => (
+const DictionnaryCard: React.FC<InformationData> = ({ mot, categorie, definition, urlVideoDef, urlVideoMot, urlSource }) => (
     <View style={styles.card}>
         <Text style={styles.cardTitle}>{mot}</Text>
         <Text style={styles.cardText}><Text style={styles.boldText}>Catégorie:</Text> {categorie}</Text>
@@ -45,4 +45,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default WordCard;
+export default DictionnaryCard;
