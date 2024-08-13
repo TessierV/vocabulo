@@ -57,10 +57,10 @@ export default function MyCamera() {
     <View style={styles.container}>
       {photoUri ? (
         <View style={styles.photoContainer}>
-          <TouchableOpacity onPress={closePhoto} style={styles.closeButton}>
-            <AntDesign name="close" size={24} color="black" />
-          </TouchableOpacity>
           <Image source={{ uri: photoUri }} style={styles.photo} />
+          <TouchableOpacity onPress={closePhoto} style={styles.closeButtonContainer}>
+            <AntDesign name="close" style={styles.closeButton}/>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.scanButton}
             onPress={() => router.push('./../../screens/ScannedTextScreen')}
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: Colors.lightGrey,
   },
   permissionsMessage: {
     color: Colors.white,
@@ -121,14 +122,15 @@ const styles = StyleSheet.create({
   },
   photoContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    top: '12%',
     alignItems: 'center',
-    backgroundColor: Colors.lightGrey,
   },
   photo: {
     width: '90%',
-    height: 470,
+    minHeight: 470,
     resizeMode: 'contain',
+    borderRadius: 15
   },
   scanButton: {
     paddingVertical: 15,
@@ -142,11 +144,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: Colors.white,
   },
-  closeButton: {
+  closeButtonContainer: {
+    alignSelf: 'flex-end',
+    right: '5%',
     position: 'absolute',
-    top: 40,
-    left: 15,
-    padding: 10,
+    padding: 5,
     borderRadius: 50,
+    backgroundColor: Colors.whiteTransparent,
+    margin: 10
+  },
+  closeButton: {
+    color: Colors.white,
+    fontSize: 18
   },
 });
