@@ -1,12 +1,48 @@
 import React from 'react';
-import { View, Text, StyleSheet, Modal, Button, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { SvgXml } from 'react-native-svg';
-import Icon from 'react-native-vector-icons/Feather';
-import { color, darkTheme, lightTheme } from '@/constants/Colors';
-import { GradientBackgroundButton } from './Button';
+import Bubble from './Bubble';
+import RadarEffect from './RadarEffect';
+import { GradientBorderButton } from '@/components/Button';
+import { darkTheme, lightTheme, color } from '@/constants/Colors';
+import { BigTitle, ContainerParagraph } from '@/constants/StyledText';
 
 const CategoryModal = ({ isVisible, onClose, category, onConfirm, darkMode }) => {
   if (!category) return null;
+
+  // Determine bubble colors based on difficulty
+  const getBubbleColors = (difficulty) => {
+    switch (difficulty) {
+      case 'easy':
+        return [color.lightGreen, color.neutralGreen, color.darkGreen];
+      case 'middle':
+        return [color.lightBlue, color.neutralBlue, color.darkBlue];
+      case 'hard':
+        return [color.lightPlum, color.neutralPlum, color.darkPlum];
+      default:
+        return [color.lightBlue, color.neutralBlue, color.darkBlue]; // Fallback colors
+    }
+  };
+
+  // Determine radar colors based on difficulty
+  const getRadarColors = (difficulty) => {
+    switch (difficulty) {
+      case 'easy':
+        return [color.darkGreen, color.neutralGreen, color.lightGreen];
+      case 'middle':
+        return [color.darkBlue, color.neutralBlue, color.darkBlue];
+      case 'hard':
+        return [color.darkPlum, color.neutralPlum, color.lightPlum];
+      default:
+        return [color.lightBlue, color.neutralBlue, color.lightBlue]; // Fallback colors
+    }
+  };
+
+  const bubbleColors = getBubbleColors(category.difficulty);
+  const radarColors = getRadarColors(category.difficulty);
+  const bubbleSize = 20;
+  const bubbleDuration = 7000;
 
   return (
     <Modal
@@ -14,31 +50,48 @@ const CategoryModal = ({ isVisible, onClose, category, onConfirm, darkMode }) =>
       transparent={true}
       animationType="slide"
       onRequestClose={onClose}
-      style={styles.modal}
     >
-      <View style={styles.modalOverlay}>
-        <View style={[
-          styles.modalContent,
-          { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.lightShade }
-        ]}>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Icon name="x" size={24} color="#333" />
+      <View style={styles.overlay}>
+        <View style={[styles.modalContent, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.lightShade }]}>
+          <TouchableOpacity style={styles.removeButton} onPress={onClose}>
+            <Feather name="x" size={24} color="#333" />
           </TouchableOpacity>
-          <SvgXml xml={category.icon} width={100} height={100} />
-          <Text style={[
-            styles.modalTitle,
-            { color: darkMode ? darkTheme.text : lightTheme.text }
-          ]}>{category.textLabel}</Text>
-          <Text style={[
-            styles.modalDifficulty,
-            { color: darkMode ? darkTheme.text : lightTheme.text }
-          ]}>Difficulté: {category.difficulty}</Text>
-          <Text style={[
-            styles.modalText,
-            { color: darkMode ? darkTheme.text : lightTheme.text }
-          ]}>Tu as choisi ce thème. Voulez-vous continuer ?</Text>
-          <View style={styles.modalButtons}>
-            <GradientBackgroundButton text="Commencer" textColor={darkMode ? 'light' : 'dark'} onPress={onConfirm} />
+
+          <View style={styles.radarWrapper}>
+            <RadarEffect
+              colors={radarColors} // Pass colors array for radar
+              minRadius={30}
+              maxRadius={50}
+              svgIcon={category.icon} // Pass SVG directly
+            />
+            <View style={styles.bubblesContainer}>
+              {Array.from({ length: 20 }).map((_, index) => (
+                <Bubble
+                  key={index}
+                  size={bubbleSize + Math.random() * 10}
+                  color={bubbleColors[index % bubbleColors.length]}
+                  duration={bubbleDuration}
+                  delay={Math.random() * bubbleDuration}
+                />
+              ))}
+            </View>
+          </View>
+
+          <BigTitle>{category.textLabel}</BigTitle>
+          <ContainerParagraph style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade }}>
+            {`Difficulté: ${category.difficulty}`}
+          </ContainerParagraph>
+          <ContainerParagraph style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade }}>
+            Vous allez commencer avec ce thème. Voulez-vous continuer ?
+          </ContainerParagraph>
+
+          <View style={styles.buttonContainer}>
+            <GradientBorderButton
+              text="Commencer"
+              background={darkMode ? 'dark' : 'light'}
+              onPress={onConfirm}
+              textColor={darkMode ? 'light' : 'dark'}
+            />
           </View>
         </View>
       </View>
@@ -47,45 +100,40 @@ const CategoryModal = ({ isVisible, onClose, category, onConfirm, darkMode }) =>
 };
 
 const styles = StyleSheet.create({
-  modal: {
-    justifyContent: 'center',
-    alignItems: 'center',
-
-  },
-  modalOverlay: {
+  overlay: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0,0,0,0.5)', // Semi-transparent background for the modal overlay
   },
   modalContent: {
-    borderRadius: 8,
+    width: '100%',
     padding: 20,
-    width: '80%',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  modalDifficulty: {
-    fontSize: 16,
-    marginBottom: 15,
-  },
-  modalButtons: {
-    flexDirection: 'row',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     justifyContent: 'center',
-    width: '70%',
+    alignItems: 'center',
+    height: '80%',
   },
-  closeButton: {
+  removeButton: {
     alignSelf: 'flex-end',
-    padding: 10,
+  },
+  radarWrapper: {
+    position: 'relative',
+    width: 150,
+    height: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bubblesContainer: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+  },
+  buttonContainer: {
+    marginTop: 20,
   },
 });
 
