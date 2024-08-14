@@ -5,6 +5,7 @@ import SortByAlphabet from '@/components/Dictionnary/SortByAlphabet';
 import { Colors } from '@/constants/Colors';
 import DictionnaryCard from '@/components/Dictionnary/DictionnaryCard';
 import SortByCategory from '@/components/Dictionnary/SortByCategory';
+import ChangeAphabet from '@/components/Dictionnary/ChangeAphabet';
 
 export default function DictionnaryScreen() {
   return (
@@ -14,7 +15,7 @@ export default function DictionnaryScreen() {
           <SortByCategory />
         </View>
         <View style={styles.SortByAphabetComponent}>
-          <SortByAlphabet />
+          <ChangeAphabet />
         </View>
       </SafeAreaView>
     );

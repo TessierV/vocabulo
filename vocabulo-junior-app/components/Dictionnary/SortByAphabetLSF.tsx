@@ -1,50 +1,77 @@
-import { View, TouchableOpacity, StyleSheet, FlatList, Text } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, FlatList, Image } from 'react-native';
 import React, { useState } from 'react';
-import data from './../../data/data';  // Assurez-vous que le chemin est correct
+import data from './../../data/data';  
 
 import { Colors } from '@/constants/Colors';
 import DictionnaryCard from './DictionnaryCard';
-import SortByAphabetLSF from './SortByAphabetLSF'; // Importez le composant ici
-import SwitchButton from './SwitchButton'; // Importez le composant SwitchButton
+import SortByAlphabet from './SortByAlphabet'; 
+import SwitchButton from './SwitchButton';
 
 type Letter = string;
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-const extractData = (letter: Letter) => {
-    const rows = data.trim().split('\n').slice(1); // Ignorer la première ligne (entête)
-    
-    const words = rows.map((row, index) => {
-        const [mot, categorie, definition, urlVideoDef, urlVideoMot, urlSource] = row.split(',');
-        return { id: `${index}-${mot}`, mot, categorie, definition, urlVideoDef, urlVideoMot, urlSource };
-    });
-    
-    return words.filter(word => word.mot.toUpperCase().startsWith(letter));
+const letterImages: { [key: string]: any } = {
+    A: require('./../../assets/images/pictoLSF/A.png'),
+    B: require('./../../assets/images/pictoLSF/B.png'),
+    C: require('./../../assets/images/pictoLSF/C.png'),
+    D: require('./../../assets/images/pictoLSF/D.png'),
+    E: require('./../../assets/images/pictoLSF/E.png'),
+    F: require('./../../assets/images/pictoLSF/F.png'),
+    G: require('./../../assets/images/pictoLSF/G.png'),
+    H: require('./../../assets/images/pictoLSF/H.png'),
+    I: require('./../../assets/images/pictoLSF/I.png'),
+    J: require('./../../assets/images/pictoLSF/J.png'),
+    K: require('./../../assets/images/pictoLSF/K.png'),
+    L: require('./../../assets/images/pictoLSF/L.png'),
+    M: require('./../../assets/images/pictoLSF/M.png'),
+    N: require('./../../assets/images/pictoLSF/N.png'),
+    O: require('./../../assets/images/pictoLSF/O.png'),
+    P: require('./../../assets/images/pictoLSF/P.png'),
+    Q: require('./../../assets/images/pictoLSF/Q.png'),
+    R: require('./../../assets/images/pictoLSF/R.png'),
+    S: require('./../../assets/images/pictoLSF/S.png'),
+    T: require('./../../assets/images/pictoLSF/T.png'),
+    U: require('./../../assets/images/pictoLSF/U.png'),
+    V: require('./../../assets/images/pictoLSF/V.png'),
+    W: require('./../../assets/images/pictoLSF/W.png'),
+    X: require('./../../assets/images/pictoLSF/X.png'),
+    Y: require('./../../assets/images/pictoLSF/Y.png'),
+    Z: require('./../../assets/images/pictoLSF/Z.png'),
 };
 
-export default function SortByAlphabet() {
+const extractData = (letter: Letter) => {
+    const rows = data.trim().split('\n').slice(1); 
+
+    return rows.map((row, index) => {
+        const [mot, categorie, definition, urlVideoDef, urlVideoMot, urlSource] = row.split(',');
+        return { id: `${index}-${mot}`, mot, categorie, definition, urlVideoDef, urlVideoMot, urlSource };
+    }).filter(word => word.mot.toUpperCase().startsWith(letter));
+};
+
+export default function SortByAphabetLSF() {
     const [selectedLetter, setSelectedLetter] = useState<Letter | null>(null);
-    const [showSortByAphabetLSF, setShowSortByAphabetLSF] = useState(false);
+    const [showSortByAlphabet, setShowSortByAlphabet] = useState(false);
 
     const handlePress = (letter: Letter) => {
         setSelectedLetter(selectedLetter === letter ? null : letter);
-        setShowSortByAphabetLSF(false);  // Assurez-vous que nous ne montrons pas SortByAphabetLSF
+        setShowSortByAlphabet(false);
     };
 
-    const handleSwitchPress = () => {
-        setShowSortByAphabetLSF(true);
-    };
+    const handleSwitchPress = () => setShowSortByAlphabet(true);
 
-    const renderItem = ({ item }: { item: Letter }) => {
+    const renderAlphabetItem = ({ item }: { item: Letter }) => {
         const isSelected = item === selectedLetter;
         return (
             <TouchableOpacity
                 onPress={() => handlePress(item)}
                 style={[styles.button, isSelected && styles.selectedButton]}
             >
-                <Text style={styles.buttonText}>
-                    {item}
-                </Text>
+                <Image
+                    source={letterImages[item]}
+                    style={styles.buttonImage}
+                    resizeMode="contain"
+                />
             </TouchableOpacity>
         );
     };
@@ -62,13 +89,12 @@ export default function SortByAlphabet() {
     );
 
     const words = selectedLetter ? extractData(selectedLetter) : [];
-
-    const items = [...alphabet, 'Switch']; // Ajouter 'Switch' après Z
+    const items = [...alphabet, 'Switch'];
 
     return (
         <View style={styles.container}>
-            {showSortByAphabetLSF ? (
-                <SortByAphabetLSF />
+            {showSortByAlphabet ? (
+                <SortByAlphabet />
             ) : (
                 <>
                     <FlatList
@@ -77,7 +103,7 @@ export default function SortByAlphabet() {
                             item === 'Switch' ? (
                                 <SwitchButton onPress={handleSwitchPress} style={styles.switchButton} />
                             ) : (
-                                renderItem({ item })
+                                renderAlphabetItem({ item })
                             )
                         }
                         keyExtractor={(item) => item}
@@ -88,7 +114,7 @@ export default function SortByAlphabet() {
                         <FlatList
                             data={words}
                             renderItem={renderWordItem}
-                            keyExtractor={(item) => item.id}  // Utilisez l'ID comme clé
+                            keyExtractor={(item) => item.id}
                             style={styles.DictionnaryContainer}
                         />
                     )}
@@ -100,8 +126,7 @@ export default function SortByAlphabet() {
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
-        height: '100%',
+        flex: 1,
         justifyContent: 'space-between',
         marginHorizontal: 'auto',
     },
@@ -122,8 +147,9 @@ const styles = StyleSheet.create({
     selectedButton: {
         backgroundColor: Colors.lightCoral,
     },
-    buttonText: {
-        color: Colors.black,
+    buttonImage: {
+        width: '100%',
+        height: '100%',
     },
     DictionnaryContainer: {
         marginBottom: '14%',
