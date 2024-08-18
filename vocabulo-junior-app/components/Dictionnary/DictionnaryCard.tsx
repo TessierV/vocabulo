@@ -1,7 +1,7 @@
 // DictionnaryCard.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Colors } from '@/constants/Colors'; // Assurez-vous que le chemin est correct
+import { Colors } from '@/constants/Colors';  // Assurez-vous que le chemin est correct
 
 interface InformationData {
     mot: string;
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         margin: 5,
         borderRadius: 5,
         borderWidth: 1,
-        borderColor: 'red',
+        borderColor: 'blue',
     },
     cardTitle: {
         fontSize: 18,
