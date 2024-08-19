@@ -187,9 +187,11 @@ const styles = StyleSheet.create({
         color: Colors.black,
     },
     categoryScrollView: {
-        marginVertical: '2%',
+        position: 'absolute',
+        marginVertical: '6%',
         width: '100%',
-        height: '14%',
+        height: 40,
+        top: 40,
         flexDirection: 'row',
     },
     buttonsWrapper: {
@@ -202,7 +204,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         height: 40,
-        margin: 3,
+        marginHorizontal: 3,
     },
     selectedButton: {
         backgroundColor: Colors.lightCoral,
@@ -215,15 +217,16 @@ const styles = StyleSheet.create({
     },
     alphabetContainer: {
         width: '100%',
-        marginVertical: '2%'
+        top: 40,
+        marginVertical: '3%'
     },
     buttonImage: {
-        width: 23,
-        height: 30,
+        width: '100%',
+        height: '100%',
     },
     alphabetButton: {
         backgroundColor: Colors.white,
-        padding: 10,
+        padding: 7,
         borderRadius: 5,
         width: '10.5%',
         height: 45,
@@ -233,10 +236,11 @@ const styles = StyleSheet.create({
     },
     dictionnaryContainer: {
         height: '100%',
-        marginTop: '2%'
+        marginTop: 10,
+        top: '3%'
     },
     footerContainer: {
-        height: '60%',
+        height: '55%',
     },
     switchButton: {
         width: '23%',
