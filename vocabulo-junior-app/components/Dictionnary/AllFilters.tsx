@@ -7,6 +7,7 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import SwitchButton from './SwitchButton';
 import letterImages from './letterImages';
 import { InformationText } from '@/constants/StyledText';
+import { LinearGradient } from 'expo-linear-gradient';
 
 type WordData = {
     id: string;
@@ -208,8 +209,10 @@ const AllFilters = () => {
                     itemVisiblePercentThreshold: 50
                 }}
             />
-            
-            <View style={styles.footerContainer} />
+            <LinearGradient
+                colors={[Colors.lightGrey, 'transparent']}
+                style={styles.footerContainer}
+            />
         </View>
     );
 };
@@ -293,9 +296,11 @@ const styles = StyleSheet.create({
         height: '100%',
         marginTop: 30,
         top: '5%',
+        padding: 0,
     },
     footerContainer: {
         height: '57%',
+        justifyContent: 'flex-end',
     },
     switchButton: {
         width: '23%',
