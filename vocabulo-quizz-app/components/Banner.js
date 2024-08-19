@@ -3,7 +3,7 @@ import { View, ImageBackground, StyleSheet, Modal, Text, TouchableOpacity } from
 import { Feather } from '@expo/vector-icons';
 import BannerImage from '@/assets/images/Parameter.png';
 import { darkTheme, lightTheme } from '@/constants/Colors';
-import { AnnonceTitle, AnnonceParagraph } from '@/constants/StyledText';
+import { AnnonceTitle, AnnonceParagraph, BigTitle } from '@/constants/StyledText';
 
 const BannerContainer = ({ title, text, popuptitle, popuptext, popupbutton, darkMode }) => {
     const [modalVisible, setModalVisible] = useState(false);

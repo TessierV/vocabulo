@@ -16,8 +16,8 @@ export const texts = {
             weeklyOverview: {
                 title: 'Semainier',
                 popup: {
-                    title: 'À propos',
-                    text: 'Ceci est une explication détaillée apparaissant dans le pop-up Home Slider 1 lorsque vous cliquez sur l`\'icône.',
+                    title: 'Semainier',
+                    text: 'Le "Semainier" est un récapitulatif hebdomadaire des objectifs atteints',
                     button: 'Fermer',
                 },
 
@@ -268,7 +268,7 @@ export const texts = {
             textLabel: 'Barista',
             difficulty: 'easy',
             ratio: '30/100',
-            route: '/game',
+            route: '/random', // Mise à jour de la route pour Barista
         },
     ],
 };
