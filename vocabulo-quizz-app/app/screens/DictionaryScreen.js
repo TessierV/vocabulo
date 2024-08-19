@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import Papa from 'papaparse';
 import Section from '@/components/Dictionary/Section';
-import { color, darkTheme, lightTheme } from '@/constants/Colors';
+import { darkTheme, lightTheme } from '@/constants/Colors';
 import csvData from '@/constants/data';
 import FilterBar from '@/components/FilterBar';
 import BannerContainer from '@/components/Banner';
 import { texts } from '@/constants/texts';
 import Header from '@/components/Header';
-import { AnnonceTitle, BigTitle } from '@/constants/StyledText';
+import { BigTitle } from '@/constants/StyledText';
+
+const ITEMS_PER_PAGE = 10;
 
 const DictionaryScreen = () => {
   const [data, setData] = useState([]);
@@ -19,8 +21,12 @@ const DictionaryScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showAlphabeticalFilter, setShowAlphabeticalFilter] = useState(false);
   const [showCategoryFilter, setShowCategoryFilter] = useState(false);
+  const [visibleData, setVisibleData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [allDataLoaded, setAllDataLoaded] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     Papa.parse(csvData, {
       delimiter: ',',
       header: true,
@@ -39,28 +45,44 @@ const DictionaryScreen = () => {
           return acc;
         }, {});
 
-        setData(Object.values(groupedData));
+        const groupedArray = Object.values(groupedData);
+        setData(groupedArray);
+        setVisibleData(groupedArray.slice(0, ITEMS_PER_PAGE));
+        setLoading(false);
+        if (groupedArray.length <= ITEMS_PER_PAGE) {
+          setAllDataLoaded(true);
+        }
       },
       error: (error) => {
         console.error('Parse error:', error);
+        setLoading(false);
       },
     });
   }, []);
 
   const handleSearchChange = (text) => {
     setSearchText(text);
+    setAllDataLoaded(false);
+    filterAndSetVisibleData(text, selectedLetter, selectedCategory, sortOption);
   };
 
   const handleSortChange = (option) => {
     setSortOption(option);
+    filterAndSetVisibleData(searchText, selectedLetter, selectedCategory, option);
   };
 
   const handleLetterClick = (letter) => {
-    setSelectedLetter(selectedLetter === letter ? null : letter);
+    const newSelectedLetter = selectedLetter === letter ? null : letter;
+    setSelectedLetter(newSelectedLetter);
+    setAllDataLoaded(false);
+    filterAndSetVisibleData(searchText, newSelectedLetter, selectedCategory, sortOption);
   };
 
   const handleCategoryClick = (category) => {
-    setSelectedCategory(selectedCategory === category ? null : category);
+    const newSelectedCategory = selectedCategory === category ? null : category;
+    setSelectedCategory(newSelectedCategory);
+    setAllDataLoaded(false);
+    filterAndSetVisibleData(searchText, selectedLetter, newSelectedCategory, sortOption);
   };
 
   const toggleAlphabeticalFilter = () => {
@@ -69,6 +91,73 @@ const DictionaryScreen = () => {
 
   const toggleCategoryFilter = () => {
     setShowCategoryFilter(!showCategoryFilter);
+  };
+
+  const filterAndSetVisibleData = (searchText, selectedLetter, selectedCategory, sortOption) => {
+    setLoading(true);
+    const filteredData = data
+      .filter(group =>
+        (selectedLetter ? group.mot[0].toUpperCase() === selectedLetter : true) &&
+        (selectedCategory ? group.categorie_grammaticale === selectedCategory : true) &&
+        (group.mot.toLowerCase().includes(searchText.toLowerCase()) ||
+          group.categorie_grammaticale.toLowerCase().includes(searchText.toLowerCase()))
+      )
+      .sort((a, b) => {
+        switch (sortOption) {
+          case 'A-Z':
+            return a.mot.localeCompare(b.mot);
+          case 'Z-A':
+            return b.mot.localeCompare(a.mot);
+          case 'OLD':
+            return a.mot.localeCompare(b.mot);
+          case 'NEW':
+            return b.mot.localeCompare(a.mot);
+          default:
+            return 0;
+        }
+      });
+
+    setVisibleData(filteredData.slice(0, ITEMS_PER_PAGE));
+    setLoading(false);
+    if (filteredData.length <= ITEMS_PER_PAGE) {
+      setAllDataLoaded(true);
+    }
+  };
+
+  const loadMoreData = () => {
+    if (loading || allDataLoaded) return;
+
+    setLoading(true);
+    setTimeout(() => {
+      const currentLength = visibleData.length;
+      const moreData = data
+        .filter(group =>
+          (selectedLetter ? group.mot[0].toUpperCase() === selectedLetter : true) &&
+          (selectedCategory ? group.categorie_grammaticale === selectedCategory : true) &&
+          (group.mot.toLowerCase().includes(searchText.toLowerCase()) ||
+            group.categorie_grammaticale.toLowerCase().includes(searchText.toLowerCase()))
+        )
+        .sort((a, b) => {
+          switch (sortOption) {
+            case 'A-Z':
+              return a.mot.localeCompare(b.mot);
+            case 'Z-A':
+              return b.mot.localeCompare(a.mot);
+            case 'OLD':
+              return a.mot.localeCompare(b.mot);
+            case 'NEW':
+              return b.mot.localeCompare(a.mot);
+            default:
+              return 0;
+          }
+        })
+        .slice(currentLength, currentLength + ITEMS_PER_PAGE);
+      setVisibleData(prevData => [...prevData, ...moreData]);
+      setLoading(false);
+      if (currentLength + moreData.length >= data.length) {
+        setAllDataLoaded(true);
+      }
+    }, 500);
   };
 
   const getCategoryDescription = (category) => {
@@ -85,8 +174,32 @@ const DictionaryScreen = () => {
         return 'Adjectif';
       case 'adv.':
         return 'Adverbe';
+      case 'int.':
+        return 'Interjection';
+      case 'cnj.':
+        return 'Conjonction';
+      case 'n.m.p.':
+        return 'Noms masculins pluriels';
       case 'v.':
         return 'Verbe';
+      case 'n.f.p.':
+        return 'Nom féminin pluriel';
+      case 'pro.':
+        return 'Pronom';
+      case 'prp.':
+        return 'Pronominal';
+      case 'suff.':
+        return 'Suffixe';
+      case 'aff.':
+        return 'Affixe';
+      case 'Phrase':
+        return 'Phrase';
+      case 'adj. et n.':
+        return 'Adjectif et nom';
+      case 'nominal':
+        return 'Nominal';
+      case 'symb.':
+        return 'Symbolique';
       case 'Faute Ortho':
         return 'Erreurs orthographiques';
       default:
@@ -94,34 +207,9 @@ const DictionaryScreen = () => {
     }
   };
 
-  const alphabeticalIndex = Array.from(new Set(data.map(group => group.mot[0].toUpperCase()))).sort();
-  const categories = Array.from(new Set(data.map(group => group.categorie_grammaticale))).sort();
-
-  const filteredData = data
-    .filter(group =>
-      (selectedLetter ? group.mot[0].toUpperCase() === selectedLetter : true) &&
-      (selectedCategory ? group.categorie_grammaticale === selectedCategory : true) &&
-      (group.mot.toLowerCase().includes(searchText.toLowerCase()) ||
-        group.categorie_grammaticale.toLowerCase().includes(searchText.toLowerCase()))
-    )
-    .sort((a, b) => {
-      switch (sortOption) {
-        case 'A-Z':
-          return a.mot.localeCompare(b.mot);
-        case 'Z-A':
-          return b.mot.localeCompare(a.mot);
-        case 'OLD':
-          return a.mot.localeCompare(b.mot); // Ascending by word
-        case 'NEW':
-          return b.mot.localeCompare(a.mot); // Descending by word
-        default:
-          return 0;
-      }
-    });
-
   const renderItem = ({ item, index }) => {
     const currentLetter = item.mot[0].toUpperCase();
-    const previousLetter = index > 0 ? filteredData[index - 1].mot[0].toUpperCase() : null;
+    const previousLetter = index > 0 ? visibleData[index - 1].mot[0].toUpperCase() : null;
 
     return (
       <View>
@@ -139,6 +227,23 @@ const DictionaryScreen = () => {
         />
       </View>
     );
+  };
+
+  const renderFooter = () => {
+    if (loading) {
+      return <ActivityIndicator size="large" color={darkMode ? darkTheme.text : lightTheme.text} />;
+    }
+    if (!loading && !allDataLoaded) {
+      return (
+        <TouchableOpacity onPress={loadMoreData} style={styles.loadMoreButton}>
+          <Text style={styles.loadMoreText}>Load More</Text>
+        </TouchableOpacity>
+      );
+    }
+    if (allDataLoaded) {
+      return <Text style={styles.noMoreText}>No more data</Text>;
+    }
+    return null;
   };
 
   return (
@@ -167,7 +272,9 @@ const DictionaryScreen = () => {
               showAlphabeticalFilter && styles.selectedFilterToggleButton
             ]}
           >
-            <Text style={styles.filterToggleText}>Alphabetical Index</Text>
+            <Text style={styles.filterToggleText}>
+              {showAlphabeticalFilter ? 'Hide Letters' : 'Filter by Letters'}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={toggleCategoryFilter}
@@ -176,12 +283,14 @@ const DictionaryScreen = () => {
               showCategoryFilter && styles.selectedFilterToggleButton
             ]}
           >
-            <Text style={styles.filterToggleText}>Grammatical Category</Text>
+            <Text style={styles.filterToggleText}>
+              {showCategoryFilter ? 'Hide Categories' : 'Filter by Categories'}
+            </Text>
           </TouchableOpacity>
         </View>
         {showAlphabeticalFilter && (
-          <View style={styles.alphabeticalFilterContainer}>
-            {alphabeticalIndex.map(letter => (
+          <ScrollView contentContainerStyle={styles.alphabeticalFilterContainer} horizontal>
+            {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((letter) => (
               <TouchableOpacity
                 key={letter}
                 onPress={() => handleLetterClick(letter)}
@@ -190,18 +299,16 @@ const DictionaryScreen = () => {
                   selectedLetter === letter && styles.selectedFilterButton
                 ]}
               >
-                <Text style={[styles.filterText, { color: darkMode ? darkTheme.text : lightTheme.text }]}>
-                  {letter}
-                </Text>
+                <Text style={styles.filterText}>{letter}</Text>
               </TouchableOpacity>
             ))}
-          </View>
+          </ScrollView>
         )}
         {showCategoryFilter && (
-          <View style={styles.categoryFilterContainer}>
-            {categories.map(category => (
+          <ScrollView contentContainerStyle={styles.categoryFilterContentContainer} horizontal>
+            {Array.from(new Set(data.map(item => item.categorie_grammaticale))).map((category, index) => (
               <TouchableOpacity
-                key={category}
+                key={index}
                 onPress={() => handleCategoryClick(category)}
                 style={[
                   styles.filterButton,
@@ -209,16 +316,17 @@ const DictionaryScreen = () => {
                 ]}
               >
                 <Text style={[styles.filterText, { color: darkMode ? darkTheme.text : lightTheme.text }]}>
-                  {getCategoryDescription(category)}
+                {getCategoryDescription(category)}
                 </Text>
               </TouchableOpacity>
             ))}
-          </View>
+          </ScrollView>
         )}
         <FlatList
-          data={filteredData}
+          data={visibleData}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
+          ListFooterComponent={renderFooter}
           contentContainerStyle={styles.sectionList}
         />
       </View>
@@ -250,6 +358,7 @@ const styles = StyleSheet.create({
     borderColor: lightTheme.light_darkShade,
     borderRadius: 100,
     marginHorizontal: 5,
+
   },
   selectedFilterToggleButton: {
     backgroundColor: lightTheme.darkShade,
@@ -258,24 +367,25 @@ const styles = StyleSheet.create({
   filterToggleText: {
     fontSize: 12,
     color: lightTheme.light_darkShade,
+
   },
   alphabeticalFilterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    paddingBottom: 10,
+    paddingBottom: 5,
+    paddingHorizontal: 5,
   },
-  categoryFilterContainer: {
+  categoryFilterContentContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 10,
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    paddingBottom: 5,
+    paddingHorizontal: 5,
   },
+
   filterButton: {
     padding: 8,
-    margin: 2,
+    marginHorizontal: 2,
+    marginVertical: 10,
     borderRadius: 5,
     backgroundColor: 'white',
     minWidth: 40,
@@ -284,8 +394,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedFilterButton: {
-    backgroundColor: 'orange',
-
+    backgroundColor: 'pink',
   },
   filterText: {
     fontSize: 12,
@@ -293,7 +402,24 @@ const styles = StyleSheet.create({
   },
   sectionList: {
     flexGrow: 1,
-    paddingBottom: 400,
+    paddingBottom: 600,
+  },
+  loadMoreButton: {
+    padding: 10,
+    marginVertical: 20,
+    backgroundColor: lightTheme.light_darkShade,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  loadMoreText: {
+    fontSize: 16,
+    color: 'white',
+  },
+  noMoreText: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: lightTheme.light_darkShade,
+    padding: 20,
   },
 });
 
