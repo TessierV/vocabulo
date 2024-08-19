@@ -115,8 +115,8 @@ const styles = StyleSheet.create({
     videosContainer: {
         justifyContent: 'center',
         flexDirection: 'row',
-        marginBottom: 20,
-        marginTop: 20
+        marginTop: 20,
+        marginBottom: 20
     },
     defButton: {
         marginHorizontal: "2%",

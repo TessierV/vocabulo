@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import data from '../../data/data';
 import { Colors } from '@/constants/Colors';
@@ -66,6 +66,9 @@ const AllFilters = () => {
     const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
     const [isTextMode, setIsTextMode] = useState<boolean>(false);
 
+    // Référence pour FlatList des mots
+    const flatListRef = useRef<FlatList<[string, WordData[]]> | null>(null);
+
     useEffect(() => {
         if (searchTerm) {
             setSelectedCategory(null);
@@ -79,11 +82,21 @@ const AllFilters = () => {
     const handleCategorySelect = (category: string) => {
         setSelectedCategory(category === selectedCategory ? null : category);
         setSearchTerm('');
+
+        // Défilement vers le haut de la liste des mots
+        if (flatListRef.current) {
+            flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+        }
     };
 
     const handleLetterSelect = (letter: string) => {
         setSelectedLetter(letter === selectedLetter ? null : letter);
         setSearchTerm('');
+
+        // Défilement vers le haut lorsque la lettre est sélectionnée
+        if (flatListRef.current) {
+            flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+        }
     };
 
     const handleSwitchPress = () => {
@@ -198,6 +211,7 @@ const AllFilters = () => {
             </View>
 
             <FlatList
+                ref={flatListRef}
                 data={Object.entries(groupedWords)}
                 renderItem={renderWordGroup}
                 keyExtractor={(item) => item[0]}
@@ -209,10 +223,7 @@ const AllFilters = () => {
                     itemVisiblePercentThreshold: 50
                 }}
             />
-            <LinearGradient
-                colors={[Colors.lightGrey, 'transparent']}
-                style={styles.footerContainer}
-            />
+            <View style={styles.footerContainer}/>
         </View>
     );
 };
@@ -299,7 +310,7 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     footerContainer: {
-        height: '57%',
+        height: '56%',
         justifyContent: 'flex-end',
     },
     switchButton: {
