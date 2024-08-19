@@ -1,16 +1,27 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
+
+// Import your image from assets
+const imagePath = require('@/assets/images/borderCongrats.png');
 
 const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttempt }) => {
     const router = useRouter();
 
-    const handleModalClose = () => {
-        router.push({
-            pathname: '/game',
-            params: { finalScore: correctFirstAttempt + correctSecondAttempt, totalQuestions: 4 }, // Adjust totalQuestions if needed
-        });
+    const handleHomePress = () => {
+        router.push('/home');
+        onClose();
+    };
+
+    const handleRestartPress = () => {
+        router.push('/game');
+        onClose();
+    };
+
+    const handleGamePress = () => {
+        router.push('/game');
         onClose();
     };
 
@@ -23,12 +34,43 @@ const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttem
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
+                    <View style={styles.imageContainer}>
+                        <Image
+                            source={imagePath}  // Local image from assets
+                            style={styles.image}
+                        />
+                        <View style={styles.circle} />
+                    </View>
                     <Text style={styles.modalTitle}>Congratulations!</Text>
-                    <Text style={styles.modalText}>You answered {correctFirstAttempt} questions correctly on the first attempt.</Text>
-                    <Text style={styles.modalText}>You answered {correctSecondAttempt} questions correctly on the second attempt.</Text>
-                    <TouchableOpacity style={styles.modalButton} onPress={handleModalClose}>
-                        <Text style={styles.modalButtonText}>Go to Home</Text>
-                    </TouchableOpacity>
+
+                    <View style={styles.containerSection}>
+                        <View style={styles.modalContentSection}>
+                            <Feather name="home" size={24} color="#fff" />
+                            <Text style={styles.modalText}>{correctFirstAttempt} 1er tentatives</Text>
+                        </View>
+                        <View style={styles.modalContentSection}>
+                            <Feather name="home" size={24} color="#fff" />
+
+                            <Text style={styles.modalText}>{correctSecondAttempt} 2eme tentatives</Text>
+                        </View>
+                    </View>
+
+
+                    {/* Add buttons with Feather icons */}
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.iconButton} onPress={handleHomePress}>
+                            <Feather name="home" size={24} color="#fff" />
+                            <Text style={styles.iconButtonText}>Home</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.iconButton} onPress={handleRestartPress}>
+                            <Feather name="rotate-cw" size={24} color="#fff" />
+                            <Text style={styles.iconButtonText}>Restart</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.iconButton} onPress={handleGamePress}>
+                            <Feather name="play-circle" size={24} color="#fff" />
+                            <Text style={styles.iconButtonText}>Game</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         </Modal>
@@ -38,31 +80,96 @@ const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttem
 const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Background overlay color
     },
     modalContent: {
-        width: 300,
+        width: '100%',
+        height: '80%',
         padding: 20,
         backgroundColor: '#fff',
-        borderRadius: 10,
+        justifyContent: 'space-evenly',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+
+    },
+
+    imageContainer: {
+        position: 'relative',
+        marginBottom: 20,
+        width: 200,
+        height: 200,
+        justifyContent: 'center',
+        alignSelf: 'center',
         alignItems: 'center',
+    },
+    image: {
+        width: 350,
+        height: 350,
+        zIndex: 2,
+        position: 'absolute',
+
+    },
+    circle: {
+        position: 'absolute',
+        width: 140,
+        height: 140,
+        borderRadius: 150,
+        backgroundColor: '#FF0000',
+        zIndex: 1,
+    },
+    containerSection:{
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: 5,
+
+    },
+    modalContentSection:{
+        flexDirection: 'row',
+        backgroundColor: 'green',
+        justifyContent: 'space-between',
+        minWidth: '49%',
+        alignSelf: 'center',
+        alignContent: 'center',
+
+        paddingHorizontal: 10,
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 10,
+
     },
     modalTitle: {
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
+        textAlign: 'center',
     },
     modalText: {
-        fontSize: 16,
+        fontSize: 14,
         marginVertical: 5,
+        textAlign: 'center',
+        color: 'white',
+        fontWeight: 'bold',
     },
-    modalButton: {
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
         marginTop: 20,
-        padding: 10,
+    },
+    iconButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: '#007BFF',
+        padding: 10,
         borderRadius: 5,
+        flex: 1,
+        marginHorizontal: 5,
+    },
+    iconButtonText: {
+        color: '#fff',
+        marginTop: 5,
     },
     modalButtonText: {
         color: darkTheme.light_darkShade,
