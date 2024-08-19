@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import data from '../../data/data';
 import { Colors } from '@/constants/Colors';
@@ -8,7 +8,16 @@ import SwitchButton from './SwitchButton';
 import letterImages from './letterImages';
 import { InformationText } from '@/constants/StyledText';
 
-// Map des catégories en noms complets
+type WordData = {
+    id: string;
+    mot: string;
+    categorie: string;
+    definition: string;
+    urlVideoDef: string;
+    urlVideoMot: string;
+    urlSource: string;
+};
+
 const categoryMap: { [key: string]: string } = {
     'n.': 'Nom',
     'n.m.': 'Nom masculin',
@@ -19,13 +28,14 @@ const categoryMap: { [key: string]: string } = {
     'int.': 'Interjection',
     'Faute Ortho': 'Faute Ortho'
 };
+
 const ByCategory = Object.values(categoryMap);
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-const extractData = (searchTerm: string, selectedCategory: string | null, selectedLetter: string | null) => {
-    const rows = data.trim().split('\n').slice(1); // Ignorer la première ligne (entête)
+const extractData = (searchTerm: string, selectedCategory: string | null, selectedLetter: string | null): WordData[] => {
+    const rows = data.trim().split('\n').slice(1);
 
-    const words = rows.map((row, index) => {
+    const words: WordData[] = rows.map((row, index) => {
         const [mot, categorie, definition, urlVideoDef, urlVideoMot, urlSource] = row.split(',');
         return { id: `${index}-${mot}`, mot, categorie, definition, urlVideoDef, urlVideoMot, urlSource };
     });
@@ -39,11 +49,21 @@ const extractData = (searchTerm: string, selectedCategory: string | null, select
     });
 };
 
+const groupByMot = (words: WordData[]): { [key: string]: WordData[] } => {
+    return words.reduce((groups, word) => {
+        if (!groups[word.mot]) {
+            groups[word.mot] = [];
+        }
+        groups[word.mot].push(word);
+        return groups;
+    }, {} as { [key: string]: WordData[] });
+};
+
 const AllFilters = () => {
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState<string>('');
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
-    const [isTextMode, setIsTextMode] = useState<boolean>(false); // État pour le mode d'affichage
+    const [isTextMode, setIsTextMode] = useState<boolean>(false);
 
     useEffect(() => {
         if (searchTerm) {
@@ -53,34 +73,63 @@ const AllFilters = () => {
     }, [searchTerm]);
 
     const words = useMemo(() => extractData(searchTerm, selectedCategory, selectedLetter), [searchTerm, selectedCategory, selectedLetter]);
+    const groupedWords = useMemo(() => groupByMot(words), [words]);
 
     const handleCategorySelect = (category: string) => {
         setSelectedCategory(category === selectedCategory ? null : category);
-        setSearchTerm(''); // Effacer le terme de recherche lorsque la catégorie est modifiée
+        setSearchTerm('');
     };
 
     const handleLetterSelect = (letter: string) => {
         setSelectedLetter(letter === selectedLetter ? null : letter);
-        setSearchTerm(''); // Effacer le terme de recherche lorsque la lettre est modifiée
+        setSearchTerm('');
     };
 
     const handleSwitchPress = () => {
-        setIsTextMode(prevMode => !prevMode); // Alterner le mode d'affichage
+        setIsTextMode(prevMode => !prevMode);
     };
 
-    const renderWordItem = ({ item }: { item: { id: string, mot: string, categorie: string, definition: string, urlVideoDef: string, urlVideoMot: string, urlSource: string } }) => (
-        <DictionnaryCard
-            key={item.id}
-            mot={item.mot}
-            categorie={categoryMap[item.categorie] || item.categorie}
-            definition={item.definition}
-            urlVideoDef={item.urlVideoDef}
-            urlVideoMot={item.urlVideoMot}
-            urlSource={item.urlSource}
-        />
-    );
+    const renderWordGroup = useCallback(({ item }: { item: [string, WordData[]] }) => {
+        const [mot, words] = item;
+        const isMultiple = words.length > 1;
+        
+        return (
+            <View key={mot}>
+                {isMultiple ? (
+                    <FlatList
+                        data={words}
+                        renderItem={({ item: word }) => (
+                            <DictionnaryCard
+                                key={word.id}
+                                mot={word.mot}
+                                categorie={categoryMap[word.categorie] || word.categorie}
+                                definition={word.definition}
+                                urlVideoDef={word.urlVideoDef}
+                                urlVideoMot={word.urlVideoMot}
+                                urlSource={word.urlSource}
+                            />
+                        )}
+                        keyExtractor={(item) => item.id}
+                        horizontal={false} // Scroll vertical for multiple occurrences
+                        showsVerticalScrollIndicator={true}
+                        style={styles.verticalFlatList}
+                    />
+                ) : (
+                    <DictionnaryCard
+                        key={words[0].id}
+                        mot={words[0].mot}
+                        categorie={categoryMap[words[0].categorie] || words[0].categorie}
+                        definition={words[0].definition}
+                        urlVideoDef={words[0].urlVideoDef}
+                        urlVideoMot={words[0].urlVideoMot}
+                        urlSource={words[0].urlSource}
+                    />
+                )}
+            </View>
+        );
+    }, []);
 
-    const renderAlphabetItem = ({ item }: { item: string }) => {
+    const renderAlphabetItem = useCallback(({ item }: { item: string }) => {
         if (item === 'Switch') {
             return (
                 <TouchableOpacity onPress={handleSwitchPress} style={styles.switchButton}>
@@ -106,11 +155,14 @@ const AllFilters = () => {
                 )}
             </TouchableOpacity>
         );
-    };
+    }, [handleSwitchPress, handleLetterSelect, isTextMode, selectedLetter]);
+
+    const onViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: any[] }) => {
+        // Traitez les éléments visibles ici si nécessaire
+    }, []);
 
     return (
         <View style={styles.container}>
-            {/* Barre de recherche */}
             <View style={styles.searchContainer}>
                 <EvilIcons name="search" style={styles.searchIcon} />
                 <TextInput
@@ -121,7 +173,6 @@ const AllFilters = () => {
                 />
             </View>
 
-            {/* Filtres par catégorie */}
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScrollView}>
                 <View style={styles.buttonsWrapper}>
                     {ByCategory.map(category => (
@@ -136,25 +187,29 @@ const AllFilters = () => {
                 </View>
             </ScrollView>
 
-            {/* Filtres par lettre */}
             <View style={styles.alphabetContainer}>
                 <FlatList
-                    data={[...alphabet, 'Switch']} // Ajout du bouton Switch à la liste
+                    data={[...alphabet, 'Switch']}
                     renderItem={renderAlphabetItem}
                     keyExtractor={(item) => item}
                     numColumns={10}
                 />
             </View>
 
-            {/* Affichage des résultats */}
             <FlatList
-                data={words}
-                renderItem={renderWordItem}
-                keyExtractor={(item) => item.id}
+                data={Object.entries(groupedWords)}
+                renderItem={renderWordGroup}
+                keyExtractor={(item) => item[0]}
                 style={styles.dictionnaryContainer}
+                horizontal={true}
+                showsVerticalScrollIndicator={true}
+                onViewableItemsChanged={onViewableItemsChanged}
+                viewabilityConfig={{
+                    itemVisiblePercentThreshold: 50
+                }}
             />
-        <View style={styles.footerContainer}>
-    </View>
+            
+            <View style={styles.footerContainer} />
         </View>
     );
 };
@@ -218,7 +273,7 @@ const styles = StyleSheet.create({
     alphabetContainer: {
         width: '100%',
         top: 40,
-        marginVertical: '3%'
+        marginVertical: '3%',
     },
     buttonImage: {
         width: '100%',
@@ -236,11 +291,11 @@ const styles = StyleSheet.create({
     },
     dictionnaryContainer: {
         height: '100%',
-        marginTop: 10,
-        top: '3%'
+        marginTop: 30,
+        top: '5%',
     },
     footerContainer: {
-        height: '55%',
+        height: '57%',
     },
     switchButton: {
         width: '23%',
@@ -250,6 +305,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: Colors.grey,
         margin: '1%',
+    },
+    verticalFlatList: {
+        flex: 1,
+        width: '100%',
     },
 });
 
