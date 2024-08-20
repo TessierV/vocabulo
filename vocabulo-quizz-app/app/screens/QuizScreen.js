@@ -1,18 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, Dimensions } from 'react-native';
 import useDarkMode from '@/components/useDarkMode';
-import { darkTheme, lightTheme, color } from '@/constants/Colors';
+import { darkTheme, lightTheme } from '@/constants/Colors';
 import { GradientBackgroundButton } from '@/components/Button';
 import ResultModal from '@/components/Quizz/ResultModal';
 import Pagination from '@/components/Quizz/Pagination';
 import AnswerButton from '@/components/Quizz/AnswerButton';
 import Hint from '@/components/Quizz/Hint';
+import jardinData from '@/data/jardin';
+import { SvgXml } from 'react-native-svg';
 
 const { width: windowWidth } = Dimensions.get('window');
 
+// Définition des icônes par mots spécifiques et leurs catégories grammaticales
+const icons = {
+    'abeille.n.f.': `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"/></svg>`,
+    'avoir.v.': `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"/></svg>`,
+    // Ajoute d'autres icônes pour d'autres mots spécifiques si nécessaire
+};
+
+const handleQuotes = (line) => {
+    // Supprimer les guillemets en excès et gérer les chaînes avec des guillemets
+    return line
+        .replace(/""/g, '')  // Supprimer les guillemets doubles
+        .replace(/"([^"]*)"/g, (_, group) => group.replace(/,/g, '⨯')); // Remplacer les virgules internes par un caractère temporaire
+};
+
+const restoreCommas = (value) => value.replace(/⨯/g, ',');
+
+const parseData = (data) => {
+    const lines = data.trim().split('\n');
+    const headers = lines[0].split(',').map(header => header.trim());
+
+    return lines.slice(1).map(line => {
+        const cleanLine = handleQuotes(line);
+
+        const values = cleanLine.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(value => restoreCommas(value.trim()));
+
+        return headers.reduce((acc, header, index) => {
+            acc[header] = values[index] || ''; // Assurer qu'il y a une valeur pour chaque en-tête
+            return acc;
+        }, {});
+    });
+};
+
 const QuizScreen = () => {
     const [darkMode, toggleDarkMode] = useDarkMode();
-
+    const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [score, setScore] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -23,64 +57,70 @@ const QuizScreen = () => {
     const [correctFirstAttempt, setCorrectFirstAttempt] = useState(0);
     const [correctSecondAttempt, setCorrectSecondAttempt] = useState(0);
 
-    const questions = [
-        {
-            question: 'What is the capital of France?',
-            answers: [
-                { text: 'Berlin', correct: false },
-                { text: 'Madrid', correct: false },
-                { text: 'Paris', correct: true },
-                { text: 'Rome', correct: false },
-            ],
-            hint: 'It is known as the "City of Light."', // Hint for the question
-            secondHint: 'It is famous for its Eiffel Tower.', // Second hint to be shown in a popup
-        },
-        {
-            question: 'What is the largest planet in our solar system?',
-            answers: [
-                { text: 'Earth', correct: false },
-                { text: 'Jupiter', correct: true },
-                { text: 'Mars', correct: false },
-                { text: 'Saturn', correct: false },
-            ],
-            hint: 'It has the most moons in our solar system.', // Hint for the question
-            secondHint: 'It is a gas giant with a prominent red spot.', // Second hint to be shown in a popup
-        },
-        {
-            question: 'What is the chemical symbol for gold?',
-            answers: [
-                { text: 'Au', correct: true },
-                { text: 'Ag', correct: false },
-                { text: 'Pb', correct: false },
-                { text: 'Fe', correct: false },
-            ],
-            hint: 'Its symbol comes from the Latin word "aurum."', // Hint for the question
-            secondHint: 'It is a precious yellow metal.', // Second hint to be shown in a popup
-        },
+    // Parse the jardinData
+    const parsedData = parseData(jardinData);
 
-        {
-            question: 'Which planet is known as the Red Planet?',
-            answers: [
-                { text: 'Venus', correct: false },
-                { text: 'Mars', correct: true },
-                { text: 'Mercury', correct: false },
-                { text: 'Jupiter', correct: false },
-            ],
-            hint: 'This planet is named after the Roman god of war.', // Hint for the question
-            secondHint: 'It is the fourth planet from the Sun.', // Second hint to be shown in a popup
-        },
-        {
-            question: 'Which planet is known as the Red Planet?',
-            answers: [
-                { text: 'Venus', correct: false },
-                { text: 'Mars', correct: true },
-                { text: 'Mercury', correct: false },
-                { text: 'Jupiter', correct: false },
-            ],
-            hint: 'This planet is named after the Roman god of war.', // Hint for the question
-            secondHint: 'It is the fourth planet from the Sun.', // Second hint to be shown in a popup
-        },
-    ];
+    // Randomly select a word and generate question
+    const generateQuestion = () => {
+        // Filtrer les mots valides avec les valeurs nécessaires
+        const validWords = parsedData.filter(word => word.url_video_definition !== 'Non spécifié' && word.url_video_mot !== 'Non spécifié');
+
+        if (validWords.length === 0) {
+            console.error('No valid words available');
+            return null;
+        }
+
+        // Randomly select a word from the valid words
+        let randomWord;
+        do {
+            randomWord = validWords[Math.floor(Math.random() * validWords.length)];
+        } while (!randomWord.url_video_definition || !randomWord.url_video_mot);
+
+        // Get other words in the same category
+        const sameCategoryWords = validWords.filter(word => word.categorie_grammaticale === randomWord.categorie_grammaticale && word.mot !== randomWord.mot);
+
+        // Shuffle and select answers
+        const shuffledAnswers = sameCategoryWords.sort(() => 0.5 - Math.random()).slice(0, 2); // Select 2 other words
+
+        // Ensure the correct answer is included and all words are different
+        shuffledAnswers.push(randomWord);
+
+        const uniqueAnswers = [...new Set(shuffledAnswers.map(answer => answer.mot))].sort(() => 0.5 - Math.random());
+
+        const answers = uniqueAnswers.map((word, index) => ({
+            text: word,
+            correct: word === randomWord.mot,
+        }));
+
+        // Détermine la présence d'une icône pour le mot
+        const key = `${randomWord.mot}.${randomWord.categorie_grammaticale}`;
+        const icon = icons[key] || null;
+
+        // Retourne les données de la question en fonction de la présence de l'icône
+        return icon
+            ? {
+                question: `Trouve la photo:`,
+                answers,
+                hint: randomWord.definition || '', // L'indice descriptif est masqué au début
+                secondHint: randomWord.url_video_definition || '',
+                thirdHint: randomWord.url_video_mot || '',
+                word: randomWord.mot,
+                category: randomWord.categorie_grammaticale,
+                icon // Ajoute l'icône à la question
+            }
+            : {
+                question: `Description: \n${randomWord.definition}`,
+                answers,
+                hint: randomWord.url_video_definition || '',
+                secondHint: randomWord.url_video_mot || '',
+                word: randomWord.mot,
+                category: randomWord.categorie_grammaticale
+            };
+    };
+
+    useEffect(() => {
+        setQuestions([generateQuestion()]);
+    }, []);
 
     const handleAnswerSelection = (answer) => {
         if (!disabledAnswers.includes(answer.text)) {
@@ -103,12 +143,17 @@ const QuizScreen = () => {
                 setIncorrectCount(incorrectCount + 1);
                 setSelectedAnswer(null);
 
-                if (incorrectCount + 1 === 1) {
-                    setHint(questions[currentQuestionIndex]?.hint || '');
-                }
-
-                if (incorrectCount + 1 === 2) {
+                // Affichage des indices en fonction du nombre de réponses incorrectes
+                if (incorrectCount === 0) {
+                    if (questions[currentQuestionIndex]?.icon) {
+                        setHint(questions[currentQuestionIndex]?.hint || '');
+                    } else {
+                        Alert.alert('First Hint', questions[currentQuestionIndex]?.hint || '');
+                    }
+                } else if (incorrectCount === 1) {
                     Alert.alert('Second Hint', questions[currentQuestionIndex]?.secondHint || '');
+                } else if (incorrectCount === 2) {
+                    Alert.alert('Third Hint', questions[currentQuestionIndex]?.thirdHint || '');
                 }
             }
         } else {
@@ -130,13 +175,13 @@ const QuizScreen = () => {
     };
 
     const currentQuestion = questions[currentQuestionIndex] || {};
-    const { question, answers } = currentQuestion;
+    const { question, answers, icon } = currentQuestion;
 
     return (
         <View style={styles.mainContainer}>
             <View style={styles.container}>
                 <View>
-                    <Text style={styles.themeText}>Theme: General Knowledge</Text>
+                    <Text style={styles.themeText}>Theme: Jardin</Text>
                     <Text style={styles.questionText}>
                         Question {currentQuestionIndex + 1}/{questions.length}
                     </Text>
@@ -147,8 +192,11 @@ const QuizScreen = () => {
                 </View>
 
                 <View>
+                    {/* Afficher l'icône si elle est disponible */}
+                    {icon && <SvgXml xml={icon} />}
                     <Text style={styles.question}>{question}</Text>
-                    <Hint hint={hint} />
+                    {/* Afficher l'indice uniquement après une réponse incorrecte */}
+                    {incorrectCount > 0 && !icon && <Hint hint={hint} />}
                 </View>
 
                 <View>
