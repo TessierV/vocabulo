@@ -51,7 +51,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.iconCenter}>
               <TabBarMaterialIcon
-                name={focused ? 'camera-enhance' : 'enhance-photo-translate'}
+                name={focused ? 'camera' : 'camera-enhance'}
                 color={color}
                 style={[focused && styles.activeIcon]}
               />
@@ -66,7 +66,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.iconRight}>
               <TabBarIonicons
-                name={focused ? 'document-text-outline' : 'document-text'}
+                name={focused ? 'document-text' : 'document-text-outline'}
                 color={color}
                 style={[focused && styles.activeIcon]}
               />
