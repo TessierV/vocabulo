@@ -19,9 +19,10 @@ const createThemedStyles = () => StyleSheet.create({
     fontFamily: 'MontserratSemiBold',
     fontSize: 18,
   },
-  BasicText: {
+  Scannedtext: {
     fontFamily: 'MontserratRegular',
     fontSize: 18,
+    lineHeight: 35
   },
   Title: {
     fontFamily: 'MontserratSemiBold',
@@ -46,6 +47,31 @@ const createThemedStyles = () => StyleSheet.create({
     fontSize: 18,
     color: Colors.white
   },
+  SourceCard: {
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 12,
+    color: Colors.lightGrey
+  },
+  VideoButtonCard: {
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 14,
+    color: Colors.white
+  },
+  WordCard: {
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 18,
+    color: Colors.grey
+  },
+  DefCard: {
+    fontFamily: 'MontserratRegular',
+    fontSize: 16,
+    color: Colors.grey
+  },
+  CategoryCard: {
+    fontFamily: 'MontserratRegular',
+    fontSize: 12,
+    color: Colors.grey
+  },
 });
 
 interface TextComponentProps extends TextProps {
@@ -66,9 +92,9 @@ const ButtonText = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
   return <Text style={[styles.ButtonText, style]} {...props}>{children}</Text>;
 };
-const BasicText = ({ children, style, ...props }: TextComponentProps) => {
+const Scannedtext = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
-  return <Text style={[styles.BasicText, style]} {...props}>{children}</Text>;
+  return <Text style={[styles.Scannedtext, style]} {...props}>{children}</Text>;
 };
 const Title = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
@@ -90,14 +116,39 @@ const OnboardingText = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
   return <Text style={[styles.OnboardingText, style]} {...props}>{children}</Text>;
 };
+const SourceCard = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.SourceCard, style]} {...props}>{children}</Text>;
+};
+const VideoButtonCard = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.VideoButtonCard, style]} {...props}>{children}</Text>;
+};
+const WordCard = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.WordCard, style]} {...props}>{children}</Text>;
+};
+const CategoryCard = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.CategoryCard, style]} {...props}>{children}</Text>;
+};
+const DefCard = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.DefCard, style]} {...props}>{children}</Text>;
+};
 export {
   BigTitle,
   HeaderTitle,
   ButtonText,
-  BasicText,
+  Scannedtext,
   Title,
   InformationText,
   UserNameText,
   OnboardingTitle,
-  OnboardingText
+  OnboardingText,
+  SourceCard,
+  VideoButtonCard,
+  WordCard,
+  DefCard,
+  CategoryCard
 };
