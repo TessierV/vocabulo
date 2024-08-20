@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions } from 'react-native';
-import { darkTheme, lightTheme, color } from '@/constants/Colors';
+import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
+import { SvgXml } from 'react-native-svg';
 import useDarkMode from '@/components/useDarkMode';
 import { useNavigation } from '@react-navigation/native';
-import { SvgXml } from 'react-native-svg';
 import { texts } from '@/constants/texts';
 import Header from '@/components/Header';
 import SectionTitle from '@/components/SectionTitle';
 import { interfaceIcons } from '@/constants/svg';
 import { ContainerParagraph, Subtitle } from '@/constants/StyledText';
 import { GradientBorderButton } from '@/components/Button';
+import CategoryModal from '@/components/CategoryModal';
+import DifficultyContainer from '@/components/Randomize/DifficultyContainer';
+import Separator from '@/components/Randomize/Separator';
+import { darkTheme, lightTheme, color } from '@/constants/Colors';
+
 
 const categories = texts.categories;
 
@@ -82,40 +86,21 @@ const RandomScreen = () => {
   const buttonSize = screenWidth / 3 - 25;
 
   const getDifficultyColors = (difficulty) => {
-    switch (difficulty) {
-      case 'easy':
-        return {
-          borderColor: color.darkGreen,
-          textColor: color.darkGreen,
-          backgroundColor: color.lightGreen,
-        };
-      case 'middle':
-        return {
-          borderColor: color.darkBlue,
-          textColor: color.darkBlue,
-          backgroundColor: color.lightBlue,
-
-        };
-      case 'hard':
-        return {
-          borderColor: color.darkPlum,
-          textColor: color.darkPlum,
-          backgroundColor: color.lightPlum,
-        };
-      default:
-        return {
-          borderColor: darkMode ? darkTheme.borderColor : 'gray',
-          textColor: darkMode ? darkTheme.darkShade : lightTheme.darkShade,
-        };
-    }
+    // Example color logic
+    const colors = {
+      easy: { borderColor: color.neutralGreen, textColor: 'green' },
+      middle: { borderColor: color.neutralBlue, textColor: 'orange' },
+      hard: { borderColor: color.neutralPlum, textColor: 'red' },
+    };
+    return colors[difficulty];
   };
 
   const buttonStyle = (difficulty) => {
     const isSelected = randomCategory.difficulty === difficulty;
-    const { borderColor, textColor, backgroundColor } = getDifficultyColors(difficulty);
+    const { borderColor, textColor } = getDifficultyColors(difficulty);
     return {
       backgroundColor: isDifficultyAvailable(difficulty)
-        ? (isSelected ? (darkMode ? 'yellow' : backgroundColor ) : 'transparent')
+        ? (isSelected ? (darkMode ? 'yellow' : lightTheme.darkShade) : 'transparent')
         : 'transparent',
       borderRadius: 8,
       width: buttonSize,
@@ -134,7 +119,7 @@ const RandomScreen = () => {
     const { textColor } = getDifficultyColors(difficulty);
     const isSelected = randomCategory.difficulty === difficulty;
     return {
-      color: isSelected ? lightTheme.darkShade : 'gray',
+      color: isSelected ? 'white' : darkTheme.light_darkShade,
       fontSize: 16,
       marginTop: 5,
     };
@@ -143,12 +128,12 @@ const RandomScreen = () => {
   return (
     <View style={[
       styles.container,
-      { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }
+      { backgroundColor: darkMode ? 'black' : lightTheme.dark_lightShade }
     ]}>
       <Header darkMode={darkMode} title="Random Category" firstLink="/home" secondLink="none" />
       <View style={styles.iconContainer}>
         <SvgXml xml={randomCategory.icon} width={100} height={100} />
-        <Subtitle style={[styles.iconText, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }]}>
+        <Subtitle style={[styles.iconText, { color: darkMode ? 'white' : 'black' }]}>
           {`${randomCategory.textLabel}`}
         </Subtitle>
       </View>
@@ -161,16 +146,12 @@ const RandomScreen = () => {
         popupButtonText={texts.homeScreen.section.popup.button}
         darkMode={darkMode}
       />
-      <TouchableOpacity style={[styles.randomButtonContainer, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }]} onPress={handleRandomize}>
-      <SvgXml xml={interfaceIcons.dice} width="30" height="30" />
-
+      <TouchableOpacity style={[styles.randomButtonContainer, { backgroundColor: darkMode ? 'gray' : lightTheme.darkShade }]} onPress={handleRandomize}>
+        <SvgXml xml={interfaceIcons.dice} width="30" height="30" />
         <ContainerParagraph style={{color: darkMode ? darkTheme.lightShade : lightTheme.lightShade}}>Cliquer pour relancer</ContainerParagraph>
       </TouchableOpacity>
-      <View style={styles.separatorContainer}>
-      <View style={[styles.separator, { borderTopColor: darkMode ? darkTheme.light_darkShade : '#CCC' }]}></View>
-      <Text style={{color: darkMode ? darkTheme.light_darkShade : '#CCC'}}>OU</Text>
-        <View style={[styles.separator, { borderTopColor: darkMode ? darkTheme.light_darkShade : '#CCC' }]}></View>
-      </View>
+
+      <Separator text="OU" />
 
       <SectionTitle
         title={texts.homeScreen.section.title}
@@ -182,47 +163,26 @@ const RandomScreen = () => {
         darkMode={darkMode}
       />
 
-      <View style={styles.difficultyContainer}>
-        <TouchableOpacity style={buttonStyle('easy')} onPress={() => handleChangeDifficulty('easy')} disabled={!isDifficultyAvailable('easy')}>
-          <SvgXml xml={getDifficultySVG('easy')} width="30" height="30" />
-          <Text style={textStyle('easy')}>Facile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={buttonStyle('middle')} onPress={() => handleChangeDifficulty('middle')} disabled={!isDifficultyAvailable('middle')}>
-          <SvgXml xml={getDifficultySVG('middle')} width="30" height="30" />
-          <Text style={textStyle('middle')}>Moyen</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={buttonStyle('hard')} onPress={() => handleChangeDifficulty('hard')} disabled={!isDifficultyAvailable('hard')}>
-          <SvgXml xml={getDifficultySVG('hard')} width="30" height="30" />
-          <Text style={textStyle('hard')}>Difficile</Text>
-        </TouchableOpacity>
-      </View>
-
+      <DifficultyContainer
+        randomCategory={randomCategory}
+        handleChangeDifficulty={handleChangeDifficulty}
+        isDifficultyAvailable={isDifficultyAvailable}
+        getDifficultySVG={getDifficultySVG}
+        textStyle={textStyle}
+        buttonStyle={buttonStyle}
+      />
 
       <View style={styles.buttonContainer}>
-      <GradientBorderButton text="Gradient Border" background={darkMode ? 'dark' : 'light'} textColor={darkMode ? 'light' : 'dark'} onPress={handleValidate} />
+        <GradientBorderButton text="Gradient Border" background={darkMode ? 'dark' : 'light'} textColor={darkMode ? 'light' : 'dark'} onPress={handleValidate} />
       </View>
 
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.modalButtonText}>x</Text>
-            </TouchableOpacity>
-            <Text style={styles.modalTitle}>Récapitulatif</Text>
-            <Text>Thème: {randomCategory.textLabel}</Text>
-            <Text>Difficulté: {randomCategory.difficulty}</Text>
-            <Text>Bonne chance !</Text>
-            <View style={styles.modalButtonContainer}>
-            <GradientBorderButton text="Gradient Border" background={darkMode ? 'dark' : 'light'} textColor={darkMode ? 'light' : 'dark'} onPress={handleConfirm} />
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <CategoryModal
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        category={randomCategory}
+        onConfirm={handleConfirm}
+        darkMode={darkMode}
+      />
     </View>
   );
 };
@@ -233,12 +193,6 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 15,
   },
-  themeContainer: {
-    minHeight: 70,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
   iconContainer: {
     alignItems: 'center',
   },
@@ -248,16 +202,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     marginTop: 20,
-  },
-  separatorContainer: {
-    height: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  separator: {
-    borderTopWidth: 1,
-    width: '40%',
+    justifyContent: 'center',
   },
   randomButtonContainer: {
     minHeight: 70,
@@ -266,71 +211,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 15,
-
-  },
-  validateButton: {
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  validateButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  difficultyContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  difficultyText: {
-    fontSize: 18,
-    marginVertical: 5,
-  },
-  easy: {
-    color: 'green',
-  },
-  middle: {
-    color: 'blue',
-  },
-  hard: {
-    color: 'purple',
-  },
-  disabled: {
-    color: 'lightgray',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContainer: {
-    width: 300,
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  modalButtonContainer: {
-    flexDirection: 'row',
-    marginTop: 20,
-  },
-  modalButton: {
-    backgroundColor: 'pink',
-    padding: 10,
-    borderRadius: 5,
-    marginHorizontal: 10,
-  },
-  modalButtonText: {
-    color: 'white',
-    fontSize: 16,
+    gap: 10,
   },
 });
 

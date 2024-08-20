@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Animated, StyleSheet, Image } from 'react-native';
+import { Animated, StyleSheet, Image, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import logoImage from '@/assets/images/icon_transparent'; // Make sure this path is correct
-import { lightTheme } from '@/constants/Colors';
+import logoImage from '@/assets/images/icon_transparent';
+import { color } from '@/constants/Colors';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-const RadarEffect = ({ color, minRadius = 10, maxRadius = 20 }) => {
+const RadarEffect = ({ color, minRadius = 10, maxRadius = 20, index }) => {
     const [radius] = useState(new Animated.Value(minRadius));
 
     useEffect(() => {
@@ -26,23 +26,27 @@ const RadarEffect = ({ color, minRadius = 10, maxRadius = 20 }) => {
         ).start();
     }, [radius, minRadius, maxRadius]);
 
+    // Calculer l'opacité basée sur l'index
+    const opacity = [0.8, 0.6, 0.4, 0.2][index] || 0.2;
+
     return (
-        <Animated.View style={styles.container}>
+        <View style={styles.container}>
             <Svg height="150" width="150" style={styles.radarEffect}>
                 <AnimatedCircle
                     cx="75"
                     cy="75"
-                    r={radius}
+                    r={radius.interpolate({
+                        inputRange: [minRadius, maxRadius],
+                        outputRange: [minRadius + index * 1, maxRadius + index * 1],
+                    })}
                     stroke={color}
                     strokeWidth="2"
                     fill={color}
-                    opacity={0.5}
+                    opacity={opacity}
                 />
             </Svg>
-            <Svg style={styles.backgroundLogo} />
-
             <Image source={logoImage} style={styles.logo} />
-        </Animated.View>
+        </View>
     );
 };
 
@@ -53,6 +57,7 @@ const styles = StyleSheet.create({
         height: 150,
         alignItems: 'center',
         justifyContent: 'center',
+        overflow: 'hidden',
     },
     radarEffect: {
         position: 'absolute',
@@ -65,14 +70,6 @@ const styles = StyleSheet.create({
         height: 90,
         zIndex: 2,
     },
-    backgroundLogo: {
-        position: 'absolute',
-        width: 100,
-        height: 100,
-        backgroundColor: lightTheme.darkShade,
-        borderRadius: 150,
-        zIndex:1 ,
-    }
 });
 
 export default RadarEffect;

@@ -14,7 +14,7 @@ const SummaryModal = ({ visible, categories, darkMode, onClose }) => {
     const difficulties = categories.map(category => category.difficulty);
     const bubbleColors = getBubbleColors(difficulties);
     const bubbleSize = 20;
-    const bubbleDuration = 7000;
+    const bubbleDuration = 6000;
 
     return (
         <View style={styles.modalContainer}>
@@ -27,7 +27,7 @@ const SummaryModal = ({ visible, categories, darkMode, onClose }) => {
                     {categories.map((category, index) => {
                         const minRadius = 20 + index * 10;
                         const maxRadius = 40 + index * 10;
-                        const radarColor = getRadarColor(category.difficulty, index);
+                        const radarColor = getRadarColor(category.difficulty);
 
                         return (
                             <RadarEffect
@@ -78,6 +78,27 @@ const SummaryModal = ({ visible, categories, darkMode, onClose }) => {
     );
 };
 
+const getBubbleColors = (difficulties) => {
+    const colors = {
+        easy: color.lightGreen,
+        middle: color.lightBlue,
+        hard: color.lightPlum,
+    };
+
+    // Génère une liste de couleurs basées sur les difficultés
+    return difficulties.map(difficulty => colors[difficulty] || color.lightPlum);
+};
+
+const getRadarColor = (difficulty) => {
+    const colors = {
+        easy: color.neutralGreen,
+        middle: color.neutralBlue,
+        hard: color.neutralPlum,
+    };
+
+    return colors[difficulty] || color.lightPlum;
+};
+
 const styles = StyleSheet.create({
     modalContainer: {
         position: 'absolute',
@@ -119,40 +140,5 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
 });
-
-const getBubbleColors = (difficulties) => {
-    const uniqueDifficulties = new Set(difficulties);
-
-    if (uniqueDifficulties.has('easy') && uniqueDifficulties.has('middle') && uniqueDifficulties.has('hard')) {
-        return [color.lightBlue, color.lightGreen, color.lightPlum];
-    }
-
-    if (uniqueDifficulties.has('easy')) {
-        return [color.lightGreen, color.neutralGreen, color.darkGreen];
-    }
-
-    if (uniqueDifficulties.has('middle')) {
-        return [color.lightBlue, color.neutralBlue, color.darkBlue];
-    }
-
-    if (uniqueDifficulties.has('hard')) {
-        return [color.lightPlum, color.neutralPlum, color.darkPlum];
-    }
-
-    return [color.lightBlue, color.neutralBlue, color.darkBlue];
-};
-
-const getRadarColor = (difficulty, index) => {
-    const colors = {
-        easy: [color.lightGreen, color.lightGreen, color.lightGreen],
-        middle: [color.lightBlue, color.lightBlue, color.lightBlue],
-        hard: [color.lightPlum, color.lightPlum, color.lightPlum],
-    };
-
-    const difficultyColors = colors[difficulty] || [color.lightPlum];
-
-    // Alternate colors based on index
-    return difficultyColors[index % difficultyColors.length];
-};
 
 export default SummaryModal;
