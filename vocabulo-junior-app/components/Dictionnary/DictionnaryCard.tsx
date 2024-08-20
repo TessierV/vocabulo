@@ -54,6 +54,11 @@ const handlePress = async (url: string) => {
 };
 
 const DictionnaryCard: React.FC<InformationData> = React.memo(({ mot, categorie, definition, urlVideoDef, urlVideoMot, urlSource }) => {
+    // Check if any URL is 'Non spécifié'
+    if (urlVideoDef === 'Non spécifié' || urlVideoMot === 'Non spécifié' || urlSource === 'Non spécifié') {
+        return null; // Do not render the card
+    }
+
     return (
         <View style={styles.card}>
             <View style={styles.titleContainer}>
@@ -63,21 +68,18 @@ const DictionnaryCard: React.FC<InformationData> = React.memo(({ mot, categorie,
             <View style={styles.underline} />
             <Text style={styles.defText}>{cleanDefinition(definition)}</Text>
             <View style={styles.videosContainer}>
-                {urlVideoMot && urlVideoMot !== 'Non spécifié' ? (
-                    <TouchableOpacity onPress={() => handlePress(urlVideoMot)} style={styles.wordButton}>
-                        <VideoButtonCard>Mot</VideoButtonCard>
-                    </TouchableOpacity>
-                ) : null}
-                {urlVideoDef && urlVideoDef !== 'Non spécifié' ? (
-                    <TouchableOpacity onPress={() => handlePress(urlVideoDef)} style={styles.defButton}>
-                        <VideoButtonCard>Définition</VideoButtonCard>
-                    </TouchableOpacity>
-                ) : null}
+                <TouchableOpacity onPress={() => handlePress(urlVideoMot)} style={styles.wordButton}>
+                    <VideoButtonCard>Mot</VideoButtonCard>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => handlePress(urlVideoDef)} style={styles.defButton}>
+                    <VideoButtonCard>Définition</VideoButtonCard>
+                </TouchableOpacity>
             </View>
             <View style={styles.underline} />
             {urlSource ? (
                 <TouchableOpacity onPress={() => handlePress(urlSource)} style={styles.sourceButton}>
-                    <MaterialCommunityIcons name="web" style={styles.sourceIcon}/>
+                    <MaterialCommunityIcons name="web" style={styles.sourceIcon} />
                     <SourceCard>SOURCE WEB</SourceCard>
                 </TouchableOpacity>
             ) : null}
@@ -91,7 +93,7 @@ const styles = StyleSheet.create({
         padding: 15,
         marginHorizontal: 10,
         marginVertical: 10,
-        borderRadius: 5,
+        borderRadius: 10,
         width: screenWidth * 0.85,
         alignSelf: 'flex-start',
     },
