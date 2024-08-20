@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Linking } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import { SourceCard, VideoButtonCard, WordCard, CategoryCard } from '@/constants/StyledText';
+import { SourceCard, VideoButtonCard, WordCard, CategoryCard, DefCard } from '@/constants/StyledText';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import EvilIcons from '@expo/vector-icons/EvilIcons';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -54,6 +55,11 @@ const handlePress = async (url: string) => {
 };
 
 const DictionnaryCard: React.FC<InformationData> = React.memo(({ mot, categorie, definition, urlVideoDef, urlVideoMot, urlSource }) => {
+    // Check if any URL is 'Non spécifié'
+    if (urlVideoDef === 'Non spécifié' || urlVideoMot === 'Non spécifié' || urlSource === 'Non spécifié') {
+        return null; // Do not render the card
+    }
+
     return (
         <View style={styles.card}>
             <View style={styles.titleContainer}>
@@ -61,23 +67,22 @@ const DictionnaryCard: React.FC<InformationData> = React.memo(({ mot, categorie,
                 <CategoryCard style={styles.categoryText}>({categorie})</CategoryCard>
             </View>
             <View style={styles.underline} />
-            <Text style={styles.defText}>{cleanDefinition(definition)}</Text>
+            <DefCard style={styles.defText}>{cleanDefinition(definition)}</DefCard>
             <View style={styles.videosContainer}>
-                {urlVideoMot && urlVideoMot !== 'Non spécifié' ? (
-                    <TouchableOpacity onPress={() => handlePress(urlVideoMot)} style={styles.wordButton}>
-                        <VideoButtonCard>Mot</VideoButtonCard>
-                    </TouchableOpacity>
-                ) : null}
-                {urlVideoDef && urlVideoDef !== 'Non spécifié' ? (
-                    <TouchableOpacity onPress={() => handlePress(urlVideoDef)} style={styles.defButton}>
-                        <VideoButtonCard>Définition</VideoButtonCard>
-                    </TouchableOpacity>
-                ) : null}
+                <TouchableOpacity onPress={() => handlePress(urlVideoMot)} style={styles.signButton}>
+                <EvilIcons name="pointer" style={styles.iconButton}/>
+                    <VideoButtonCard>Signe</VideoButtonCard>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => handlePress(urlVideoDef)} style={styles.defButton}>
+                <EvilIcons name="pencil" style={styles.iconButton}/>
+                    <VideoButtonCard>Définition</VideoButtonCard>
+                </TouchableOpacity>
             </View>
             <View style={styles.underline} />
             {urlSource ? (
                 <TouchableOpacity onPress={() => handlePress(urlSource)} style={styles.sourceButton}>
-                    <MaterialCommunityIcons name="web" style={styles.sourceIcon}/>
+                    <MaterialCommunityIcons name="web" style={styles.sourceIcon} />
                     <SourceCard>SOURCE WEB</SourceCard>
                 </TouchableOpacity>
             ) : null}
@@ -91,7 +96,7 @@ const styles = StyleSheet.create({
         padding: 15,
         marginHorizontal: 10,
         marginVertical: 10,
-        borderRadius: 5,
+        borderRadius: 10,
         width: screenWidth * 0.85,
         alignSelf: 'flex-start',
     },
@@ -121,17 +126,26 @@ const styles = StyleSheet.create({
     defButton: {
         marginHorizontal: "2%",
         paddingHorizontal: '10%',
-        paddingVertical: 4,
-        borderRadius: 100,
-        backgroundColor: Colors.grey
+        paddingVertical: 8,
+        borderRadius: 40,
+        backgroundColor: Colors.grey,
+        flexDirection: 'row',
+        alignItems: 'center'
     },
-    wordButton: {
+    signButton: {
         marginHorizontal: "2%",
         paddingHorizontal: '10%',
-        paddingVertical: 4,
-        borderRadius: 100,
-        backgroundColor: Colors.grey
+        paddingVertical: 8,
+        borderRadius: 40,
+        backgroundColor: Colors.grey,
+        flexDirection: 'row',
+        alignItems: 'center'
     },
+    iconButton: {
+        marginRight: 3,
+        fontSize: 22,
+        color: Colors.white
+     },
     sourceIcon: {
         fontSize: 14,
         color: Colors.lightGrey,

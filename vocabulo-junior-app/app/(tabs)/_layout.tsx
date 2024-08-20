@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { TabBarIonicons, TabBarMaterialIcon } from '@/components/Navigation/TabBarIcon';
+import { TabBarIonicons, TabBarMaterialCommunityIcon, TabBarMaterialIcon } from '@/components/Navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 
 export default function TabLayout() {
@@ -9,7 +9,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={() => ({
         tabBarStyle: {
-          backgroundColor: Colors.darkCoral,
+          backgroundColor: Colors.darkGreen,
           borderRadius: 100,
           height: 45,
           paddingLeft: 0,
@@ -22,7 +22,7 @@ export default function TabLayout() {
           flexDirection: 'row',
           justifyContent: 'space-between',
           borderWidth: 1,
-          borderColor: Colors.darkCoral
+          borderColor: Colors.darkGreen
         },
         tabBarActiveTintColor: Colors.white,
         tabBarInactiveTintColor: Colors.white,
@@ -35,8 +35,8 @@ export default function TabLayout() {
           title: '',
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.iconLeft}>
-              <TabBarIonicons
-                name='book'
+              <TabBarMaterialCommunityIcon
+                name={focused ? 'book-open-page-variant' : 'book-open-blank-variant'}
                 color={color}
                 style={[focused && styles.activeIcon]}
               />
@@ -51,7 +51,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.iconCenter}>
               <TabBarMaterialIcon
-                name='enhance-photo-translate'
+                name={focused ? 'camera' : 'camera-enhance'}
                 color={color}
                 style={[focused && styles.activeIcon]}
               />
@@ -66,7 +66,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.iconRight}>
               <TabBarIonicons
-                name='document-text'
+                name={focused ? 'document-text' : 'document-text-outline'}
                 color={color}
                 style={[focused && styles.activeIcon]}
               />
@@ -75,19 +75,18 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-    
   );
 }
 
 const styles = StyleSheet.create({
   activeIcon: {
-    backgroundColor: Colors.neutralCoral,
+    backgroundColor: Colors.neutralGreen,
     borderRadius: 50,
     height: 60,
     width: 60,
     textAlignVertical: 'center',
-    textAlign: 'center',
     alignItems: 'center',
+    textAlign: 'center',
     justifyContent: 'center',
     alignSelf: 'center'
   },

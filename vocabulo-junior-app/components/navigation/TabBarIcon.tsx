@@ -2,6 +2,7 @@
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { type IconProps } from '@expo/vector-icons/build/createIconSet';
 import { type ComponentProps } from 'react';
 
@@ -11,4 +12,8 @@ export function TabBarIonicons({ style, ...rest }: IconProps<ComponentProps<type
 
 export function TabBarMaterialIcon({ style, ...rest }: IconProps<ComponentProps<typeof MaterialIcons>['name']>) {
   return <MaterialIcons size={30} style={[{marginBottom: -11}, style]} {...rest} />;
+}
+
+export function TabBarMaterialCommunityIcon({ style, ...rest }: IconProps<ComponentProps<typeof MaterialCommunityIcons>['name']>) {
+  return <MaterialCommunityIcons size={30} style={[{marginBottom: -11}, style]} {...rest} />;
 }
