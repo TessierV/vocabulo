@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, Dimensions } from 'react-native';
 import useDarkMode from '@/components/useDarkMode';
-import { darkTheme, lightTheme } from '@/constants/Colors';
-import { GradientBackgroundButton } from '@/components/Button';
+import { lightTheme } from '@/constants/Colors';
 import ResultModal from '@/components/Quizz/ResultModal';
 import Pagination from '@/components/Quizz/Pagination';
-import AnswerButton from '@/components/Quizz/AnswerButton';
-import Hint from '@/components/Quizz/Hint';
+import QuestionCard from '@/components/Quizz/QuestionCard';
+import AnswerList from '@/components/Quizz/AnswerList';
+import Footer from '@/components/Quizz/Footer';
+import CustomModal from '@/components/Quizz/CustomModal';
 import jardinData from '@/data/jardin';
-import { SvgXml } from 'react-native-svg';
 
 const { width: windowWidth } = Dimensions.get('window');
 
-// Définition des icônes par mots spécifiques et leurs catégories grammaticales
 const icons = {
     'abeille.n.f.': `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"/></svg>`,
     'avoir.v.': `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"/></svg>`,
-    // Ajoute d'autres icônes pour d'autres mots spécifiques si nécessaire
 };
 
 const handleQuotes = (line) => {
@@ -55,47 +53,58 @@ const QuizScreen = () => {
     const [correctFirstAttempt, setCorrectFirstAttempt] = useState(0);
     const [correctSecondAttempt, setCorrectSecondAttempt] = useState(0);
 
-    // Parse the jardinData
+    const [showHintModal, setShowHintModal] = useState(false);
+    const [hintModalTitle, setHintModalTitle] = useState('');
+    const [hintModalMessage, setHintModalMessage] = useState('');
+
+    const [videoUrls, setVideoUrls] = useState([]);
+
     const parsedData = parseData(jardinData);
 
-    // Function to generate a valid question with correct and incorrect answers
+    const usedWords = [];
+    const usedIncorrectWords = new Set();
+
     const generateQuestion = () => {
         let randomWord = null;
         let sameCategoryWords = [];
+        let attempts = 0;
 
-        // Essayer jusqu'à 30 fois de trouver un mot valide avec suffisamment de réponses incorrectes uniques
-        for (let attempt = 0; attempt < 30; attempt++) {
-            // Sélectionner un mot aléatoire
+        while (attempts < 30) {
             randomWord = parsedData[Math.floor(Math.random() * parsedData.length)];
 
-            // Vérifier si le mot a des URL valides
-            if (randomWord.url_video_definition !== 'Non spécifié' && randomWord.url_video_mot !== 'Non spécifié') {
-                // Obtenir d'autres mots dans la même catégorie, en excluant le mot sélectionné
+            if (!usedWords.includes(randomWord.mot) &&
+                randomWord.url_video_definition !== 'Non spécifié' &&
+                randomWord.url_video_mot !== 'Non spécifié') {
+
                 sameCategoryWords = parsedData.filter(word =>
                     word.categorie_grammaticale === randomWord.categorie_grammaticale &&
                     word.mot !== randomWord.mot &&
-                    (word.url_video_definition === 'Non spécifié' || word.url_video_mot === 'Non spécifié')
+                    (word.url_video_definition === 'Non spécifié' || word.url_video_mot === 'Non spécifié') &&
+                    !usedWords.includes(word.mot) &&
+                    !usedIncorrectWords.has(word.mot)
                 );
 
-                // Vérifier s'il y a au moins 3 autres mots dans la même catégorie
                 if (sameCategoryWords.length >= 3) {
+                    usedWords.push(randomWord.mot);
                     break;
                 }
             }
+            attempts++;
         }
 
         if (!randomWord || sameCategoryWords.length < 3) {
             return null;
         }
 
-        // Assurer que les réponses incorrectes sont uniques et ne comprennent pas le mot correct
-        const uniqueIncorrectAnswers = sameCategoryWords
-            .filter(word => word.mot !== randomWord.mot)
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 3)
-            .map(word => word.mot);
+        const uniqueIncorrectAnswers = [...new Set(
+            sameCategoryWords
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 3)
+                .map(word => word.mot)
+        )];
 
-        // Créer le tableau des réponses avec la réponse correcte et les réponses incorrectes
+        uniqueIncorrectAnswers.forEach(word => usedIncorrectWords.add(word));
+
         const answers = [
             ...uniqueIncorrectAnswers.map(answer => ({
                 text: answer,
@@ -104,29 +113,27 @@ const QuizScreen = () => {
             { text: randomWord.mot, correct: true }
         ].sort(() => 0.5 - Math.random());
 
-        // Déterminer s'il y a une icône pour le mot
         const key = `${randomWord.mot}.${randomWord.categorie_grammaticale}`;
         const icon = icons[key] || null;
+
+        // Met à jour les URLs des vidéos pour le modal
+        setVideoUrls([randomWord.url_video_definition, randomWord.url_video_mot].filter(url => url !== 'Non spécifié'));
 
         return icon
             ? {
                 question: `Trouve la photo:`,
                 answers,
                 hint: randomWord.definition || '',
-                secondHint: randomWord.url_video_definition || '',
-                thirdHint: randomWord.url_video_mot || '',
-                word: randomWord.mot,
-                category: randomWord.categorie_grammaticale,
+                secondHint: `${randomWord.url_video_definition || ''}\n ${randomWord.url_video_mot || ''}`,
+                thirdHint: `${randomWord.url_video_definition || ''}\n ${randomWord.url_video_mot || ''}`,
                 icon
             }
             : {
-                question: `Description: \n${randomWord.definition}`,
+                question: `Description:\n${randomWord.definition}`,
                 answers,
                 hint: randomWord.url_video_definition || '',
-                secondHint: randomWord.url_video_mot || '',
-                thirdHint: randomWord.url_video_mot || '',
-                word: randomWord.mot,
-                category: randomWord.categorie_grammaticale
+                secondHint: `${randomWord.url_video_definition || ''}\n ${randomWord.url_video_mot || ''}`,
+                thirdHint: `${randomWord.url_video_definition || ''}\n ${randomWord.url_video_mot || ''}`
             };
     };
 
@@ -168,20 +175,22 @@ const QuizScreen = () => {
                 setSelectedAnswer(null);
 
                 if (incorrectCount === 0) {
-                    if (questions[currentQuestionIndex]?.icon) {
-                        setHint(questions[currentQuestionIndex]?.hint || '');
-                    } else {
-                        Alert.alert('First Hint', questions[currentQuestionIndex]?.hint || '');
-                    }
+                    handleHint('Aide', questions[currentQuestionIndex]?.hint || '');
                 } else if (incorrectCount === 1) {
-                    Alert.alert('Second Hint', questions[currentQuestionIndex]?.secondHint || '');
+                    handleHint('Aide +', questions[currentQuestionIndex]?.secondHint || '');
                 } else if (incorrectCount === 2) {
-                    Alert.alert('Third Hint', questions[currentQuestionIndex]?.thirdHint || '');
+                    handleHint('Rappel', questions[currentQuestionIndex]?.thirdHint || '');
                 }
             }
         } else {
             Alert.alert('Warning', 'Please select an answer before validating.');
         }
+    };
+
+    const handleHint = (title, message) => {
+        setHintModalTitle(title);
+        setHintModalMessage(message);
+        setShowHintModal(true);
     };
 
     const moveToNextQuestion = () => {
@@ -214,34 +223,24 @@ const QuizScreen = () => {
                     />
                 </View>
 
-                <View>
-                    {icon && <SvgXml xml={icon} />}
-                    <Text style={styles.question}>{question}</Text>
-                    {incorrectCount > 0 && icon && <Hint hint={hint} />}
-                </View>
+                <QuestionCard
+                    question={question}
+                    icon={icon}
+                    hint={hint}
+                    incorrectCount={incorrectCount}
+                />
 
-                <View>
-                    {answers?.map((answer, index) => (
-                        <AnswerButton
-                            key={index}
-                            answer={{
-                                text: answer.text,
-                                label: String.fromCharCode(65 + index),
-                            }}
-                            onPress={() => handleAnswerSelection(answer)}
-                            isSelected={selectedAnswer?.text === answer.text}
-                            isDisabled={disabledAnswers.includes(answer.text)}
-                        />
-                    ))}
+                <AnswerList
+                    answers={answers}
+                    selectedAnswer={selectedAnswer}
+                    disabledAnswers={disabledAnswers}
+                    handleAnswerSelection={handleAnswerSelection}
+                />
 
-                    <View style={styles.validateButton}>
-                        <GradientBackgroundButton
-                            text="Valider"
-                            textColor={darkMode ? 'dark' : 'light'}
-                            onPress={validateAnswer}
-                        />
-                    </View>
-                </View>
+                <Footer
+                    validateAnswer={validateAnswer}
+                    darkMode={darkMode}
+                />
 
                 <ResultModal
                     visible={showModal}
@@ -254,6 +253,14 @@ const QuizScreen = () => {
                     }}
                     correctFirstAttempt={correctFirstAttempt}
                     correctSecondAttempt={correctSecondAttempt}
+                />
+
+                <CustomModal
+                    visible={showHintModal}
+                    onClose={() => setShowHintModal(false)}
+                    title={hintModalTitle}
+                    message={hintModalMessage}
+                    videoUrls={videoUrls}
                 />
             </View>
         </View>
@@ -281,19 +288,6 @@ const styles = StyleSheet.create({
     questionText: {
         fontSize: 18,
         color: lightTheme.dark_lightShade,
-    },
-    question: {
-        fontSize: 24,
-        marginBottom: 10,
-        color: lightTheme.lightShade,
-    },
-    validateButton: {
-        alignSelf: 'center',
-        marginTop: 20,
-    },
-    validateButtonText: {
-        color: darkTheme.light_darkShade,
-        fontSize: 16,
     },
 });
 
