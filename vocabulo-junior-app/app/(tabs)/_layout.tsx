@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
     height: 60,
     width: 60,
     textAlignVertical: 'center',
-    textAlign: 'center',
     alignItems: 'center',
+    textAlign: 'center',
     justifyContent: 'center',
     alignSelf: 'center'
   },
