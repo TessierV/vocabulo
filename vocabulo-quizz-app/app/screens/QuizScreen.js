@@ -20,10 +20,9 @@ const icons = {
 };
 
 const handleQuotes = (line) => {
-    // Supprimer les guillemets en excès et gérer les chaînes avec des guillemets
     return line
-        .replace(/""/g, '')  // Supprimer les guillemets doubles
-        .replace(/"([^"]*)"/g, (_, group) => group.replace(/,/g, '⨯')); // Remplacer les virgules internes par un caractère temporaire
+        .replace(/""/g, '')
+        .replace(/"([^"]*)"/g, (_, group) => group.replace(/,/g, '⨯'));
 };
 
 const restoreCommas = (value) => value.replace(/⨯/g, ',');
@@ -34,18 +33,17 @@ const parseData = (data) => {
 
     return lines.slice(1).map(line => {
         const cleanLine = handleQuotes(line);
-
         const values = cleanLine.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(value => restoreCommas(value.trim()));
 
         return headers.reduce((acc, header, index) => {
-            acc[header] = values[index] || ''; // Assurer qu'il y a une valeur pour chaque en-tête
+            acc[header] = values[index] || '';
             return acc;
         }, {});
     });
 };
 
 const QuizScreen = () => {
-    const [darkMode, toggleDarkMode] = useDarkMode();
+    const [darkMode] = useDarkMode();
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [score, setScore] = useState(0);
@@ -60,66 +58,92 @@ const QuizScreen = () => {
     // Parse the jardinData
     const parsedData = parseData(jardinData);
 
-    // Randomly select a word and generate question
+    // Function to generate a valid question with correct and incorrect answers
     const generateQuestion = () => {
-        // Filtrer les mots valides avec les valeurs nécessaires
-        const validWords = parsedData.filter(word => word.url_video_definition !== 'Non spécifié' && word.url_video_mot !== 'Non spécifié');
+        let randomWord = null;
+        let sameCategoryWords = [];
 
-        if (validWords.length === 0) {
-            console.error('No valid words available');
+        // Essayer jusqu'à 30 fois de trouver un mot valide avec suffisamment de réponses incorrectes uniques
+        for (let attempt = 0; attempt < 30; attempt++) {
+            // Sélectionner un mot aléatoire
+            randomWord = parsedData[Math.floor(Math.random() * parsedData.length)];
+
+            // Vérifier si le mot a des URL valides
+            if (randomWord.url_video_definition !== 'Non spécifié' && randomWord.url_video_mot !== 'Non spécifié') {
+                // Obtenir d'autres mots dans la même catégorie, en excluant le mot sélectionné
+                sameCategoryWords = parsedData.filter(word =>
+                    word.categorie_grammaticale === randomWord.categorie_grammaticale &&
+                    word.mot !== randomWord.mot &&
+                    (word.url_video_definition === 'Non spécifié' || word.url_video_mot === 'Non spécifié')
+                );
+
+                // Vérifier s'il y a au moins 3 autres mots dans la même catégorie
+                if (sameCategoryWords.length >= 3) {
+                    break;
+                }
+            }
+        }
+
+        if (!randomWord || sameCategoryWords.length < 3) {
             return null;
         }
 
-        // Randomly select a word from the valid words
-        let randomWord;
-        do {
-            randomWord = validWords[Math.floor(Math.random() * validWords.length)];
-        } while (!randomWord.url_video_definition || !randomWord.url_video_mot);
+        // Assurer que les réponses incorrectes sont uniques et ne comprennent pas le mot correct
+        const uniqueIncorrectAnswers = sameCategoryWords
+            .filter(word => word.mot !== randomWord.mot)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3)
+            .map(word => word.mot);
 
-        // Get other words in the same category
-        const sameCategoryWords = validWords.filter(word => word.categorie_grammaticale === randomWord.categorie_grammaticale && word.mot !== randomWord.mot);
+        // Créer le tableau des réponses avec la réponse correcte et les réponses incorrectes
+        const answers = [
+            ...uniqueIncorrectAnswers.map(answer => ({
+                text: answer,
+                correct: false
+            })),
+            { text: randomWord.mot, correct: true }
+        ].sort(() => 0.5 - Math.random());
 
-        // Shuffle and select answers
-        const shuffledAnswers = sameCategoryWords.sort(() => 0.5 - Math.random()).slice(0, 2); // Select 2 other words
-
-        // Ensure the correct answer is included and all words are different
-        shuffledAnswers.push(randomWord);
-
-        const uniqueAnswers = [...new Set(shuffledAnswers.map(answer => answer.mot))].sort(() => 0.5 - Math.random());
-
-        const answers = uniqueAnswers.map((word, index) => ({
-            text: word,
-            correct: word === randomWord.mot,
-        }));
-
-        // Détermine la présence d'une icône pour le mot
+        // Déterminer s'il y a une icône pour le mot
         const key = `${randomWord.mot}.${randomWord.categorie_grammaticale}`;
         const icon = icons[key] || null;
 
-        // Retourne les données de la question en fonction de la présence de l'icône
         return icon
             ? {
                 question: `Trouve la photo:`,
                 answers,
-                hint: randomWord.definition || '', // L'indice descriptif est masqué au début
+                hint: randomWord.definition || '',
                 secondHint: randomWord.url_video_definition || '',
                 thirdHint: randomWord.url_video_mot || '',
                 word: randomWord.mot,
                 category: randomWord.categorie_grammaticale,
-                icon // Ajoute l'icône à la question
+                icon
             }
             : {
                 question: `Description: \n${randomWord.definition}`,
                 answers,
                 hint: randomWord.url_video_definition || '',
                 secondHint: randomWord.url_video_mot || '',
+                thirdHint: randomWord.url_video_mot || '',
                 word: randomWord.mot,
                 category: randomWord.categorie_grammaticale
             };
     };
 
     useEffect(() => {
-        setQuestions([generateQuestion()]);
+        const generateQuestions = () => {
+            const newQuestions = [];
+            for (let i = 0; i < 5; i++) {
+                let question = generateQuestion();
+                while (question === null) {
+                    question = generateQuestion();
+                }
+                newQuestions.push(question);
+            }
+            setQuestions(newQuestions);
+        };
+
+        generateQuestions();
     }, []);
 
     const handleAnswerSelection = (answer) => {
@@ -143,7 +167,6 @@ const QuizScreen = () => {
                 setIncorrectCount(incorrectCount + 1);
                 setSelectedAnswer(null);
 
-                // Affichage des indices en fonction du nombre de réponses incorrectes
                 if (incorrectCount === 0) {
                     if (questions[currentQuestionIndex]?.icon) {
                         setHint(questions[currentQuestionIndex]?.hint || '');
@@ -192,11 +215,9 @@ const QuizScreen = () => {
                 </View>
 
                 <View>
-                    {/* Afficher l'icône si elle est disponible */}
                     {icon && <SvgXml xml={icon} />}
                     <Text style={styles.question}>{question}</Text>
-                    {/* Afficher l'indice uniquement après une réponse incorrecte */}
-                    {incorrectCount > 0 && !icon && <Hint hint={hint} />}
+                    {incorrectCount > 0 && icon && <Hint hint={hint} />}
                 </View>
 
                 <View>
@@ -215,7 +236,7 @@ const QuizScreen = () => {
 
                     <View style={styles.validateButton}>
                         <GradientBackgroundButton
-                            text="Validate Selection"
+                            text="Valider"
                             textColor={darkMode ? 'dark' : 'light'}
                             onPress={validateAnswer}
                         />
