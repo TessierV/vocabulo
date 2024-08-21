@@ -25,8 +25,8 @@ const CustomModal = ({ visible, onClose, title, message, urls }) => {
         >
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
-                    <Text style={styles.title}>{title}</Text> {/* Display the modal title */}
-                    <Text style={styles.message}>{message}</Text> {/* Display the modal message */}
+                    <Text style={styles.title}>{title}</Text>
+                    <Text style={styles.message}>{message}</Text>
                     {urls && urls.length > 0 && ( // If URLs are provided, display them in a list
                         <FlatList
                             data={urls} // The list of URLs to display
@@ -36,7 +36,7 @@ const CustomModal = ({ visible, onClose, title, message, urls }) => {
                         />
                     )}
                     <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                        <Text style={styles.closeButtonText}>Close</Text> {/* Button to close the modal */}
+                        <Text style={styles.closeButtonText}>Close</Text>
                     </TouchableOpacity>
                 </View>
             </View>
