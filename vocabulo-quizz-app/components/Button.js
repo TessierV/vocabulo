@@ -67,6 +67,41 @@ const GradientBorderButton = ({ text, background, textColor, onPress }) => {
   );
 };
 
+// GradientBorderButtonMini for Slider
+const GradientBorderButtonMini = ({ text, background, textColor, onPress }) => {
+  const backgroundColorStyle = background === 'light' ? lightTheme.dark_lightShade : darkTheme.darkShade;
+  const textColorStyle = textColor === 'light' ? lightTheme.lightShade : lightTheme.darkShade;
+
+  return (
+    <View style={styles.gradientBorderContainerMini}>
+      <TouchableOpacity
+        style={[styles.gradientBorderButtonMini, { backgroundColor: backgroundColorStyle }]}
+        onPress={onPress}
+      >
+        <Text style={[styles.buttonTextMini, { color: textColorStyle }]}>
+          {text}
+        </Text>
+      </TouchableOpacity>
+      <SvgXml
+        xml={`
+          <svg width="100%" height="100%" viewBox="0 0 300 45" preserveAspectRatio="none">
+            <defs>
+              <linearGradient gradientTransform="rotate(40)" id="borderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#C8A2F2;stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#7DAED6;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#99CDBD;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+            <rect x="1" y="1" width="298" height="43" rx="30" fill="none" stroke="url(#borderGradient)" stroke-width="2"/>
+          </svg>
+        `}
+        style={styles.gradientBorderMini}
+      />
+    </View>
+  );
+};
+
+
 const styles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
@@ -101,6 +136,39 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 20,
   },
+
+  gradientBorderContainerMini: {
+    position: 'relative',
+    width: 120,
+    minHeight: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 150,
+  },
+
+  gradientBorderButtonMini: {
+    minHeight: 28,
+    width: '99%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 150,
+    zIndex: 1,
+  },
+
+  gradientBorderMini: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+    borderRadius: 150,
+  },
+
+  buttonTextMini: {
+    textAlign: 'center',
+    fontSize: 10,
+  },
+
   gradientBorderButton: {
     minHeight: 43,
     width: '99%',
@@ -119,4 +187,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export { GradientBackgroundButton, GradientBorderButton };
+export { GradientBackgroundButton, GradientBorderButton, GradientBorderButtonMini };

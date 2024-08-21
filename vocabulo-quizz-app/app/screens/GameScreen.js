@@ -1,133 +1,144 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, Button, ScrollView } from 'react-native';
+import { ScrollView, TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { useRouter } from 'expo-router';
+import { lightTheme, color } from '@/constants/Colors';
+import CategoryModal from '@/components/CategoryModal'; // Import the CategoryModal component
 import { texts } from '@/constants/texts';
-import { lightTheme } from '@/constants/Colors';
+import { ContainerParagraph, Paragraph } from '@/constants/StyledText';
+import Slider from '@/components/Slider/Slider';
+import Header from '@/components/Header';
 
-const GameScreen = () => {
-  // State to track the selected category
+import BannerContainer from '@/components/Banner';
+import DailyGoals from '@/components/Game/DailyGoals';
+
+
+const GameScreen = ({ darkMode }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
-
-  // State to control the visibility of the modal
   const [modalVisible, setModalVisible] = useState(false);
-
-  // Use router to navigate between screens
   const router = useRouter();
 
-  // Handle the press event on a category item
   const handleCategoryPress = (category) => {
-    setSelectedCategory(category); // Set the selected category
-    setModalVisible(true); // Show the modal with category details
+    setSelectedCategory(category);
+    setModalVisible(true);
   };
 
-  // Handle navigation to the QuizScreen
   const handleNavigateToQuizScreen = () => {
     if (selectedCategory) {
-      setModalVisible(false); // Close the modal
+      setModalVisible(false);
       setTimeout(() => {
-        router.push('/quiz'); // Navigate to the Quiz screen after a slight delay
+        router.push('/quiz');
       }, 300);
     }
   };
 
+  // Function to extract discovered and total from ratio string
+  const parseRatio = (ratio) => {
+    const [discovered, total] = ratio.split('/').map(Number);
+    return { discovered, total };
+  };
+
+  // Function to generate SVG for circular progress based on ratio
+  const getCircularProgressSvg = (ratio) => {
+    const { discovered, total } = parseRatio(ratio);
+    const progress = (discovered / total) * 100;
+    const radius = 15; // Adjust radius for desired size
+    const circumference = 2 * Math.PI * radius;
+    const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+    return `
+      <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:${color.neutralPlum};stop-opacity:1" />
+            <stop offset="50%" style="stop-color:${color.neutralBlue};stop-opacity:1" />
+            <stop offset="100%" style="stop-color:${color.neutralGreen};stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <circle cx="20" cy="20" r="15" stroke=${lightTheme.dark_lightShade} stroke-width="5" fill="none" />
+        <circle cx="20" cy="20" r="15" stroke="url(#progress-gradient)" stroke-width="5" fill="none"
+          stroke-dasharray="${circumference}" stroke-dashoffset="${strokeDashoffset}" transform="rotate(-90 20 20)" />
+        <text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="8" fill="black">
+          ${Math.round(progress)}%
+        </text>
+      </svg>
+    `;
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Render each category as a touchable row */}
-      {texts.categories.map((category) => (
-        <TouchableOpacity
-          key={category.id}
-          style={styles.row}
-          onPress={() => handleCategoryPress(category)}
-        >
-          {/* SVG Icon for the category */}
-          <SvgXml xml={category.icon} width={30} height={30} />
+    <>
+      <Header darkMode={darkMode} title="Game" firstLink="/home" secondLink="none" />
+      <ScrollView contentContainerStyle={styles.container}>
+        <Slider
+          data={[
+            { key: '1', component: <DailyGoals darkMode={darkMode} /> },
+            { key: '2', component: <DailyGoals darkMode={darkMode} /> },
+          ]}
+          darkMode={darkMode}
+        />
+        {texts.categories.map((category) => (
+          <TouchableOpacity
+            key={category.id}
+            style={styles.row}
+            onPress={() => handleCategoryPress(category)}
+          >
+            <View style={styles.categorieContainer}>
+              <SvgXml xml={category.icon} width={30} height={30} />
+              <View>
+                <Paragraph >{category.textLabel}</Paragraph>
+                <ContainerParagraph style={styles.textLabel}>10 questions</ContainerParagraph>
+              </View>
+            </View>
 
-          {/* Text Label for the category */}
-          <Text style={styles.textLabel}>{category.textLabel}</Text>
 
-          {/* Display the ratio/percentage for the category */}
-          <Text style={styles.percentage}>{category.ratio}</Text>
-        </TouchableOpacity>
-      ))}
+            <View style={styles.circularProgressContainer}>
+              <SvgXml xml={getCircularProgressSvg(category.ratio)} width={40} height={40} />
+            </View>
+          </TouchableOpacity>
+        ))}
 
-      {/* Modal to display category details */}
-      <Modal
-        visible={modalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Category Details</Text>
-            {/* Display the details of the selected category */}
-            {selectedCategory && (
-              <>
-                <Text style={styles.modalText}>Label: {selectedCategory.textLabel}</Text>
-                <Text style={styles.modalText}>Difficulty: {selectedCategory.difficulty}</Text>
-                <Text style={styles.modalText}>Ratio: {selectedCategory.ratio}</Text>
-              </>
-            )}
-            {/* Button to navigate to the QuizScreen */}
-            <Button title="Go to QuizScreen" onPress={handleNavigateToQuizScreen} />
-            {/* Button to close the modal */}
-            <Button title="Close" onPress={() => setModalVisible(false)} />
-          </View>
-        </View>
-      </Modal>
-    </ScrollView>
+        <CategoryModal
+          isVisible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          category={selectedCategory}
+          onConfirm={handleNavigateToQuizScreen}
+          darkMode={darkMode} // Pass the darkMode prop to control styling
+        />
+      </ScrollView>
+    </>
   );
 };
 
-// Styles for the component
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 100, // Ensure there is some padding at the bottom
+    paddingBottom: 100,
   },
   row: {
-    flexDirection: 'row', // Arrange items in a row
-    alignItems: 'center', // Align items vertically in the center
-    marginBottom: 20, // Add some margin at the bottom of each row
-    padding: 10, // Padding inside each row
-    backgroundColor: lightTheme.lightShade, // Background color for the row
-    width: '90%', // Width of each row
-    minHeight: 40, // Minimum height for the row
-    justifyContent: 'center', // Center the content horizontally
-    alignContent: 'center', // Center the content vertically
-    alignSelf: 'center', // Center the row itself
-    borderRadius: 10, // Rounded corners for the row
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+    padding: 10,
+    backgroundColor: lightTheme.lightShade,
+    width: '90%',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    borderRadius: 10,
+  },
+  categorieContainer: {
+    flexDirection: 'row',
+    gap: 20,
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   textLabel: {
-    fontSize: 16, // Font size for the text label
-    marginLeft: 10, // Margin to the left of the text label
-    flex: 1, // Flex to take up remaining space
+    fontSize: 12,
+    color: lightTheme.light_darkShade,
   },
-  percentage: {
-    fontSize: 16, // Font size for the percentage text
-    color: 'gray', // Text color for the percentage
-  },
-  modalContainer: {
-    flex: 1, // Take up the full screen
-    justifyContent: 'center', // Center the modal content vertically
-    alignItems: 'center', // Center the modal content horizontally
-    backgroundColor: 'rgba(0,0,0,0.5)', // Semi-transparent background
-  },
-  modalContent: {
-    width: '80%', // Width of the modal content
-    backgroundColor: 'white', // Background color for the modal
-    padding: 20, // Padding inside the modal content
-    borderRadius: 10, // Rounded corners for the modal
-    alignItems: 'center', // Center align items inside the modal
-  },
-  modalTitle: {
-    fontSize: 18, // Font size for the modal title
-    fontWeight: 'bold', // Bold font for the modal title
-    marginBottom: 10, // Margin below the modal title
-  },
-  modalText: {
-    fontSize: 16, // Font size for modal text
-    marginBottom: 10, // Margin below each modal text
+  circularProgressContainer: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
