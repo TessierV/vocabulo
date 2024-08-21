@@ -19,14 +19,17 @@ const HomeScreen = () => {
 
   return (
     <ScrollView
-      contentContainerStyle={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}
+      contentContainerStyle={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}
     >
+      <View style={styles.container}>
       <BigTitle style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }}>
         {texts.homeScreen.bigTitle.title}
       </BigTitle>
       <Subtitle style={{ color: darkMode ? darkTheme.lightShade : lightTheme.light_darkShade }}>
         {texts.homeScreen.bigTitle.text}
       </Subtitle>
+      </View>
+
       <Slider
         data={[
           { key: '1', component: <WeeklyOverview darkMode={darkMode} /> },
@@ -34,6 +37,8 @@ const HomeScreen = () => {
         ]}
         darkMode={darkMode}
       />
+            <View style={styles.container}>
+
       <SectionTitle
         title={texts.homeScreen.section.title}
         text={texts.homeScreen.section.text}
@@ -62,14 +67,19 @@ const HomeScreen = () => {
         darkMode={darkMode}
       />
       <CategoryCard categories={texts.categories} darkMode={darkMode} />
+      </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     paddingVertical: 40,
-    paddingHorizontal: 25,
+  },
+  container: {
+    width: '90%',
+    alignSelf: 'center',
+
   },
 });
 
