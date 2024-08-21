@@ -27,7 +27,7 @@ export const lightTheme = {
   light_darkShade: "#6D768B",
 
   lightShade: '#FFF',
-  dark_lightShade: '#F3F3F3',
+  dark_lightShade: '#F6F6F6',
 };
 
 export const darkTheme = {
