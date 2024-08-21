@@ -46,12 +46,10 @@ const createThemedStyles = (darkMode: boolean | (() => Promise<void>)) => StyleS
   containerTitle: {
     fontFamily: 'font-base',
     fontSize: 18,
-    marginLeft: 10,
   },
   containerParagraph: {
     fontFamily: 'font-base',
     fontSize: 14,
-    marginLeft: 10,
   },
 });
 
