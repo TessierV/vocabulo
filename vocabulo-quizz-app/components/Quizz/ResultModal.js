@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, Image } from 'react-na
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
+import { BigTitle } from '@/constants/StyledText';
 
-// Import your image from assets
+
 const imagePath = require('@/assets/images/borderCongrats.png');
 
 const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttempt }) => {
@@ -41,33 +42,51 @@ const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttem
                         />
                         <View style={styles.circle} />
                     </View>
-                    <Text style={styles.modalTitle}>Congratulations!</Text>
+                    <BigTitle style={styles.modalTitle}>Congratulations!</BigTitle>
 
                     <View style={styles.containerSection}>
                         <View style={styles.modalContentSection}>
-                            <Feather name="home" size={24} color="#fff" />
-                            <Text style={styles.modalText}>{correctFirstAttempt} 1er tentatives</Text>
+                            <View style={styles.modalTitleSection}>
+                                <Feather name="home" size={24} color={lightTheme.darkShade} />
+                                <Text style={styles.modalText}>1 tentative</Text>
+                            </View>
+
+
+                            <Text style={styles.modalText}>{correctFirstAttempt}</Text>
+
                         </View>
                         <View style={styles.modalContentSection}>
-                            <Feather name="home" size={24} color="#fff" />
+                            <View style={styles.modalTitleSection}>
 
-                            <Text style={styles.modalText}>{correctSecondAttempt} 2eme tentatives</Text>
+                                <Feather name="home" size={24} color={lightTheme.darkShade} />
+                                <Text style={styles.modalText}>2eme tentatives</Text>
+
+                            </View>
+                            <Text style={styles.modalText}>{correctFirstAttempt}</Text>
+
                         </View>
                     </View>
 
-
-                    {/* Add buttons with Feather icons */}
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.iconButton} onPress={handleHomePress}>
-                            <Feather name="home" size={24} color="#fff" />
+                        <TouchableOpacity style={styles.iconButtonContainer} onPress={handleHomePress}>
+                            <View style={[styles.iconButton, {backgroundColor: color.darkGreen}]}>
+
+                                <Feather name="home" size={35} color={lightTheme.darkShade} />
+                            </View>
                             <Text style={styles.iconButtonText}>Home</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.iconButton} onPress={handleRestartPress}>
-                            <Feather name="rotate-cw" size={24} color="#fff" />
+                        <TouchableOpacity style={styles.iconButtonContainer} onPress={handleRestartPress}>
+                            <View style={[styles.iconButton, {backgroundColor: color.darkBlue}]}>
+
+                                <Feather name="rotate-cw" size={35} color={lightTheme.darkShade} />
+                            </View>
+
                             <Text style={styles.iconButtonText}>Restart</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.iconButton} onPress={handleGamePress}>
-                            <Feather name="play-circle" size={24} color="#fff" />
+                        <TouchableOpacity style={styles.iconButtonContainer} onPress={handleGamePress}>
+                            <View style={[styles.iconButton, {backgroundColor: color.darkPlum}]}>
+                                <Feather name="play-circle" size={35} color={lightTheme.darkShade} />
+                            </View>
                             <Text style={styles.iconButtonText}>Game</Text>
                         </TouchableOpacity>
                     </View>
@@ -80,24 +99,18 @@ const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttem
 const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Background overlay color
+        backgroundColor: lightTheme.dark_lightShade,
     },
     modalContent: {
-        width: '100%',
-        height: '80%',
-        padding: 20,
-        backgroundColor: '#fff',
+        width: '90%',
+        height: '100%',
         justifyContent: 'space-evenly',
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-
+        alignSelf: 'center',
+        alignContent: 'center',
     },
 
     imageContainer: {
         position: 'relative',
-        marginBottom: 20,
         width: 200,
         height: 200,
         justifyContent: 'center',
@@ -105,8 +118,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        width: 350,
-        height: 350,
+        width: 500,
+        height: 500,
         zIndex: 2,
         position: 'absolute',
 
@@ -119,18 +132,25 @@ const styles = StyleSheet.create({
         backgroundColor: '#FF0000',
         zIndex: 1,
     },
-    containerSection:{
+    containerSection: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
         gap: 5,
 
     },
-    modalContentSection:{
+
+    modalTitleSection: {
         flexDirection: 'row',
-        backgroundColor: 'green',
+        gap: 15,
+    },
+
+
+    modalContentSection: {
+        flexDirection: 'row',
+        backgroundColor: lightTheme.lightShade,
         justifyContent: 'space-between',
-        minWidth: '49%',
+        minWidth: '100%',
         alignSelf: 'center',
         alignContent: 'center',
 
@@ -141,38 +161,37 @@ const styles = StyleSheet.create({
 
     },
     modalTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
         textAlign: 'center',
+        color: lightTheme.darkShade,
     },
     modalText: {
         fontSize: 14,
         marginVertical: 5,
         textAlign: 'center',
-        color: 'white',
+        color: lightTheme.darkShade,
         fontWeight: 'bold',
     },
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginTop: 20,
+        justifyContent: 'space-evenly',
+        flexWrap: 'wrap',
     },
-    iconButton: {
+    iconButtonContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#007BFF',
-        padding: 10,
-        borderRadius: 5,
-        flex: 1,
-        marginHorizontal: 5,
+    },
+    iconButton: {
+        backgroundColor: lightTheme.darkShade,
+        padding: 20,
+
+        borderRadius: 25,
     },
     iconButtonText: {
-        color: '#fff',
+        color: lightTheme.light_darkShade,
         marginTop: 5,
     },
     modalButtonText: {
-        color: darkTheme.light_darkShade,
+        color: lightTheme.light_darkShade,
         fontSize: 16,
     },
 });

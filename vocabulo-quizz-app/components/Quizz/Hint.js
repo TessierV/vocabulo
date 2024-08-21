@@ -1,11 +1,15 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { lightTheme } from '@/constants/Colors';
 
 const Hint = ({ hint }) => {
     if (!hint) return null;
 
-    return <Text style={styles.hintText}>Hint: {hint}</Text>;
+    return (
+        <View>
+            <Text style={styles.hintText}>{hint}</Text>
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
