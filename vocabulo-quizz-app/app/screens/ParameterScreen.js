@@ -3,7 +3,6 @@ import { View, StyleSheet, ScrollView, Switch } from 'react-native';
 import Header from '@/components/Header';
 import Section from '@/components/Parameters/Section';
 import Setting from '@/components/Parameters/Setting';
-import BannerContainer from '@/components/Banner';
 import useDarkMode from '@/components/useDarkMode';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import { texts } from '@/constants/texts';
@@ -14,26 +13,19 @@ const ParameterScreen = () => {
 
 
   return (
-    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
-      <Header darkMode={darkMode} title="Parametres" firstLink="/profile" secondLink="none" />
-      <BannerContainer
-        title={texts.parameterScreen.banner.title}
-        text={texts.parameterScreen.banner.text}
-        popuptitle={texts.parameterScreen.banner.popup.title}
-        popuptext={texts.parameterScreen.banner.popup.text}
-        popupbutton={texts.parameterScreen.banner.popup.button}
-        darkMode={darkMode} />
-
-      <ScrollView style={{ width: '100%' }}>
+    <View style={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
+      <Header darkMode={darkMode} title="Parametres" firstLink="/profil" secondLink="none" />
+      <ScrollView style={styles.container}>
+        <View style={styles.Section}>
         <Section title={texts.parameterScreen.section.title} iconName="user" darkMode={darkMode}>
           <Setting
-            iconName="edit-3"
+            iconName="edit"
             text={texts.parameterScreen.section.editProfile}
             buttonText=""
             onPress={() => console.log('Edit profile pressed')}
           />
           <Setting
-            iconName="lock"
+            iconName="key"
             text={texts.parameterScreen.section.changePassword}
             buttonText=""
             onPress={() => console.log('Change password pressed')}
@@ -55,34 +47,29 @@ const ParameterScreen = () => {
               />
             }
           />
-          <Setting
-            iconName="type"
-            text={texts.parameterScreen.section_second.sizeText}
-            buttonText=""
-            onPress={() => console.log('Edit text size pressed')}
-          />
         </Section>
 
         <Section title={texts.parameterScreen.section_third.title} iconName="paperclip" darkMode={darkMode}>
           <Setting
-            iconName="help-circle"
+            iconName="faq"
             text={texts.parameterScreen.section_third.ask}
             buttonText=""
             onPress={() => console.log('FAQ pressed')}
           />
           <Setting
-            iconName="mail"
+            iconName="send"
             text={texts.parameterScreen.section_third.contact}
             buttonText=""
             onPress={() => console.log('Contact us pressed')}
           />
           <Setting
-            iconName="layers"
+            iconName="layer"
             text={texts.parameterScreen.section_third.version}
             buttonText=""
             onPress={() => console.log('View version pressed')}
           />
         </Section>
+        </View>
       </ScrollView>
     </View>
   );
@@ -94,6 +81,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+  },
+  container: {
+    width: '100%',
+  },
+  Section: {
+    width: '90%',
+    alignSelf: 'center',
   },
 });
 
