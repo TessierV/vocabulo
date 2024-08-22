@@ -6,7 +6,7 @@ import SelectDifficulty from '@/components/Category/SelectDifficulty';
 import SectionTitle from '@/components/SectionTitle';
 import { texts } from '@/constants/texts';
 import CategoryCard from '@/components/CategoryCard';
-import Header from '@/components/Header';
+import Header from '@/components/Header/Header';
 import FilterBar from '@/components/FilterBar';
 
 const Page = () => {
@@ -51,8 +51,9 @@ const Page = () => {
     <>
       <Header darkMode={darkMode} title="Category" firstLink="/home" secondLink="none" />
       <ScrollView
-        contentContainerStyle={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}
+        contentContainerStyle={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}
       >
+        <View style={styles.container}>
         <SelectDifficulty
           darkMode={darkMode}
           onFilterChange={handleFilterChange}
@@ -69,16 +70,22 @@ const Page = () => {
           darkMode={darkMode}
         />
         <CategoryCard categories={filteredCategories} darkMode={darkMode} />
+        </View>
       </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 25,
+  mainContainer: {
     paddingBottom: 40,
   },
+
+  container: {
+    width: '90%',
+    alignSelf: 'center',
+  },
+
 });
 
 export default Page;

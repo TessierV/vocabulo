@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Modal, TouchableOpacity, Text, FlatList, Pressable } from 'react-native';
-import { Feather } from '@expo/vector-icons';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
+import SvgIcon from './SvgIcon'; // Adjust the import path as needed
+import { Feather } from '@expo/vector-icons';
 
 const FilterBar = ({ onSearchChange, onSortChange, darkMode }) => {
   const [searchText, setSearchText] = useState('');
@@ -30,7 +31,7 @@ const FilterBar = ({ onSearchChange, onSortChange, darkMode }) => {
   return (
     <View style={styles.container}>
       <View style={[styles.searchContainer, { backgroundColor: darkMode ? darkTheme.lightShade : lightTheme.lightShade }]}>
-        <Feather name="search" size={20} color={darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade} style={styles.searchIcon} />
+        <SvgIcon icon="search" fillColor={darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade} style={styles.searchIcon} />
         <TextInput
           style={[styles.searchInput, { color: darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade }]}
           placeholder="Search ..."
@@ -44,7 +45,7 @@ const FilterBar = ({ onSearchChange, onSortChange, darkMode }) => {
           onPress={() => setModalVisible(true)}
         >
           <View style={styles.pickerIconContainer}>
-            <Feather name="filter" size={20} color={darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade} />
+            <SvgIcon icon="sort" fillColor={darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade} />
           </View>
           <Text style={[styles.selectedOption, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade }]}>{sortOption}</Text>
         </TouchableOpacity>
@@ -62,8 +63,8 @@ const FilterBar = ({ onSearchChange, onSortChange, darkMode }) => {
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
             >
-              <Feather name="x" size={24} color="#333" />
-            </TouchableOpacity>
+              <Feather name="x" size={24} color={darkMode ? darkTheme.lightShade : lightTheme.light_darkShade} />
+              </TouchableOpacity>
             <FlatList
               data={sortOptions}
               keyExtractor={(item) => item.value}
@@ -96,6 +97,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     marginRight: 10,
+    paddingHorizontal: 10,
     borderRadius: 8,
     width: '80%',
   },
@@ -144,7 +146,6 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignSelf: 'flex-end',
-    padding: 10,
   },
   modalItem: {
     padding: 10,

@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { ScrollView, TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { useRouter } from 'expo-router';
-import { lightTheme, color } from '@/constants/Colors';
+import { lightTheme, color, darkTheme } from '@/constants/Colors';
 import CategoryModal from '@/components/CategoryModal';
 import { texts } from '@/constants/texts';
 import { ContainerParagraph, Paragraph } from '@/constants/StyledText';
 import Slider from '@/components/Slider/Slider';
-import Header from '@/components/Header';
+import Header from '@/components/Header/Header';
 import SectionTitle from '@/components/SectionTitle';
 import ReusableCard from '@/components/Game/ReusableCard';
 import CustomComponent from '@/components/CustomComponent';
@@ -77,10 +77,10 @@ const GameScreen = ({ darkMode }) => {
                   description="Testez vos connaissances avec des quizz personnalisés par l'IA."
                   buttonText="Commencer"
                   onPressButton={() => console.log('Quizz IA Commencer')}
-                  iconName="cpu"
+                  iconName="noteAI"
                   darkMode={darkMode}
                   containerBgColor={darkMode ? darkTheme.light_darkShade : '#424782'}
-                  iconBgColor={lightTheme.light_darkShade}
+                  iconBgColor={darkMode ? darkTheme.darkShade : lightTheme.darkShade}
                 />
 
             },
@@ -90,8 +90,8 @@ const GameScreen = ({ darkMode }) => {
                 description="Explorez de nouveaux défis chaque jour pour améliorer vos compétences."
                 buttonText="Découvrir"
                 onPressButton={() => console.log('Nouveaux Défis Découvrir')}
-                containerBgColor={darkMode ? darkTheme.light_darkShade : '#957CBD'}
-                iconBgColor="green"
+                containerBgColor={darkMode ? darkTheme.light_darkShade : lightTheme.darkShade}
+                iconBgColor={darkMode ? darkTheme.darkShade : color.darkBlue}
                 darkMode={darkMode}
               />
             },
@@ -101,8 +101,8 @@ const GameScreen = ({ darkMode }) => {
                 description="Explorez de nouveaux défis chaque jour pour améliorer vos compétences."
                 buttonText="Découvrir"
                 onPressButton={() => console.log('Nouveaux Défis Découvrir')}
-                containerBgColor={darkMode ? darkTheme.light_darkShade : '#957CBD'}
-                iconBgColor="green"
+                containerBgColor={darkMode ? darkTheme.light_darkShade : lightTheme.darkShade}
+                iconBgColor={darkMode ? darkTheme.darkShade : color.darkBlue}
                 darkMode={darkMode}
               />
             },
@@ -110,9 +110,9 @@ const GameScreen = ({ darkMode }) => {
           darkMode={darkMode}
         />
         <View style={styles.section}>
+
           <View style={{ marginVertical: 10 }}>
             <CustomComponent />
-
           </View>
           <SectionTitle
             title={texts.homeScreen.section.title}
@@ -194,10 +194,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     justifyContent: 'center',
-  },
-  textLabel: {
-    fontSize: 12,
-    color: lightTheme.light_darkShade,
   },
   circularProgressContainer: {
     width: 40,

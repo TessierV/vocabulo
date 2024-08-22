@@ -56,6 +56,7 @@ const QuizScreen = () => {
     const [showModal, setShowModal] = useState(false); // State to control the result modal visibility
     const [correctFirstAttempt, setCorrectFirstAttempt] = useState(0); // State to count correct answers on the first attempt
     const [correctSecondAttempt, setCorrectSecondAttempt] = useState(0); // State to count correct answers on the second attempt
+    const [correctMoreAttempt, setCorrectMoreAttempt] = useState(0); // State to count correct answers on the second attempt
 
     const [showHintModal, setShowHintModal] = useState(false); // State to control the hint modal visibility
     const [hintModalTitle, setHintModalTitle] = useState(''); // State to set the hint modal title
@@ -167,33 +168,39 @@ const QuizScreen = () => {
     };
 
     // Function to validate the selected answer
-    const validateAnswer = () => {
-        if (selectedAnswer) {
-            if (selectedAnswer.correct) { // Check if the selected answer is correct
-                setScore((prevScore) => prevScore + 1); // Increment the score
-                if (incorrectCount === 0) {
-                    setCorrectFirstAttempt((prev) => prev + 1); // Increment correct first attempt count
-                } else {
-                    setCorrectSecondAttempt((prev) => prev + 1); // Increment correct second attempt count
-                }
-                moveToNextQuestion(); // Move to the next question
-            } else {
-                setDisabledAnswers((prev) => [...prev, selectedAnswer.text]); // Disable the incorrect answer
-                setIncorrectCount(incorrectCount + 1); // Increment the incorrect count
-                setSelectedAnswer(null);
+    // Function to validate the selected answer
+const validateAnswer = () => {
+    if (selectedAnswer) {
+        if (selectedAnswer.correct) { // Check if the selected answer is correct
+            setScore((prevScore) => prevScore + 1); // Increment the score
 
-                if (incorrectCount === 0) {
-                    handleHint('Hint', questions[currentQuestionIndex]?.hint || ''); // Show first hint
-                } else if (incorrectCount === 1) {
-                    handleHint('Hint +', questions[currentQuestionIndex]?.secondHint || ''); // Show second hint
-                } else if (incorrectCount === 2) {
-                    handleHint('Reminder', questions[currentQuestionIndex]?.thirdHint || ''); // Show third hint
-                }
+            if (incorrectCount === 0) {
+                setCorrectFirstAttempt((prev) => prev + 1); // Increment correct first attempt count
+            } else if (incorrectCount === 1) {
+                setCorrectSecondAttempt((prev) => prev + 1); // Increment correct second attempt count
+            } else {
+                setCorrectMoreAttempt((prev) => prev + 1); // Increment correct more attempt count if more than one incorrect attempt
             }
+
+            moveToNextQuestion(); // Move to the next question
         } else {
-            Alert.alert('Warning', 'Please select an answer before validating.'); // Alert if no answer is selected
+            setDisabledAnswers((prev) => [...prev, selectedAnswer.text]); // Disable the incorrect answer
+            setIncorrectCount(incorrectCount + 1); // Increment the incorrect count
+            setSelectedAnswer(null);
+
+            if (incorrectCount === 0) {
+                handleHint('Hint', questions[currentQuestionIndex]?.hint || ''); // Show first hint
+            } else if (incorrectCount === 1) {
+                handleHint('Hint +', questions[currentQuestionIndex]?.secondHint || ''); // Show second hint
+            } else if (incorrectCount === 2) {
+                handleHint('Reminder', questions[currentQuestionIndex]?.thirdHint || ''); // Show third hint
+            }
         }
-    };
+    } else {
+        Alert.alert('Warning', 'Please select an answer before validating.'); // Alert if no answer is selected
+    }
+};
+
 
     // Function to handle showing hint modal
     const handleHint = (title, message) => {
@@ -260,9 +267,13 @@ const QuizScreen = () => {
                         setScore(0);
                         setCorrectFirstAttempt(0);
                         setCorrectSecondAttempt(0);
+                        setCorrectMoreAttempt(0);
+
                     }}
                     correctFirstAttempt={correctFirstAttempt}
                     correctSecondAttempt={correctSecondAttempt}
+                    correctMoreAttempt={correctMoreAttempt}
+
                 />
 
                 <CustomModal

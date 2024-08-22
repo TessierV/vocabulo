@@ -248,8 +248,15 @@ const DictionaryScreen = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
-      <Header darkMode={darkMode} firstLink="/home" secondLink="none" />
-
+      <Header darkMode={darkMode} firstLink="/home" secondLink="/parameter" />
+      <BannerContainer
+        title={texts.profilScreen.banner.title}
+        text={texts.profilScreen.banner.text}
+        popuptitle={texts.profilScreen.banner.popup.title}
+        popuptext={texts.profilScreen.banner.popup.text}
+        popupbutton={texts.profilScreen.banner.popup.button}
+        darkMode={darkMode}
+      />
       <View style={styles.section}>
         <FilterBar
           onSearchChange={handleSearchChange}

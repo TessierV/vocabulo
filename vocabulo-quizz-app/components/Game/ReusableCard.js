@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import SvgIcon from './SvgIcon'; // Importer le composant SvgIcon
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import { AnnonceTitle, ContainerParagraph } from '@/constants/StyledText';
 import { GradientBorderButtonMini } from '@/components/Button';
@@ -18,7 +18,7 @@ const ReusableCard = ({
   onPressButton = () => {},
   image = imgSection,
   imageBg = bgImage,
-  iconName = "star",
+  iconName = "random", // Utiliser "random" comme exemple
   darkMode = false,
   containerBgColor = lightTheme.darkShade, // Prop pour changer la couleur du conteneur principal
   iconBgColor = "red", // Prop pour changer la couleur de fond de l'icône
@@ -39,12 +39,9 @@ const ReusableCard = ({
           />
         </View>
         <View style={styles.imageSection}>
-          <Feather
-            name={iconName}
-            size={15}
-            color='white'
-            style={[styles.icon, { backgroundColor: iconBgColor }]} // Utilisation de la couleur de fond de l'icône passée en prop
-          />
+          <View style={[styles.iconContainer, { backgroundColor: iconBgColor }]}>
+            <SvgIcon icon={iconName} fillColor='white' />
+          </View>
           <Image
             source={image}
             style={styles.image}
@@ -93,7 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
   },
-  icon: {
+  iconContainer: {
     position: 'absolute',
     top: 10,
     right: 0,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Switch } from 'react-native';
-import Header from '@/components/Header';
+import Header from '@/components/Header/Header';
 import Section from '@/components/Parameters/Section';
 import Setting from '@/components/Parameters/Setting';
 import useDarkMode from '@/components/useDarkMode';
@@ -15,7 +15,7 @@ const ParameterScreen = () => {
   return (
     <View style={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
       <Header darkMode={darkMode} title="Parametres" firstLink="/profil" secondLink="none" />
-      <ScrollView style={styles.container}>
+      <ScrollView style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
         <View style={styles.Section}>
         <Section title={texts.parameterScreen.section.title} iconName="user" darkMode={darkMode}>
           <Setting
@@ -76,8 +76,12 @@ const ParameterScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  container: {
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',

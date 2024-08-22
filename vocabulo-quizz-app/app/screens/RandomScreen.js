@@ -4,7 +4,7 @@ import { SvgXml } from 'react-native-svg';
 import useDarkMode from '@/components/useDarkMode';
 import { useNavigation } from '@react-navigation/native';
 import { texts } from '@/constants/texts';
-import Header from '@/components/Header';
+import Header from '@/components/Header/Header';
 import SectionTitle from '@/components/SectionTitle';
 import { interfaceIcons } from '@/constants/svg';
 import { ContainerParagraph, Subtitle } from '@/constants/StyledText';

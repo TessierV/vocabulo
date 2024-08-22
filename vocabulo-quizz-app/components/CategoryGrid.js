@@ -4,6 +4,7 @@ import { SvgXml } from 'react-native-svg';
 import { useRouter } from 'expo-router';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import { GridText } from '@/constants/StyledText';
+import SvgIcon from './Category/SvgIcon';
 
 const CategoryGrid = ({ categories, darkMode }) => {
   const router = useRouter();
@@ -32,7 +33,7 @@ const CategoryGrid = ({ categories, darkMode }) => {
               }
             ]}
           >
-            <SvgXml xml={category.icon} width="50%" height="50%" />
+            <SvgIcon icon={category.icon} fillColor={darkMode ? darkTheme.lightShade : lightTheme.darkShade} />
           </View>
           <View
             style={[
