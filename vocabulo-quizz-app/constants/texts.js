@@ -267,7 +267,7 @@ export const texts = {
             icon: themes.coffeeLatte,
             textLabel: 'Barista',
             difficulty: 'easy',
-            ratio: '30/100',
+            ratio: '100/100',
             route: '/random', // Mise à jour de la route pour Barista
         },
     ],
