@@ -1,12 +1,12 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import React from 'react';
-import { CompareCommonWordsList } from './CompareCommonWordsList';
+import { CommonWordsList } from './CompareCommonWordsList';
 import { InformationText } from '@/constants/StyledText';
 
 export default function DisplayCommunWords() {
   return (
       <View style={styles.container}>
-        {CompareCommonWordsList.map((word, index) => (
+        {CommonWordsList.map((word, index) => (
           <InformationText key={`common-word-${index}`}>{word}</InformationText>
         ))}
     </View>
@@ -15,6 +15,6 @@ export default function DisplayCommunWords() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 18,
   },
 });
