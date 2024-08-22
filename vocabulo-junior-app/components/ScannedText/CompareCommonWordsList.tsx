@@ -26,8 +26,8 @@ function generatecombinations(words: string[], minLength: number, maxLength: num
   
   for (let length = minLength; length <= maxLength; length++) {
     for (let start = 0; start <= words.length - length; start++) {
-      const sequence = words.slice(start, start + length).join(' ');
-      combinations.push(sequence);
+      const Combination = words.slice(start, start + length).join(' ');
+      combinations.push(Combination);
     }
   }
   
@@ -42,36 +42,36 @@ function generatecombinations(words: string[], minLength: number, maxLength: num
  */
 function findCombinedWords(combinations: string[], list: string[]): string[] {
   const listSet = new Set(list.map(word => word.toLowerCase().trim()));
-  return combinations.filter(sequence => listSet.has(sequence.toLowerCase().trim()));
+  return combinations.filter(Combination => listSet.has(Combination.toLowerCase().trim()));
 }
 
 /**
  * Function to filter valid combinations by keeping only the longest combination when multiple combinations have the same two starting words.
  * @param combinations The list of valid combinations to filter.
- * @returns A filtered list of combinations where only the longest sequence is kept for each pair of starting words.
+ * @returns A filtered list of combinations where only the longest Combination is kept for each pair of starting words.
  */
 function filtercombinations(combinations: string[]): string[] {
-  const sequenceMap = new Map<string, string>();
+  const CombinationMap = new Map<string, string>();
 
-  for (const sequence of combinations) {
-    const words = sequence.split(' ');
+  for (const Combination of combinations) {
+    const words = Combination.split(' ');
     if (words.length >= 2) {
       const key = words.slice(0, 2).join(' ');
-      if (!sequenceMap.has(key) || sequence.length > sequenceMap.get(key)!.length) {
-        sequenceMap.set(key, sequence);
+      if (!CombinationMap.has(key) || Combination.length > CombinationMap.get(key)!.length) {
+        CombinationMap.set(key, Combination);
       }
     }
   }
-  return Array.from(sequenceMap.values());
+  return Array.from(CombinationMap.values());
 }
 
-const minSequenceLength = 2;
-const maxSequenceLength = 4;
-const SearchCombinedWords = generatecombinations(wordsListFromText, minSequenceLength, maxSequenceLength);
+const minCombinationLength = 2;
+const maxCombinationLength = 4;
+const SearchCombinedWords = generatecombinations(wordsListFromText, minCombinationLength, maxCombinationLength);
 const CombinedWordsList = findCombinedWords(SearchCombinedWords, wordsListFromDictionary);
 const SelectLongestCombinedWordsList = filtercombinations(CombinedWordsList);
 const CompareCommonWordsList = CompareCommonWords(wordsListFromDictionary, wordsListFromText);
-const wordsFromSelectLongestCombinedWordsList = SelectLongestCombinedWordsList.map(sequence => sequence.toLowerCase().trim());
+const wordsFromSelectLongestCombinedWordsList = SelectLongestCombinedWordsList.map(Combination => Combination.toLowerCase().trim());
 
 
 const combinedWordsSet = new Set<string>([
