@@ -73,13 +73,15 @@ const SelectLongestCombinedWordsList = filtercombinations(CombinedWordsList);
 const CompareCommonWordsList = CompareCommonWords(wordsListFromDictionary, wordsListFromText);
 const wordsFromSelectLongestCombinedWordsList = SelectLongestCombinedWordsList.map(Combination => Combination.toLowerCase().trim());
 
-
 const combinedWordsSet = new Set<string>([
   ...CompareCommonWordsList.map(word => word.toLowerCase().trim()), 
   ...wordsFromSelectLongestCombinedWordsList
 ]);
 
 export const CommonWordsList = Array.from(combinedWordsSet);
+
+// Filter common words to exclude those that are part of any combination
+const simpleCommonWordsList = CompareCommonWordsList.filter(word => !wordsFromSelectLongestCombinedWordsList.includes(word.toLowerCase().trim()));
 
 // Log the lists
 console.log('List from Dictionary:', wordsListFromDictionary);
@@ -88,3 +90,4 @@ console.log('Search combined words:', SearchCombinedWords);
 console.log('Combined words list:', CombinedWordsList);
 console.log('Longest Combined words list:', SelectLongestCombinedWordsList);
 console.log('Common Words list:', CommonWordsList);
+console.log('Simple Common Words list:', simpleCommonWordsList);
