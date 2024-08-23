@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
-import data from '../../data/data';
+import data from '../../data/dictionaryData';
 import { Colors } from '@/constants/Colors';
 import DictionnaryCard from './DictionnaryCard';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
@@ -24,9 +24,14 @@ const categoryMap: { [key: string]: string } = {
     'n.m.': 'Nom masculin',
     'n.f.': 'Nom féminin',
     'v.': 'Verbe',
-    'adv.': 'Adverbe',
     'adj.': 'Adjectif',
+    'prep.': 'Préposition',
+    'det.': 'Déterminent',
+    'pro.': 'Pronom',
+    'n.p.': 'Nom propre',
+    'adv.': 'Adverbe',
     'int.': 'Interjection',
+    'conj.': 'Conjonction',
     'Faute Ortho': 'Faute Ortho'
 };
 
@@ -125,7 +130,7 @@ const AllFilters = () => {
                         )}
                         keyExtractor={(item) => item.id}
                         horizontal={false} // Scroll vertical for multiple occurrences
-                        showsVerticalScrollIndicator={true}
+                        showsVerticalScrollIndicator={false}
                         style={styles.verticalFlatList}
                     />
                 ) : (
@@ -217,7 +222,7 @@ const AllFilters = () => {
                 keyExtractor={(item) => item[0]}
                 style={styles.dictionnaryContainer}
                 horizontal={true}
-                showsVerticalScrollIndicator={true}
+                showsHorizontalScrollIndicator={false}
                 onViewableItemsChanged={onViewableItemsChanged}
                 viewabilityConfig={{
                     itemVisiblePercentThreshold: 50
@@ -276,7 +281,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 3,
     },
     selectedButton: {
-        backgroundColor: Colors.lightCoral,
+        backgroundColor: Colors.neutralGreen,
     },
     categoryButtonText: {
         color: Colors.black,
@@ -306,8 +311,8 @@ const styles = StyleSheet.create({
     dictionnaryContainer: {
         height: '100%',
         marginTop: 30,
-        top: '5%',
         padding: 0,
+        top: '5%',
     },
     footerContainer: {
         height: '56%',

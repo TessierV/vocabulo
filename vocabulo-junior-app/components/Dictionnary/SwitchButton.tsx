@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { TouchableOpacity, StyleSheet, ViewStyle, Animated, GestureResponderEvent } from 'react-native';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
-import { Colors } from '@/constants/Colors'; // Assurez-vous que le chemin est correct
+import { Colors } from '@/constants/Colors';
 
 // Définir les types de props
 interface SwitchButtonProps {
