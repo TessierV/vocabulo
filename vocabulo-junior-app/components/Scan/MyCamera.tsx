@@ -5,6 +5,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { Colors } from '@/constants/Colors';
 import { ButtonText, InformationText } from '@/constants/StyledText';
 import { router } from 'expo-router';
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 
 export default function MyCamera() {
   const [facing, setFacing] = useState<CameraType>('back');
@@ -70,6 +71,13 @@ export default function MyCamera() {
         </View>
       ) : (
         <CameraView style={styles.camera} ref={cameraRef}>
+          <View style={styles.referenceLineContainer} >
+            <View style={styles.targetContainer}>
+              <SimpleLineIcons name="target" style={styles.targetIcon}/>
+              <InformationText style={styles.referenceLineText}>Ligne de repère</InformationText>
+            </View>
+            <View style={styles.referenceLine}></View>
+          </View>
           <View style={styles.takePhotoButtonContainer}>
             <TouchableOpacity onPress={takePicture} style={styles.takePhotobutton} />
           </View>
@@ -123,7 +131,7 @@ const styles = StyleSheet.create({
   photoContainer: {
     flex: 1,
     justifyContent: 'flex-start',
-    top: '12%',
+    top: '13%',
     alignItems: 'center',
   },
   photo: {
@@ -137,7 +145,7 @@ const styles = StyleSheet.create({
     marginTop: -25,
     width: 200,
     borderRadius: 100,
-    backgroundColor: Colors.darkCoral,
+    backgroundColor: Colors.darkGreen,
     alignItems: 'center',
   },
   buttonText: {
@@ -157,4 +165,36 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: 18
   },
+  referenceLineContainer: {
+    top: '8%',
+  },
+  referenceLine: {
+    width: '90%',
+    borderRadius: 35,
+    borderBottomWidth: 2,
+    borderStyle: 'dotted',
+    borderColor: Colors.white,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    bottom: '14%',
+  },
+  targetContainer: {
+    marginHorizontal: '5%',
+    marginVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start'
+  },
+  referenceLineText: {
+    color: Colors.white,
+    justifyContent: 'center',
+    alignSelf: 'center',
+
+  },
+  targetIcon: {
+    fontSize: 14,
+    color: Colors.white,
+    marginRight: 5
+  }
+
 });
