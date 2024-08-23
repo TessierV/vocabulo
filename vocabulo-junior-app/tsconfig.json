@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "components/Onboarding/onboarding.js", "components/auth/backgroundLogin.js"  ]
+, "components/ScannedText", "data/scannedTextData.js", "data/compareWords.js"  ]
 }
