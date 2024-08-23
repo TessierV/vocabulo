@@ -1,0 +1,3 @@
+const scannedTextData = `Alice adore les aventures. Un jour, elle aperçoit un arbre argenté dans la forêt. Curieuse, elle s'approche.L'arbre murmure : "Je suis l'Arbre Magique.Avec appréhension, je peux t'accorder un vœu."Alice réfléchit puis demande : "Peux-tu apporter l'amitié partout autour de moi ? "L'arbre agite ses branches, et aussitôt, a b c un arc-en-ciel apparaît. Tous les animaux de la forêt se rassemblent autour d'Alice, dansant joyeusement. Depuis ce jour, Alice a toujours des amis partout où elle va.`
+
+export default scannedTextData;

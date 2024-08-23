@@ -1,4 +1,4 @@
-const data = `
+const dictionaryData = `
 mot,categorie_grammaticale,definition,url_video_definition,url_video_mot,url_source
 avoir,n.m.,ce que l'on a; ses biens.,https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/28_avoir_2__nm_1td001-encoded.mp4,https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/avoir_nm_1_1.mp4,https://dico.elix-lsf.fr/dictionnaire/avoir/n.m.-134124
 avoir,v.,"être en possession, posséder.",https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/29_avoir_3__v_1td001-encoded.mp4,https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/avoir_v_1_1.mp4,https://dico.elix-lsf.fr/dictionnaire/avoir/v.-134121
@@ -6875,8 +6875,8 @@ autotomique,adj.,"relatif à, qui appartient à l'autotomie.",Non spécifié,Non
 autotomiser,v.,"se mutiler par réflexe d’une partie du corps afin de pouvoir échapper à un agresseur (pour un animal, un lézard).",Non spécifié,Non spécifié,https://dico.elix-lsf.fr/dictionnaire/autotomiser/v.-133776
 autotransfusion,n.f.,"transfusion sanguine qui utilise le sang du transfusé, prélevé précédemment à cet effet.",Non spécifié,Non spécifié,https://dico.elix-lsf.fr/dictionnaire/autotransfusion/n.f.-133777
 autotrophe,adj.,se dit d'êtres vivants capables de générer leur propre substance à partir de substances minérales.,Non spécifié,Non spécifié,https://dico.elix-lsf.fr/dictionnaire/autotrophe/adj.-133778
-autour,n.m.,oiseau rapace de l'Ordre des Falconiformes.,https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/84_autour_1__nm_1td001-encoded.mp4,Non spécifié,https://dico.elix-lsf.fr/dictionnaire/autour/n.m.-133779
 autour de,prp.,"alentour, dans les environs immédiats.",https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/83_autourde_2__prp_1td001-encoded.mp4,https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/autourde_prp_1_1_6.mp4,https://dico.elix-lsf.fr/dictionnaire/autour%20de/prp.-133780
+autour,prp.,"alentour, dans les environs immédiats.",https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/83_autourde_2__prp_1td001-encoded.mp4,https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/autourde_prp_1_1_6.mp4,https://dico.elix-lsf.fr/dictionnaire/autour%20de/prp.-133780
 autovaccin,n.m.,vaccin obtenu par les germes du malade.,Non spécifié,Non spécifié,https://dico.elix-lsf.fr/dictionnaire/autovaccin/n.m.-133781
 autoérotique,adj.,qui a le caractère de l'autoérotisme.,Non spécifié,Non spécifié,https://dico.elix-lsf.fr/dictionnaire/auto%C3%A9rotique/adj.-133662
 autoérotisme,n.m.,érotisme qui prend sa source dans le sujet même.,Non spécifié,Non spécifié,https://dico.elix-lsf.fr/dictionnaire/auto%C3%A9rotisme/n.m.-133663
@@ -7485,4 +7485,4 @@ aïkido,n.m.,"art martial japonais qui canalise la force propre de l'antagoniste
 aïoli,n.m.,mayonnaise mélangée d'ail pilé.,https://elix-lsf.s3.rbx.io.cloud.ovh.net/spip_videos/aioli_nm_1.mp4,Non spécifié,https://dico.elix-lsf.fr/dictionnaire/a%C3%AFoli/n.m.-127881
 `
 
-export default data;
+export default dictionaryData;
