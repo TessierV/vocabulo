@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "1090817475302",
-    "project_id": "vocabulo-junior",
-    "storage_bucket": "vocabulo-junior.appspot.com"
+    "project_number": "532666546951",
+    "project_id": "vocabulojunior",
+    "storage_bucket": "vocabulojunior.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1090817475302:android:c1b84b48e08fe05036f127",
+        "mobilesdk_app_id": "1:532666546951:android:ba5e20c951615f5b37e3a2",
         "android_client_info": {
-          "package_name": "com.amandineassenat.Vocabulojuniorapp"
+          "package_name": "com.amandineassenat.vocabulojuniorapp"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC-aVI6uJnYVnotDgozVE6G_GVWcKZKx1Y"
+          "current_key": "AIzaSyD8jZAEhgzxmDWb9WX6XQqIZs1_bsPU0j8"
         }
       ],
       "services": {
