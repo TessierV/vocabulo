@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import Header from '../../components/Header';
+import Header from '../../components/Header/Header';
 import Section from '../../components/Parameters/Section';
 import Setting from '../../components/Parameters/Setting';
 import BannerContainer from '../../components/Banner';
@@ -14,15 +14,8 @@ const ProfileScreen = () => {
   return (
     <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
       <Header darkMode={darkMode} firstLink="/home" secondLink="/parameter" />
-      <BannerContainer
-        title={texts.profilScreen.banner.title}
-        text={texts.profilScreen.banner.text}
-        popuptitle={texts.profilScreen.banner.popup.title}
-        popuptext={texts.profilScreen.banner.popup.text}
-        popupbutton={texts.profilScreen.banner.popup.button}
-        darkMode={darkMode}
-      />
       <ScrollView style={{ width: '100%' }}>
+      <View style={styles.section}>
         <Section title={texts.profilScreen.section.title} iconName="user" darkMode={darkMode}>
           <Setting
             iconName="edit-3"
@@ -35,6 +28,8 @@ const ProfileScreen = () => {
             onPress={() => console.log('Change password pressed')}
           />
         </Section>
+        </View>
+
       </ScrollView>
     </View>
   );
@@ -46,6 +41,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+  },
+  section:{
+    width: '90%',
+    alignSelf: 'center',
   },
 });
 

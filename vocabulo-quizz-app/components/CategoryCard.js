@@ -137,6 +137,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-start',
+    justifyContent: 'center',
+    width: '100%',
     gap: 10,
   },
   iconContainer: {

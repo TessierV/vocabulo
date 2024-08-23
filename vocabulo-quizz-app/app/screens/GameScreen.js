@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { ScrollView, TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { useRouter } from 'expo-router';
-import { lightTheme, color } from '@/constants/Colors';
-import CategoryModal from '@/components/CategoryModal'; // Import the CategoryModal component
+import { lightTheme, color, darkTheme } from '@/constants/Colors';
+import CategoryModal from '@/components/CategoryModal';
 import { texts } from '@/constants/texts';
 import { ContainerParagraph, Paragraph } from '@/constants/StyledText';
 import Slider from '@/components/Slider/Slider';
-import Header from '@/components/Header';
-
-import BannerContainer from '@/components/Banner';
-import DailyGoals from '@/components/Game/DailyGoals';
+import Header from '@/components/Header/Header';
+import SectionTitle from '@/components/SectionTitle';
+import ReusableCard from '@/components/Game/ReusableCard';
+import CustomComponent from '@/components/CustomComponent';
+import anotherImage from '@/assets/images/oyster.png';
 
 
 const GameScreen = ({ darkMode }) => {
@@ -32,17 +33,15 @@ const GameScreen = ({ darkMode }) => {
     }
   };
 
-  // Function to extract discovered and total from ratio string
   const parseRatio = (ratio) => {
     const [discovered, total] = ratio.split('/').map(Number);
     return { discovered, total };
   };
 
-  // Function to generate SVG for circular progress based on ratio
   const getCircularProgressSvg = (ratio) => {
     const { discovered, total } = parseRatio(ratio);
     const progress = (discovered / total) * 100;
-    const radius = 15; // Adjust radius for desired size
+    const radius = 15;
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = circumference - (progress / 100) * circumference;
 
@@ -68,71 +67,133 @@ const GameScreen = ({ darkMode }) => {
   return (
     <>
       <Header darkMode={darkMode} title="Game" firstLink="/home" secondLink="none" />
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.mainContainer}>
         <Slider
           data={[
-            { key: '1', component: <DailyGoals darkMode={darkMode} /> },
-            { key: '2', component: <DailyGoals darkMode={darkMode} /> },
+            {
+              key: '1', component:
+                <ReusableCard
+                  title="Quizz IA"
+                  description="Testez vos connaissances avec des quizz personnalisés par l'IA."
+                  buttonText="Commencer"
+                  onPressButton={() => console.log('Quizz IA Commencer')}
+                  iconName="noteAI"
+                  darkMode={darkMode}
+                  containerBgColor={darkMode ? darkTheme.light_darkShade : '#424782'}
+                  iconBgColor={darkMode ? darkTheme.darkShade : lightTheme.darkShade}
+                />
+
+            },
+            {
+              key: '2', component: <ReusableCard
+                title="Nouveaux Défis"
+                description="Explorez de nouveaux défis chaque jour pour améliorer vos compétences."
+                buttonText="Découvrir"
+                onPressButton={() => console.log('Nouveaux Défis Découvrir')}
+                containerBgColor={darkMode ? darkTheme.light_darkShade : lightTheme.darkShade}
+                iconBgColor={darkMode ? darkTheme.darkShade : color.darkBlue}
+                darkMode={darkMode}
+              />
+            },
+            {
+              key: '3', component: <ReusableCard
+                title="Nouveaux Défis"
+                description="Explorez de nouveaux défis chaque jour pour améliorer vos compétences."
+                buttonText="Découvrir"
+                onPressButton={() => console.log('Nouveaux Défis Découvrir')}
+                containerBgColor={darkMode ? darkTheme.light_darkShade : lightTheme.darkShade}
+                iconBgColor={darkMode ? darkTheme.darkShade : color.darkBlue}
+                darkMode={darkMode}
+              />
+            },
           ]}
           darkMode={darkMode}
         />
-        {texts.categories.map((category) => (
-          <TouchableOpacity
-            key={category.id}
-            style={styles.row}
-            onPress={() => handleCategoryPress(category)}
-          >
-            <View style={styles.categorieContainer}>
-              <SvgXml xml={category.icon} width={30} height={30} />
-              <View>
-                <Paragraph >{category.textLabel}</Paragraph>
-                <ContainerParagraph style={styles.textLabel}>10 questions</ContainerParagraph>
+        <View style={styles.section}>
+
+          <View style={{ marginVertical: 10 }}>
+            <CustomComponent />
+          </View>
+          <SectionTitle
+            title={texts.homeScreen.section.title}
+            text={texts.homeScreen.section.text}
+            iconName="help-circle"
+            popupTitle={texts.homeScreen.section.popup.title}
+            popupText={texts.homeScreen.section.popup.text}
+            popupButtonText={texts.homeScreen.section.popup.button}
+            darkMode={darkMode}
+          />
+          {texts.categories.map((category) => (
+            <TouchableOpacity
+              key={category.id}
+              style={styles.row}
+              onPress={() => handleCategoryPress(category)}
+            >
+              <View style={styles.rowContainer}>
+                <View style={styles.categorieContainer}>
+                  <SvgXml xml={category.icon} width={30} height={30} />
+                  <View>
+                    <Paragraph >{category.textLabel}</Paragraph>
+                    <ContainerParagraph style={styles.textLabel}>10 questions</ContainerParagraph>
+                  </View>
+                </View>
+
+
+                <View style={styles.circularProgressContainer}>
+                  <SvgXml xml={getCircularProgressSvg(category.ratio)} width={40} height={40} />
+                </View>
               </View>
-            </View>
+            </TouchableOpacity>
+          ))}
 
-
-            <View style={styles.circularProgressContainer}>
-              <SvgXml xml={getCircularProgressSvg(category.ratio)} width={40} height={40} />
-            </View>
-          </TouchableOpacity>
-        ))}
-
-        <CategoryModal
-          isVisible={modalVisible}
-          onClose={() => setModalVisible(false)}
-          category={selectedCategory}
-          onConfirm={handleNavigateToQuizScreen}
-          darkMode={darkMode} // Pass the darkMode prop to control styling
-        />
+          <CategoryModal
+            isVisible={modalVisible}
+            onClose={() => setModalVisible(false)}
+            category={selectedCategory}
+            onConfirm={handleNavigateToQuizScreen}
+            darkMode={darkMode}
+          />
+        </View>
       </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     paddingBottom: 100,
   },
+
+  section: {
+    width: '90%',
+    alignSelf: 'center',
+  },
+
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 5,
-    padding: 10,
+    minHeight: 70,
     backgroundColor: lightTheme.lightShade,
-    width: '90%',
-    justifyContent: 'space-between',
-    alignSelf: 'center',
     borderRadius: 10,
+    justifyContent: 'center',
+
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '90%',
+    alignSelf: 'center',
+    flexWrap: 'wrap',
+
   },
   categorieContainer: {
     flexDirection: 'row',
     gap: 20,
-    alignContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'wrap',
     justifyContent: 'center',
-  },
-  textLabel: {
-    fontSize: 12,
-    color: lightTheme.light_darkShade,
   },
   circularProgressContainer: {
     width: 40,

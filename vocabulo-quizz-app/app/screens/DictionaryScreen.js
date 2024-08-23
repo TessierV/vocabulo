@@ -7,7 +7,7 @@ import csvData from '@/constants/data';
 import FilterBar from '@/components/FilterBar';
 import BannerContainer from '@/components/Banner';
 import { texts } from '@/constants/texts';
-import Header from '@/components/Header';
+import Header from '@/components/Header/Header';
 import { BigTitle } from '@/constants/StyledText';
 
 const ITEMS_PER_PAGE = 10;
@@ -248,15 +248,8 @@ const DictionaryScreen = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
-      <Header darkMode={darkMode} firstLink="/home" secondLink="/parameter" />
-      <BannerContainer
-        title={texts.profilScreen.banner.title}
-        text={texts.profilScreen.banner.text}
-        popuptitle={texts.profilScreen.banner.popup.title}
-        popuptext={texts.profilScreen.banner.popup.text}
-        popupbutton={texts.profilScreen.banner.popup.button}
-        darkMode={darkMode}
-      />
+      <Header darkMode={darkMode} firstLink="/home" secondLink="none" />
+
       <View style={styles.section}>
         <FilterBar
           onSearchChange={handleSearchChange}

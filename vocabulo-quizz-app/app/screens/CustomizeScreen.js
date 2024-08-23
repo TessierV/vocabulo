@@ -6,7 +6,7 @@ import SelectDifficulty from '@/components/Category/SelectDifficulty';
 import SectionTitle from '@/components/SectionTitle';
 import { texts } from '@/constants/texts';
 import CategoryCard from '@/components/Customize/CategoryCard';
-import Header from '@/components/Header';
+import Header from '@/components/Header/Header';
 import FilterBar from '@/components/FilterBar';
 import SelectedCategoryRow from '@/components/Customize/SelectedCategoryRow';
 import SummaryModal from '@/components/Customize/SummaryModal';
@@ -130,7 +130,7 @@ const Page = () => {
         onClose={handleSummaryModalClose}
       />
 
-      
+
     </>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Animated, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
+import SvgIcon from './SvgIcon'; // Assurez-vous que le chemin est correct
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import { BigTitle } from '@/constants/StyledText';
 
@@ -9,7 +9,7 @@ const imagePath = require('@/assets/images/borderCongrats.png');
 const circusPath = require('@/assets/images/circus.png');
 const defaultPath = require('@/assets/images/oyster.png');
 
-const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttempt }) => {
+const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttempt, correctMoreAttempt }) => {
     const router = useRouter();
 
     // Ref to hold the animated value for scale
@@ -52,13 +52,13 @@ const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttem
         outputRange: ['0deg', '360deg'],
     });
 
-    const handleHomePress = () => {
-        router.push('/home');
+    const handleDictionaryPress = () => {
+        router.push('/dictionary');
         onClose();
     };
 
     const handleRestartPress = () => {
-        router.push('/game');
+        router.push('/quiz');
         onClose();
     };
 
@@ -95,40 +95,44 @@ const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttem
                     <BigTitle style={styles.modalTitle}>Congratulations!</BigTitle>
 
                     <View style={styles.containerSection}>
-                        <View style={styles.modalContentSection}>
+                        <View style={[styles.modalContentSection, { backgroundColor: color.neutralGreen }]}>
                             <View style={styles.modalTitleSection}>
-                                <Feather name="home" size={24} color={lightTheme.darkShade} />
-                                <Text style={styles.modalText}>1 tentative</Text>
+                                <SvgIcon icon="happy" fillColor={lightTheme.darkShade} />
                             </View>
                             <Text style={styles.modalText}>{correctFirstAttempt}</Text>
                         </View>
-                        <View style={styles.modalContentSection}>
+                        <View style={[styles.modalContentSection, { backgroundColor: color.neutralBlue }]}>
                             <View style={styles.modalTitleSection}>
-                                <Feather name="home" size={24} color={lightTheme.darkShade} />
-                                <Text style={styles.modalText}>2eme tentatives</Text>
+                                <SvgIcon icon="normal" fillColor={lightTheme.darkShade} />
                             </View>
                             <Text style={styles.modalText}>{correctSecondAttempt}</Text>
+                        </View>
+                        <View style={[styles.modalContentSection, { backgroundColor: color.neutralPlum }]}>
+                            <View style={styles.modalTitleSection}>
+                                <SvgIcon icon="sad" fillColor={lightTheme.darkShade} />
+                            </View>
+                            <Text style={styles.modalText}>{correctMoreAttempt}</Text>
                         </View>
                     </View>
 
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.iconButtonContainer} onPress={handleHomePress}>
-                            <View style={[styles.iconButton, { backgroundColor: color.darkGreen }]}>
-                                <Feather name="home" size={35} color={lightTheme.darkShade} />
+                        <TouchableOpacity style={styles.iconButtonContainer} onPress={handleGamePress}>
+                            <View style={[styles.iconButton]}>
+                                <SvgIcon icon="category" fillColor={lightTheme.darkShade} />
                             </View>
-                            <Text style={styles.iconButtonText}>Home</Text>
+                            <Text style={styles.iconButtonText}>Quizz</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.iconButtonContainer} onPress={handleRestartPress}>
-                            <View style={[styles.iconButton, { backgroundColor: color.darkBlue }]}>
-                                <Feather name="rotate-cw" size={35} color={lightTheme.darkShade} />
+                            <View style={[styles.iconButton, { backgroundColor: lightTheme.darkShade }]}>
+                                <SvgIcon icon="refresh" fillColor={lightTheme.lightShade} />
                             </View>
                             <Text style={styles.iconButtonText}>Restart</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.iconButtonContainer} onPress={handleGamePress}>
-                            <View style={[styles.iconButton, { backgroundColor: color.darkPlum }]}>
-                                <Feather name="play-circle" size={35} color={lightTheme.darkShade} />
+                        <TouchableOpacity style={styles.iconButtonContainer} onPress={handleDictionaryPress}>
+                            <View style={[styles.iconButton]}>
+                                <SvgIcon icon="dictionary" fillColor={lightTheme.darkShade} />
                             </View>
-                            <Text style={styles.iconButtonText}>Game</Text>
+                            <Text style={styles.iconButtonText}>Dictionnaire</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -140,7 +144,7 @@ const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttem
 const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
-        backgroundColor: lightTheme.lightShade,
+        backgroundColor: lightTheme.dark_lightShade,
     },
     modalContent: {
         width: '90%',
@@ -183,22 +187,27 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'center',
         gap: 5,
+        width: '100%',
     },
     modalTitleSection: {
         flexDirection: 'row',
         gap: 15,
+        justifyContent: 'center',
+        alignSelf: 'center',
+        alignItems: 'center',
     },
     modalContentSection: {
         flexDirection: 'row',
         backgroundColor: lightTheme.lightShade,
         justifyContent: 'space-between',
-        minWidth: '100%',
+        minWidth: '30%',
         alignSelf: 'center',
         alignContent: 'center',
-        paddingHorizontal: 10,
         marginBottom: 10,
         padding: 10,
         borderRadius: 10,
+        gap: 15,
+
     },
     modalTitle: {
         textAlign: 'center',
@@ -221,7 +230,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     iconButton: {
-        backgroundColor: lightTheme.darkShade,
         padding: 20,
         borderRadius: 25,
     },
@@ -236,3 +244,4 @@ const styles = StyleSheet.create({
 });
 
 export default ResultModal;
+
