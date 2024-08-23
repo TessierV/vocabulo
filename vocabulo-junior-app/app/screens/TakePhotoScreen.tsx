@@ -8,7 +8,7 @@ import { Colors } from '@/constants/Colors';
 export default function TakePhotoScreen() {
   return (
     <SafeAreaView style={styles.container}>
-      <TopNavBar title="Scanner un texte" tintColor={Colors.darkCoral} color={Colors.darkCoral} />
+      <TopNavBar title="Scanner un texte" tintColor={Colors.darkGreen} color={Colors.darkGreen} />
       <View style={styles.MyCameraComponent}>
       <MyCamera />
       </View>

@@ -8,7 +8,7 @@ import AllFilters from '@/components/Dictionnary/AllFilters';
 export default function DictionnaryScreen() {
   return (
       <SafeAreaView style={styles.container}>
-        <TopNavBar title="Accueil" tintColor={Colors.darkCoral} color={Colors.darkCoral} />
+        <TopNavBar title="Dictionnaire" tintColor={Colors.darkGreen} color={Colors.darkGreen} />
         <View style={styles.AllFiltersComponent}>
           <AllFilters />
         </View>
@@ -17,7 +17,8 @@ export default function DictionnaryScreen() {
   }
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
+      height: '100%',
+      width: '100%',
       backgroundColor: Colors.lightGrey,
     },
     AllFiltersComponent: {
