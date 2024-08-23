@@ -24,6 +24,7 @@ export default function LoginLayout() {
 
     <Stack>
       <Stack.Screen name="Login" options={{ headerShown: false }} />
+      <Stack.Screen name="screens" options={{ headerShown: false }} />
     </Stack>
   );
 }
