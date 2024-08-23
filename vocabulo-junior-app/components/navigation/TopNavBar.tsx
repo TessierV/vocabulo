@@ -47,14 +47,14 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     iconTextContainer: {
-        marginTop: 20,
+        marginTop: '7%',
         flexDirection: 'row',
         position: 'absolute',
         width: '100%',
         paddingHorizontal: '7%',
         justifyContent: 'space-between',
         alignItems: 'center',
-        top: 20,
+        top: '9%',
     },
     text: {
         alignItems: 'center',
