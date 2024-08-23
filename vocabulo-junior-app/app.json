@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Vocabulo-junior-app",
-    "slug": "Vocabulo-junior-app",
+    "name": "vocabulo kid",
+    "slug": "vocabulo-junior-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -18,10 +18,9 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon-app-junior-blue-plum.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/icon-app-junior-blue-plum.png"
       },
-      "package": "com.amandineassenat.Vocabulojuniorapp"
+      "package": "com.amandineassenat.vocabulojuniorapp"
     },
     "web": {
       "bundler": "metro",
@@ -32,7 +31,8 @@
       "expo-router",
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
-      "expo-camera"
+      "expo-camera",
+      "expo-av"
     ],
     "experiments": {
       "typedRoutes": true
@@ -42,7 +42,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "6e6dda48-1035-437a-9379-9856aef1f780"
+        "projectId": "2c8556a2-4c30-441c-9fa4-7ac5555dfe1a"
       }
     }
   }
