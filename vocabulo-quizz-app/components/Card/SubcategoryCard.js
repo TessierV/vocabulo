@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
-import SvgIcon from '@/components/Card/SvgIcon'; // Utilisez votre composant SvgIcon
-import { AnnonceParagraph, Paragraph } from '@/constants/StyledText';
+import SvgIcon from '@/components/Card/SvgIcon';
+import { Paragraph } from '@/constants/StyledText';
+import CategoryModal from '@/components/Home/HomeCard/CategoryModal';
 
 const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
   const [subcategories, setSubcategories] = useState([]);
   const [words, setWords] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCategoryData, setSelectedCategoryData] = useState(null);
+  const [filteredWords, setFilteredWords] = useState({ easy: [], middle: [], hard: [] });
 
   const screenWidth = Dimensions.get('window').width;
   const squareSize = screenWidth / 3 - 25;
@@ -19,7 +23,7 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
 
   const fetchSubcategories = async () => {
     try {
-      const response = await fetch('http://192.168.1.15:3000/api/subcategories');
+      const response = await fetch('http://192.168.23.25:3000/api/subcategories');
       const data = await response.json();
       setSubcategories(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -31,9 +35,12 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
 
   const fetchWords = async (categorieId) => {
     try {
-      const response = await fetch(`http://192.168.1.15:3000/api/words/${categorieId}`);
+      const response = await fetch(`http://192.168.23.25:3000/api/words/${categorieId}`);
       const data = await response.json();
-      setWords(Array.isArray(data) ? data : []);
+      const easyWords = data.find(d => d.difficulty === 'easy')?.words || [];
+      const middleWords = data.find(d => d.difficulty === 'middle')?.words || [];
+      const hardWords = data.find(d => d.difficulty === 'hard')?.words || [];
+      setFilteredWords({ easy: easyWords, middle: middleWords, hard: hardWords });
     } catch (error) {
       console.error('Erreur lors de la récupération des mots:', error);
     }
@@ -43,19 +50,19 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
     fetchSubcategories();
   }, []);
 
-  const handleCategoryClick = (categorieId) => {
-    if (selectedCategory === categorieId) {
+  const handleCategoryClick = (category) => {
+    if (selectedCategory === category.categorie_id) {
       onCategoryClick(null);
-      setWords([]);
+      setFilteredWords({ easy: [], middle: [], hard: [] });
     } else {
-      onCategoryClick(categorieId);
-      fetchWords(categorieId);
+      onCategoryClick(category.categorie_id);
+      fetchWords(category.categorie_id);
+      setSelectedCategoryData(category);
+      setModalVisible(true);
     }
   };
 
-  const normalizeIconName = (name) => {
-    return name.trim();
-  };
+  const normalizeIconName = (name) => name.trim();
 
   if (loading) {
     return (
@@ -70,51 +77,58 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
       contentContainerStyle={[styles.grid, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}
     >
       {subcategories.length > 0 ? (
-        subcategories.map((subcategory) => {
+        subcategories.map((category) => {
           const { contentContainerColor, textColor } = getStyleForSubcategory();
-          const iconName = normalizeIconName(subcategory.categorie_name);
+          const iconName = normalizeIconName(category.categorie_name);
 
           return (
-            <TouchableOpacity
-              key={subcategory.categorie_id}
-              style={[
-                styles.itemContainer,
-                {
-                  backgroundColor: selectedCategory === subcategory.categorie_id ? contentContainerColor : lightTheme.lightShade,
-                },
-              ]}
-              onPress={() => handleCategoryClick(subcategory.categorie_id)}
-            >
-              <View
+            <View key={category.categorie_id}>
+              <TouchableOpacity
                 style={[
-                  styles.contentContainer,
+                  styles.itemContainer,
                   {
-                    width: squareSize,
-                    height: squareSize,
-                  }
+                    backgroundColor: selectedCategory === category.categorie_id ? contentContainerColor : lightTheme.lightShade,
+                  },
                 ]}
+                onPress={() => handleCategoryClick(category)}
               >
                 <View
                   style={[
-                    styles.iconContainer
+                    styles.contentContainer,
+                    {
+                      width: squareSize,
+                      height: squareSize,
+                    }
                   ]}
                 >
-                  <SvgIcon icon={iconName} fillColor={textColor} />
+                  <View style={styles.iconContainer}>
+                    <SvgIcon icon={iconName} fillColor={textColor} />
+                  </View>
+                  <View>
+                    <Paragraph style={[styles.label, { color: textColor }]}>
+                      {category.categorie_name}
+                    </Paragraph>
+                    <Paragraph style={[styles.label, { color: textColor }]}>
+                      {category.word_count} mots
+                    </Paragraph>
+                  </View>
                 </View>
-                <View>
-                  <Paragraph style={[styles.label, { color: textColor }]}>
-                    {subcategory.categorie_name}
-                  </Paragraph>
-                  <Paragraph style={[styles.label, { color: textColor }]}>
-                    {subcategory.word_count}
-                  </Paragraph>
-                </View>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
           );
         })
       ) : (
         <Text style={styles.noDataText}>No categories available</Text>
+      )}
+
+      {selectedCategoryData && (
+        <CategoryModal
+          isVisible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          category={selectedCategoryData}
+          darkMode={darkMode}
+          filteredWords={filteredWords}
+        />
       )}
     </ScrollView>
   );
