@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
@@ -32,23 +33,48 @@ app.get('/api/test-connection', async (req, res) => {
   }
 });
 
-// Route pour récupérer les catégories avec le nombre de mots associés
+
 // Route pour récupérer les catégories avec le nombre de mots associés, y compris ceux des sous-catégories
+// Route pour récupérer les catégories avec les mots associés à chaque sous-catégorie
 app.get('/api/subcategories', async (req, res) => {
   try {
     const query = `
-      WITH SubcategoryWords AS (
+      WITH SubcategoryDetails AS (
         SELECT
           sc.subcat_id,
           sc.categorie_id,
           sc.name AS subcategory_name,
-          COUNT(ms.mot_id) AS subcategory_word_count
+          ms.mot_id,
+          m.mot,
+          m.definition,
+          lsf.url_sign,
+          lsf.url_def
         FROM
           subcategory sc
         LEFT JOIN
           mot_subcategory ms ON sc.subcat_id = ms.subcat_id
+        LEFT JOIN
+          mot m ON ms.mot_id = m.mot_id
+        LEFT JOIN
+          lsf_signe lsf ON m.mot_id = lsf.mot_id
+      ),
+      SubcategoryWords AS (
+        SELECT
+          sc.categorie_id,
+          sc.subcat_id,
+          sc.subcategory_name,
+          COUNT(sc.mot_id) AS subcategory_word_count,
+          json_agg(json_build_object(
+            'mot_id', sc.mot_id,
+            'mot', sc.mot,
+            'definition', sc.definition,
+            'url_sign', sc.url_sign,
+            'url_def', sc.url_def
+          )) AS words
+        FROM
+          SubcategoryDetails sc
         GROUP BY
-          sc.subcat_id
+          sc.categorie_id, sc.subcat_id, sc.subcategory_name
       ),
       CategoryWords AS (
         SELECT
@@ -72,14 +98,15 @@ app.get('/api/subcategories', async (req, res) => {
         cw.categorie_name,
         cw.category_word_count + cw.subcategory_total_word_count AS word_count,
         json_agg(json_build_object(
-          'subcategory_id', sc.subcat_id,
-          'subcategory_name', sc.subcategory_name,
-          'subcategory_word_count', sc.subcategory_word_count
+          'subcategory_id', sw.subcat_id,
+          'subcategory_name', sw.subcategory_name,
+          'subcategory_word_count', sw.subcategory_word_count,
+          'words', sw.words
         )) AS subcategories
       FROM
         CategoryWords cw
       LEFT JOIN
-        SubcategoryWords sc ON cw.categorie_id = sc.categorie_id
+        SubcategoryWords sw ON cw.categorie_id = sw.categorie_id
       GROUP BY
         cw.categorie_id, cw.categorie_name, cw.category_word_count, cw.subcategory_total_word_count
       ORDER BY
@@ -95,32 +122,145 @@ app.get('/api/subcategories', async (req, res) => {
 });
 
 
-// Route pour récupérer les mots associés à une catégorie spécifique
+
+// Route pour récupérer les mots associés à une catégorie spécifique, avec les informations de lsf_signe
 app.get('/api/words/:categorieId', async (req, res) => {
-  const categorieId = req.params.categorieId; // UUID ou entier, selon votre base de données
+    const categorieId = req.params.categorieId; // UUID ou entier, selon votre base de données
 
-  try {
-    const query = `
-      SELECT
-        m.mot_id,
-        m.mot
-      FROM
-        mot m
-      JOIN
-        mot_categorie mc ON m.mot_id = mc.mot_id
-      WHERE
-        mc.categorie_id = $1
-      ORDER BY
-        m.mot;
-    `;
+    try {
+      const query = `
+        SELECT
+          m.mot_id,
+          m.mot,
+          m.definition,  -- Ajout de la colonne definition
+          json_agg(json_build_object(
+            'signe_id', ls.signe_id,
+            'url_sign', ls.url_sign,
+            'url_def', ls.url_def
+          )) AS signes
+        FROM
+          mot m
+        LEFT JOIN
+          mot_categorie mc ON m.mot_id = mc.mot_id
+        LEFT JOIN
+          lsf_signe ls ON m.mot_id = ls.mot_id
+        WHERE
+          mc.categorie_id = $1
+        GROUP BY
+          m.mot_id, m.mot, m.definition
+        ORDER BY
+          m.mot;
+      `;
 
-    const result = await pool.query(query, [categorieId]);
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Erreur lors de la récupération des mots:', err.message);
-    res.status(500).send('Erreur lors de la récupération des mots');
-  }
-});
+      const result = await pool.query(query, [categorieId]);
+      res.json(result.rows);
+    } catch (err) {
+      console.error('Erreur lors de la récupération des mots:', err.message);
+      res.status(500).send('Erreur lors de la récupération des mots');
+    }
+  });
+
+  // Route pour récupérer les catégories avec leurs sous-catégories et mots associés
+  app.get('/api/categories', async (req, res) => {
+    try {
+      const categoriesQuery = `
+        SELECT c.categorie_id, c.name AS categorie_name
+        FROM categorie c
+      `;
+
+      const categoriesResult = await pool.query(categoriesQuery);
+      const categories = categoriesResult.rows;
+
+      for (const category of categories) {
+        // Récupérer les sous-catégories
+        const subcategoriesQuery = `
+          SELECT s.subcat_id, s.name AS subcategory_name
+          FROM subcategory s
+          WHERE s.categorie_id = $1
+        `;
+        const subcategoriesResult = await pool.query(subcategoriesQuery, [category.categorie_id]);
+        category.subcategories = subcategoriesResult.rows;
+
+        let totalWordsInCategory = 0;
+
+        // Récupérer les mots pour chaque sous-catégorie et compter les mots
+        for (const subcategory of category.subcategories) {
+          const wordsQuery = `
+            SELECT
+              m.mot_id,
+              m.mot,
+              m.definition,
+              json_agg(json_build_object(
+                'signe_id', ls.signe_id,
+                'url_sign', ls.url_sign,
+                'url_def', ls.url_def
+              )) AS signes
+            FROM
+              mot m
+            LEFT JOIN
+              mot_subcategory ms ON m.mot_id = ms.mot_id
+            LEFT JOIN
+              lsf_signe ls ON m.mot_id = ls.mot_id
+            WHERE
+              ms.subcat_id = $1
+            GROUP BY
+              m.mot_id, m.mot, m.definition
+            ORDER BY
+              m.mot
+          `;
+          const wordsResult = await pool.query(wordsQuery, [subcategory.subcat_id]);
+          subcategory.words = wordsResult.rows;
+
+          // Compter les mots dans la sous-catégorie
+          subcategory.wordCount = subcategory.words.length;
+          totalWordsInCategory += subcategory.wordCount;
+        }
+
+        // Récupérer les mots directement associés à la catégorie (sans sous-catégorie)
+        const categoryWordsQuery = `
+          SELECT
+            m.mot_id,
+            m.mot,
+            m.definition,
+            json_agg(json_build_object(
+              'signe_id', ls.signe_id,
+              'url_sign', ls.url_sign,
+              'url_def', ls.url_def
+            )) AS signes
+          FROM
+            mot m
+          LEFT JOIN
+            mot_categorie mc ON m.mot_id = mc.mot_id
+          LEFT JOIN
+            lsf_signe ls ON m.mot_id = ls.mot_id
+          WHERE
+            mc.categorie_id = $1
+            AND m.mot_id NOT IN (SELECT mot_id FROM mot_subcategory WHERE subcat_id IN (SELECT subcat_id FROM subcategory WHERE categorie_id = $1))
+          GROUP BY
+            m.mot_id, m.mot, m.definition
+          ORDER BY
+            m.mot
+        `;
+        const categoryWordsResult = await pool.query(categoryWordsQuery, [category.categorie_id]);
+        category.categoryWords = categoryWordsResult.rows;
+
+        // Compter les mots directement dans la catégorie
+        category.wordCount = category.categoryWords.length;
+        totalWordsInCategory += category.wordCount;
+
+        // Ajouter le nombre total de mots pour la catégorie (incluant les sous-catégories)
+        category.totalWordCount = totalWordsInCategory;
+      }
+
+      res.json(categories);
+    } catch (err) {
+      console.error('Erreur lors de la récupération des catégories:', err.message);
+      res.status(500).send('Erreur lors de la récupération des catégories');
+    }
+  });
+
+
+
 
 // Route par défaut pour attraper les requêtes non définies
 app.use('*', (req, res) => {
