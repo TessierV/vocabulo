@@ -10,8 +10,9 @@ import { texts } from '@/constants/texts';
 import CategoryGrid from '@/components/CategoryGrid';
 import Slider from '@/components/Slider/Slider';
 import CategoryCard from '@/components/CategoryCard';
-import SubcategoryCard from '@/components/Card/SubcategoryCard';
 import { useNavigation } from '@react-navigation/native';
+import HomeCategoryCard from '@/components/Home/HomeCard/CategoryCard';
+import GridCardHome from '@/components/Home/Home/GridCard';
 
 const HomeScreen = () => {
   const [darkMode] = useDarkMode();
@@ -71,9 +72,11 @@ const HomeScreen = () => {
           popupButtonText={texts.homeScreen.section_second?.popup?.button || 'Default Button Text'}
           darkMode={darkMode}
         />
+        <CategoryCard categories={texts.categories} darkMode={darkMode} />
 
-        <CategoryCard categories={texts.categories || []} darkMode={darkMode} />
-        <SubcategoryCard darkMode={darkMode} />
+        <HomeCategoryCard darkMode={darkMode} />
+
+        <GridCardHome darkMode={darkMode}  />
       </View>
     </ScrollView>
   );
