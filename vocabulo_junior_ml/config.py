@@ -41,12 +41,12 @@ DB_PARAMS = {
     'dbname': os.getenv('POSTGRES_DB'),  # Base name
     'user': os.getenv('POSTGRES_USER'),  # User name
     'password': os.getenv('POSTGRES_PASSWORD'),  # Password
-    'host': 'localhost',  # Host
+    'host': os.getenv('DB_HOST', 'db'),  # Host
     'port': '5432'  # Port
 }
 
 # Tesseract configuration
-TESSERACT_CMD = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # path executable Tesseract
+TESSERACT_CMD = 'tesseract'  # path executable Tesseract in container
 TESSDATA_PREFIX = os.path.abspath(os.path.join(os.path.dirname(__file__), "models"))  # path ocr fine-tuned model
 FINETUNED_MODEL = "fra"  # name fine-tuned model
 
