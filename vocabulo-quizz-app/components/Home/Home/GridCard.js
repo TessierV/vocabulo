@@ -1,3 +1,4 @@
+// GridCardHome.js
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, ScrollView, TouchableOpacity, Dimensions, Modal } from 'react-native';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
@@ -8,6 +9,7 @@ import { Feather } from '@expo/vector-icons';
 import CategoryModal from '@/components/Home/Home/CategoryModal';
 import SubcategoryModal from '@/components/Home/Home/SubcategoryModal';
 import useFilter from '@/components/Home/Home/useFilter';
+import { useRouter } from 'expo-router';
 
 const GridCardHome = () => {
     const [darkMode] = useDarkMode();
@@ -16,6 +18,7 @@ const GridCardHome = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [filter, setFilter, applyFilter] = useFilter();
+    const router = useRouter();
 
     const screenWidth = Dimensions.get('window').width;
     const squareSize = screenWidth / 3 - 25;
@@ -49,13 +52,11 @@ const GridCardHome = () => {
     const getTotalFilteredWordCount = (category) => {
         let totalFilteredCount = 0;
 
-        // Filter and count words in the main category
         if (category.categoryWords) {
             const { count: mainCategoryCount } = applyFilter(category.categoryWords);
             totalFilteredCount += mainCategoryCount;
         }
 
-        // Filter and count words in each subcategory
         (category.subcategories || []).forEach(subcategory => {
             const { count: subCategoryCount } = applyFilter(subcategory.words || []);
             totalFilteredCount += subCategoryCount;
@@ -63,6 +64,29 @@ const GridCardHome = () => {
 
         return totalFilteredCount;
     };
+
+    const handleNavigateToWordList = () => {
+        if (selectedCategory) {
+            const filteredMainCategoryWords = applyFilter(selectedCategory.categoryWords || []).filteredWords;
+            const filteredSubcategories = (selectedCategory.subcategories || []).map(subcategory => ({
+                ...subcategory,
+                words: applyFilter(subcategory.words || []).filteredWords,
+            }));
+
+            // Fermez le modal avant de naviguer
+            closeModal();
+
+            // Naviguez vers la page de liste de mots
+            router.push({
+                pathname: `/wordlist/${selectedCategory.categorie_id}`,
+                params: {
+                    mainCategoryWords: filteredMainCategoryWords,
+                    subcategories: filteredSubcategories,
+                },
+            });
+        }
+    };
+
 
     if (loading) {
         return (
@@ -152,6 +176,11 @@ const GridCardHome = () => {
                                     />
                                 ))}
                             </ScrollView>
+
+                            {/* Add button to navigate to word list */}
+                            <TouchableOpacity style={styles.navigateButton} onPress={handleNavigateToWordList}>
+                                <Text style={styles.navigateButtonText}>Voir la liste des mots</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </Modal>
@@ -159,7 +188,6 @@ const GridCardHome = () => {
         </View>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: {
@@ -199,34 +227,43 @@ const styles = StyleSheet.create({
     },
     closeButton: {
         alignSelf: 'flex-end',
-        marginBottom: 10,
     },
     recapContainer: {
         alignItems: 'center',
-        marginBottom: 20,
     },
     recapTitle: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
-        color: 'black',
-        marginTop: 10,
+        marginVertical: 10,
     },
     recapCount: {
-        fontSize: 14,
+        fontSize: 16,
         color: 'gray',
     },
     filterBar: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginBottom: 10,
+        justifyContent: 'space-evenly',
+        marginVertical: 10,
     },
     filterButton: {
-        padding: 10,
-        backgroundColor: '#ddd',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        backgroundColor: 'lightgray',
         borderRadius: 5,
     },
     filterButtonText: {
         fontSize: 14,
+    },
+    navigateButton: {
+        marginTop: 20,
+        paddingVertical: 10,
+        backgroundColor: color.neutralCoral,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    navigateButtonText: {
+        color: 'white',
+        fontSize: 16,
     },
 });
 
