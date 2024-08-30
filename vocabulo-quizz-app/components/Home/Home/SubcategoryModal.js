@@ -5,9 +5,14 @@ const SubcategoryModal = ({ subcategory }) => {
   return (
     <View style={styles.container}>
       <View style={styles.subcategoryDetailContainer}>
-        <Text style={styles.subcategoryTitle}>
-          {subcategory.subcategory_name} ({subcategory.wordCount} mots)
-        </Text>
+        <View>
+          <Text style={styles.subcategoryTitle}>
+            {subcategory.subcategory_name}
+          </Text>
+          <Text style={styles.subcategoryTitle}>
+            {subcategory.countSelected} / {subcategory.wordCount} mots
+          </Text>
+        </View>
         {subcategory.words.map((word) => (
           <View key={word.mot_id} style={styles.wordItemContainer}>
             <Text style={styles.word}>{word.mot}</Text>
@@ -24,6 +29,7 @@ const SubcategoryModal = ({ subcategory }) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
