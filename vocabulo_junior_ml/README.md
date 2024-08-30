@@ -1,53 +1,88 @@
 # Vocabulo-junior ML
 
-Ce projet est une API de traitement d'images et de texte pour l'application 
-Vocabulo-junior.
+This project is a containerized API for image and text processing for the Vocabulo-junior application.
 
-## Prérequis
+## Prerequisites
 
-- Python 3.9+
-- PostgreSQL 14.12
-- Tesseract OCR tesseract v5
+- Docker
+- Docker Compose
 
 ## Installation
 
-1. Installez les dépendances :
+1. Create a shared Docker network:
    ```
-   pip install -r requirements.txt
+   docker network create shared_ml_network
    ```
 
-2. Installez Tesseract OCR :
-   - Windows : Téléchargez depuis https://github.com/UB-Mannheim/tesseract/wiki
+2. Configure environment variables:
+   Create a `.env` file in the project root with the necessary variables (see Configuration section).
 
-3. Configurez la base de données :
-   - Ajoutez l'extension unaccent : `CREATE EXTENSION IF NOT EXISTS unaccent;`
+## Configuration
 
-4. Configurez les variables d'environnement :
-   Créez un fichier `.env` à la racine du projet
+Create a `.env` file in the project root with the following content:
 
-## Structure du projet
-
-- `api/`: Contient les endpoints FastAPI
-- `core/`: Logique métier principale
-- `models/`: Modèles de ML et configurations
-- `tests/`: Tests unitaires et d'intégration
-- `config.py`: Configuration globale du projet
-
-## Exécution
-
-Pour lancer l'API :
 ```
-uvicorn api.main:app --reload
+POSTGRES_DB=your_db_name
+POSTGRES_USER=your_username
+POSTGRES_PASSWORD=your_password
+DB_HOST=db
 ```
+
+## Project Structure
+
+- `api/`: Contains FastAPI endpoints
+- `core/`: Main business logic
+- `models/`: ML models and configurations
+- `tests/`: Unit and integration tests
+- `config.py`: Global project configuration
+- `Dockerfile`: Instructions to build the Docker image
+- `docker-compose.yml`: Docker services configuration
+
+## Execution
+
+To build and launch the API:
+
+```
+docker-compose build
+docker-compose up -d
+```
+
+The API will be accessible at: `http://localhost:8000`
+
+## API Usage
+
+You can access the Swagger documentation of the API at: `http://localhost:8000/docs`
 
 ## Tests
 
-Pour exécuter les tests :
+To run tests in the container:
+
 ```
-python -m unittest discover tests
+docker-compose run --rm api_ml_vocabulokid python -m unittest discover tests
+```
+
+## Logs
+
+To view API logs:
+
+```
+docker-compose logs api_ml_vocabulokid
+```
+
+## Stopping Services
+
+To stop all services:
+
+```
+docker-compose down
 ```
 
 ## Contribution
 
-Marianne Arrué 
+Marianne Arrué
 
+## Notes
+
+- Ensure the Docker network `shared_ml_network` is created before launching services.
+- The container includes Tesseract OCR and necessary models, so no local installation is required.
+- The PostgreSQL database should be configured separately and connected to the same Docker network.
