@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions, ScrollView, ActivityIndicator } from 'react-native';
-import { BigTitle, Subtitle } from '@/constants/StyledText';
+import { BigTitle, Paragraph, Subtitle } from '@/constants/StyledText';
 import useDarkMode from '@/components/useDarkMode';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import WeeklyOverview from '@/components/Home/WeeklyOverview';
@@ -13,6 +13,7 @@ import CategoryCard from '@/components/CategoryCard';
 import { useNavigation } from '@react-navigation/native';
 import HomeCategoryCard from '@/components/Home/HomeCard/CategoryCard';
 import GridCardHome from '@/components/Home/Home/GridCard';
+import TitleSlider from '@/components/Slider/SliderTitleWithInfo';
 
 const HomeScreen = () => {
   const [darkMode] = useDarkMode();
@@ -72,11 +73,10 @@ const HomeScreen = () => {
           popupButtonText={texts.homeScreen.section_second?.popup?.button || 'Default Button Text'}
           darkMode={darkMode}
         />
-        <CategoryCard categories={texts.categories} darkMode={darkMode} />
-
-        <HomeCategoryCard darkMode={darkMode} />
 
         <GridCardHome darkMode={darkMode}  />
+        <Paragraph>Old Version</Paragraph>
+        <CategoryCard categories={texts.categories} darkMode={darkMode} />
       </View>
     </ScrollView>
   );

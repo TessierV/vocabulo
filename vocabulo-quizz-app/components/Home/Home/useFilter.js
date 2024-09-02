@@ -4,6 +4,8 @@ const useFilter = () => {
     const [filter, setFilter] = useState('all');
 
     const applyFilter = (words) => {
+        console.log('Words before filtering:', words);
+
         const filteredWords = words.filter((word) => {
             const hasUndefinedSign = word.signes.some(signe => (signe.url_sign || '').includes('Non spécifié'));
             const hasUndefinedDefinition = word.signes.some(signe => (signe.url_def || '').includes('Non spécifié'));
@@ -21,6 +23,7 @@ const useFilter = () => {
             }
         });
 
+        console.log('Filtered Words:', filteredWords);
         return { filteredWords, count: filteredWords.length };
     };
 
