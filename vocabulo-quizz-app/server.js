@@ -160,6 +160,9 @@ app.get('/api/words/:categorieId', async (req, res) => {
     }
   });
 
+  //
+  // a garder
+
   // Route pour récupérer les catégories avec leurs sous-catégories et mots associés
   app.get('/api/categories', async (req, res) => {
     try {
@@ -256,6 +259,100 @@ app.get('/api/words/:categorieId', async (req, res) => {
     } catch (err) {
       console.error('Erreur lors de la récupération des catégories:', err.message);
       res.status(500).send('Erreur lors de la récupération des catégories');
+    }
+  });
+
+
+  //nouveau
+  app.get('/api/words/:categoryId', async (req, res) => {
+    const { categoryId } = req.params;
+
+    try {
+      // Récupérer les sous-catégories pour la catégorie
+      const subcategoriesQuery = `
+        SELECT s.subcat_id, s.name AS subcategory_name
+        FROM subcategory s
+        WHERE s.categorie_id = $1
+      `;
+      const subcategoriesResult = await pool.query(subcategoriesQuery, [categoryId]);
+      const subcategories = subcategoriesResult.rows;
+
+      // Récupérer les mots directement associés à la catégorie
+      const categoryWordsQuery = `
+        SELECT
+          m.mot_id,
+          m.mot,
+          m.definition,
+          json_agg(json_build_object(
+            'signe_id', ls.signe_id,
+            'url_sign', ls.url_sign,
+            'url_def', ls.url_def
+          )) AS signes
+        FROM
+          mot m
+        LEFT JOIN
+          mot_categorie mc ON m.mot_id = mc.mot_id
+        LEFT JOIN
+          lsf_signe ls ON m.mot_id = ls.mot_id
+        WHERE
+          mc.categorie_id = $1
+        GROUP BY
+          m.mot_id, m.mot, m.definition
+        ORDER BY
+          m.mot
+      `;
+      const categoryWordsResult = await pool.query(categoryWordsQuery, [categoryId]);
+
+      // Préparer la réponse
+      const result = {
+        categorie_id: categoryId,
+        categorie_name: 'Nom de la catégorie', // Remplacez par le nom réel de la catégorie si nécessaire
+        categoryWords: categoryWordsResult.rows,
+        subcategories: []
+      };
+
+      // Ajouter les sous-catégories avec leurs mots
+      for (const subcategory of subcategories) {
+        const subcategoryWordsQuery = `
+          SELECT
+            m.mot_id,
+            m.mot,
+            m.definition,
+            json_agg(json_build_object(
+              'signe_id', ls.signe_id,
+              'url_sign', ls.url_sign,
+              'url_def', ls.url_def
+            )) AS signes
+          FROM
+            mot m
+          LEFT JOIN
+            mot_subcategory ms ON m.mot_id = ms.mot_id
+          LEFT JOIN
+            lsf_signe ls ON m.mot_id = ls.mot_id
+          WHERE
+            ms.subcat_id = $1
+          GROUP BY
+            m.mot_id, m.mot, m.definition
+          ORDER BY
+            m.mot
+        `;
+        const subcategoryWordsResult = await pool.query(subcategoryWordsQuery, [subcategory.subcat_id]);
+
+        result.subcategories.push({
+          subcat_id: subcategory.subcat_id,
+          subcategory_name: subcategory.subcategory_name,
+          words: subcategoryWordsResult.rows,
+          wordCount: subcategoryWordsResult.rows.length
+        });
+      }
+
+      console.log('Category words:', categoryWordsResult.rows);
+      console.log('Subcategory words:', result.subcategories);
+
+      res.json(result);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des mots:', error.message);
+      res.status(500).send('Erreur lors de la récupération des mots');
     }
   });
 

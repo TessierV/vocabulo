@@ -26,7 +26,7 @@ const GridCardHome = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch('http://192.168.23.25:3000/api/categories');
+                const response = await fetch('http://192.168.0.12:3000/api/categories');
                 const data = await response.json();
                 setCategories(data);
                 setLoading(false);
@@ -52,7 +52,7 @@ const GridCardHome = () => {
     const getTotalFilteredWordCount = (category) => {
         let totalFilteredCount = 0;
 
-        if (category.categoryWords) {
+        if (Array.isArray(category.categoryWords)) {
             const { count: mainCategoryCount } = applyFilter(category.categoryWords);
             totalFilteredCount += mainCategoryCount;
         }
@@ -65,27 +65,33 @@ const GridCardHome = () => {
         return totalFilteredCount;
     };
 
+    // GridCardHome.js
     const handleNavigateToWordList = () => {
         if (selectedCategory) {
-            const filteredMainCategoryWords = applyFilter(selectedCategory.categoryWords || []).filteredWords;
-            const filteredSubcategories = (selectedCategory.subcategories || []).map(subcategory => ({
-                ...subcategory,
-                words: applyFilter(subcategory.words || []).filteredWords,
-            }));
+            const { filteredWords: filteredMainCategoryWords } = applyFilter(selectedCategory.categoryWords || []);
+            const filteredSubcategories = (selectedCategory.subcategories || []).map(subcategory => {
+                const { filteredWords: filteredWords, count } = applyFilter(subcategory.words || []);
+                return {
+                    ...subcategory,
+                    words: filteredWords,
+                    countSelected: count,
+                };
+            });
 
-            // Fermez le modal avant de naviguer
+
             closeModal();
 
-            // Naviguez vers la page de liste de mots
             router.push({
                 pathname: `/wordlist/${selectedCategory.categorie_id}`,
                 params: {
                     mainCategoryWords: filteredMainCategoryWords,
                     subcategories: filteredSubcategories,
+                    filter: filter,
                 },
             });
         }
     };
+
 
 
     if (loading) {
@@ -141,7 +147,6 @@ const GridCardHome = () => {
                                 <Feather name="x" size={24} color="black" />
                             </TouchableOpacity>
 
-                            {/* Recap Section */}
                             <View style={styles.recapContainer}>
                                 <SvgIcon icon={selectedCategory.categorie_name} fillColor={color.neutralCoral} />
                                 <Text style={styles.recapTitle}>{selectedCategory.categorie_name}</Text>
@@ -150,7 +155,6 @@ const GridCardHome = () => {
                                 </Text>
                             </View>
 
-                            {/* Filter Bar */}
                             <View style={styles.filterBar}>
                                 {['all', 'easy', 'medium', 'hard'].map(option => (
                                     <TouchableOpacity key={option} onPress={() => setFilter(option)} style={styles.filterButton}>
@@ -160,8 +164,7 @@ const GridCardHome = () => {
                             </View>
 
                             <ScrollView style={{ maxHeight: 300 }}>
-                                {/* Displaying CategoryModal once with all words */}
-                                {selectedCategory.categoryWords && (
+                                {Array.isArray(selectedCategory.categoryWords) && (
                                     <CategoryModal words={applyFilter(selectedCategory.categoryWords).filteredWords} />
                                 )}
 
@@ -177,7 +180,6 @@ const GridCardHome = () => {
                                 ))}
                             </ScrollView>
 
-                            {/* Add button to navigate to word list */}
                             <TouchableOpacity style={styles.navigateButton} onPress={handleNavigateToWordList}>
                                 <Text style={styles.navigateButtonText}>Voir la liste des mots</Text>
                             </TouchableOpacity>
