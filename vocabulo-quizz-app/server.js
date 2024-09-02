@@ -123,44 +123,7 @@ app.get('/api/subcategories', async (req, res) => {
 
 
 
-// Route pour récupérer les mots associés à une catégorie spécifique, avec les informations de lsf_signe
-app.get('/api/words/:categorieId', async (req, res) => {
-    const categorieId = req.params.categorieId; // UUID ou entier, selon votre base de données
 
-    try {
-      const query = `
-        SELECT
-          m.mot_id,
-          m.mot,
-          m.definition,  -- Ajout de la colonne definition
-          json_agg(json_build_object(
-            'signe_id', ls.signe_id,
-            'url_sign', ls.url_sign,
-            'url_def', ls.url_def
-          )) AS signes
-        FROM
-          mot m
-        LEFT JOIN
-          mot_categorie mc ON m.mot_id = mc.mot_id
-        LEFT JOIN
-          lsf_signe ls ON m.mot_id = ls.mot_id
-        WHERE
-          mc.categorie_id = $1
-        GROUP BY
-          m.mot_id, m.mot, m.definition
-        ORDER BY
-          m.mot;
-      `;
-
-      const result = await pool.query(query, [categorieId]);
-      res.json(result.rows);
-    } catch (err) {
-      console.error('Erreur lors de la récupération des mots:', err.message);
-      res.status(500).send('Erreur lors de la récupération des mots');
-    }
-  });
-
-  //
   // a garder
 
   // Route pour récupérer les catégories avec leurs sous-catégories et mots associés
@@ -275,6 +238,8 @@ app.get('/api/words/:categorieId', async (req, res) => {
         WHERE s.categorie_id = $1
       `;
       const subcategoriesResult = await pool.query(subcategoriesQuery, [categoryId]);
+      console.log('Subcategories Result:', subcategoriesResult.rows);
+
       const subcategories = subcategoriesResult.rows;
 
       // Récupérer les mots directement associés à la catégorie
@@ -302,6 +267,7 @@ app.get('/api/words/:categorieId', async (req, res) => {
           m.mot
       `;
       const categoryWordsResult = await pool.query(categoryWordsQuery, [categoryId]);
+      console.log('Category Words Result:', categoryWordsResult.rows);
 
       // Préparer la réponse
       const result = {
@@ -337,6 +303,7 @@ app.get('/api/words/:categorieId', async (req, res) => {
             m.mot
         `;
         const subcategoryWordsResult = await pool.query(subcategoryWordsQuery, [subcategory.subcat_id]);
+        console.log(`Subcategory Words Result for ${subcategory.subcategory_name}:`, subcategoryWordsResult.rows);
 
         result.subcategories.push({
           subcat_id: subcategory.subcat_id,
@@ -346,15 +313,15 @@ app.get('/api/words/:categorieId', async (req, res) => {
         });
       }
 
-      console.log('Category words:', categoryWordsResult.rows);
-      console.log('Subcategory words:', result.subcategories);
-
       res.json(result);
     } catch (error) {
       console.error('Erreur lors de la récupération des mots:', error.message);
-      res.status(500).send('Erreur lors de la récupération des mots');
+      res.status(500).json({ error: 'Erreur lors de la récupération des mots' });
     }
   });
+
+
+
 
 
 
