@@ -322,10 +322,6 @@ app.get('/api/subcategories', async (req, res) => {
 
 
 
-
-
-
-
 // Route par défaut pour attraper les requêtes non définies
 app.use('*', (req, res) => {
   res.status(404).send('Route non trouvée');
