@@ -16,10 +16,9 @@ const Pagination = ({ currentIndex, totalQuestions }) => {
 const styles = StyleSheet.create({
     paginationContainer: {
         flexDirection: 'row',
-        width: '90%',
-        height: 10,
+        width: '100%',
+        height: 11,
         borderRadius: 5,
-        backgroundColor: lightTheme.darkShade,
         marginVertical: 20,
         gap: 5,
         overflow: 'hidden',
