@@ -217,7 +217,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.white,
     justifyContent: 'center',
     alignSelf: 'center',
-    bottom: '14%',
+    bottom: '45%',
+    position: 'absolute',
   },
   photoContainer: {
     flex: 1,
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   photo: {
-    width: '90%',
+    minWidth: '90%',
     minHeight: 470,
     resizeMode: 'contain',
     borderRadius: 15
@@ -257,17 +258,17 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   referenceLineContainer: {
-    top: '8%',
+    top: '5%',
   },
   referenceLine: {
     width: '90%',
-    borderRadius: 35,
-    borderBottomWidth: 2,
+    height: 500,
+    borderRadius: 5,
+    borderWidth: 2,
     borderStyle: 'dotted',
     borderColor: Colors.white,
     justifyContent: 'center',
     alignSelf: 'center',
-    bottom: '14%',
   },
   targetContainer: {
     marginHorizontal: '5%',
