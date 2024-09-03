@@ -28,13 +28,31 @@ from fastapi import FastAPI, File, UploadFile, HTTPException
 from core.image_processing import handle_image_format
 from core.ocr import perform_ocr
 from core.text_processing import clean_ocr_text, normalize_text, process_text
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Request
 
-# Initialize FastAPI app
 app = FastAPI()
 
+@app.middleware("http")
+async def debug_request(request: Request, call_next):
+    print(f"Request: {request.method} {request.url}")
+    print(f"Headers: {request.headers}")
+    response = await call_next(request)
+    return response
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["POST", "GET", "OPTIONS"],  # Assurez-vous que POST est inclus
+    allow_headers=["*"],
+)
 
 @app.post("/process-image/")
 async def process_image(file: UploadFile = File(...)):
+    print(f"Received file: {file.filename}")
+    print(f"Content-Type: {file.content_type}")
     """
         Endpoint to process an uploaded image file
 
