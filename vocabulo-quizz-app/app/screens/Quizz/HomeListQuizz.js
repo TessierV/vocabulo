@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert, Modal, Button } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert, Modal, Button } from 'react-native';
 import { SvgXml } from 'react-native-svg';
+import { lightTheme, color, darkTheme } from '@/constants/Colors';
 
-import CategoryWordSvg from '@/SVG/CategoryWordSvg'; // Assurez-vous d'importer correctement vos SVG
+import CategoryWordSvg from '@/SVG/CategoryWordSvg';
+
+
+import AnswerButton from '@/components/Quizz/AnswerButton';
+import Pagination from '@/components/Quizz/Pagination';
 
 const HomeListQuizz = () => {
     const route = useRoute();
@@ -18,11 +23,12 @@ const HomeListQuizz = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [score, setScore] = useState(0);
-    const [attempts, setAttempts] = useState(0); // Nombre d'essais
+    const [attempts, setAttempts] = useState(0);
     const [showFirstHint, setShowFirstHint] = useState(false);
     const [showSecondHint, setShowSecondHint] = useState(false);
     const [showHintModal, setShowHintModal] = useState(false);
     const [hintContent, setHintContent] = useState('');
+    const [disabledAnswers, setDisabledAnswers] = useState([]);
 
     useEffect(() => {
         const fetchWords = async () => {
@@ -142,21 +148,26 @@ const HomeListQuizz = () => {
             }
 
             const hasImage = CategoryWordSvg[correctWord.mot];
-            const svgIcon = hasImage ? <SvgXml xml={CategoryWordSvg[correctWord.mot]} width="60" height="60" /> : null;
+            const svgIconWord = hasImage ? <SvgXml xml={CategoryWordSvg[correctWord.mot]} width="130" height="130" /> : null;
 
-            const questionText = svgIcon
-                ? 'À quel mot correspond cette image?'
-                : `Quelle est la réponse correcte pour la définition suivante :\n${correctWord.definitions}`;
-
-            const hints = [
-                `Définition : ${correctWord.definitions}`,
-                `Définition : ${correctWord.definitions}, URL Définition : ${correctWord.signes[0]?.url_def || 'Non spécifié'}`,
-                `Définition : ${correctWord.definitions}, URL Définition : ${correctWord.signes[0]?.url_def || 'Non spécifié'}, URL Signe : ${correctWord.signes[0]?.url_sign || 'Non spécifié'}`
-            ];
+            const questionText = svgIconWord ? (
+                <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
+                    À quel mot correspond cette image?
+                </Text>
+            ) : (
+                <>
+                    <Text style={{ fontSize: 15 }}>
+                        Quelle est la réponse pour la définition suivante :{'\n\n'}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 25,}}>
+                        {correctWord.definitions}
+                    </Text>
+                </>
+            );
 
             const question = {
                 questionText,
-                svgIcon,
+                svgIconWord,
                 answers: [
                     ...incorrectWords.map(word => ({
                         text: word.mot,
@@ -193,12 +204,12 @@ const HomeListQuizz = () => {
                 moveToNextQuestion();
             } else {
                 setAttempts(prevAttempts => prevAttempts + 1);
+                setDisabledAnswers(prev => [...prev, selectedAnswer]);
                 if (attempts === 0) {
                     setShowFirstHint(true);
                 } else if (attempts === 1) {
                     setShowSecondHint(true);
                 }
-                Alert.alert('Incorrect', 'Réessayez!');
             }
         } else {
             Alert.alert('Attention', 'Veuillez sélectionner une réponse avant de valider.');
@@ -207,11 +218,12 @@ const HomeListQuizz = () => {
 
     const moveToNextQuestion = () => {
         if (currentQuestionIndex < questions.length - 1) {
-            setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setCurrentQuestionIndex(prevIndex => prevIndex + 1);
             setSelectedAnswer(null);
             setAttempts(0);
             setShowFirstHint(false);
             setShowSecondHint(false);
+            setDisabledAnswers([]);
         } else {
             Alert.alert(
                 'Félicitations',
@@ -220,7 +232,7 @@ const HomeListQuizz = () => {
                     {
                         text: 'OK',
                         onPress: () => {
-                            navigation.goBack(); // Retourner à la page précédente après le quiz
+                            navigation.goBack();
                         }
                     }
                 ]
@@ -236,7 +248,7 @@ const HomeListQuizz = () => {
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size="large" color={color.neutralBlue} />
             </View>
         );
     }
@@ -246,76 +258,96 @@ const HomeListQuizz = () => {
     }
 
     const currentQuestion = questions[currentQuestionIndex] || {};
-    const { answers = [] } = currentQuestion;
+    const { answers = [], hints = [] } = currentQuestion;
     const correctAnswer = answers.find(answer => answer.correct) || {};
-    const { url_def = 'Non spécifié', url_sign = 'Non spécifié' } = correctAnswer;
+    const url_def = correctAnswer.url_def || 'Non spécifié';
+    const url_sign = correctAnswer.url_sign || 'Non spécifié';
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => navigation.goBack()}
-            >
-                <Text style={styles.backButtonText}>Retour</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.title}>Quiz: {categoryName}</Text>
-            <Text style={styles.questionText}>{currentQuestion.questionText}</Text>
-            {currentQuestion.svgIcon}
-
-            {answers.map((answer, index) => (
+            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'flex-start', }}>
                 <TouchableOpacity
-                    key={index}
-                    style={[
-                        styles.answerButton,
-                        selectedAnswer === answer && styles.selectedAnswerButton,
-                    ]}
-                    onPress={() => handleAnswerSelection(answer)}
+                    style={styles.backButton}
+                    onPress={() => navigation.goBack()}
                 >
-                    <Text style={styles.answerText}>{answer.text}</Text>
+                    <Text style={styles.backButtonText}>Retour</Text>
                 </TouchableOpacity>
-            ))}
 
-            <TouchableOpacity
-                style={styles.validateButton}
-                onPress={validateAnswer}
-            >
-                <Text style={styles.validateButtonText}>Valider</Text>
-            </TouchableOpacity>
+                <View>
+                    <Text style={styles.title}>Quizz: {categoryName}</Text>
+                    <Text>Question {currentQuestionIndex + 1}/{questions.length}
+                    </Text>
+                    <Pagination
+                        currentIndex={currentQuestionIndex}
+                        totalQuestions={questions.length}
+                    />
+                </View>
+            </View>
+            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', alignItems: 'center', }}>
+                <Text style={styles.questionText}>{currentQuestion.questionText}</Text>
+                <View style={styles.svgIconWord}>{currentQuestion.svgIconWord}</View>
+            </View>
 
-            <View style={styles.hintsContainer}>
-                {showFirstHint && (
-                    url_def === 'Non spécifié' && url_sign === 'Non spécifié' ? (
-                        <Text style={styles.hintText}>Il n'y a pas d'indice pour ce mot</Text>
-                    ) : url_sign !== 'Non spécifié' ? (
-                        <View>
-                            <Text style={styles.hintText}>Indice bientot</Text>
-                        </View>
+            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', }}>
 
-                    ) : (
+                {answers.map((answer, index) => (
+                    <AnswerButton
+                        key={index}
+                        answer={answer}
+                        onPress={() => handleAnswerSelection(answer)}
+                        isSelected={selectedAnswer === answer}
+                        isDisabled={disabledAnswers.includes(answer)}
+                    />
+                ))}
+            </View>
+            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', }}>
+
+                <TouchableOpacity
+                    style={styles.validateButton}
+                    onPress={validateAnswer}
+                >
+                    <Text style={styles.validateButtonText}>Valider</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', }}>
+
+
+
+                <View style={styles.hintsContainer}>
+                    {showFirstHint && (
+                        url_def === 'Non spécifié' && url_sign === 'Non spécifié' ? (
+                            <Text style={styles.hintText}>Il n'y a pas d'indice pour ce mot</Text>
+                        ) : url_sign !== 'Non spécifié' && url_def === 'Non spécifié' ? (
+                            <View style={styles.hintButton}>
+                                <Text style={styles.hintButtonText}>Indice bientot</Text>
+                            </View>
+                        ) : url_def !== 'Non spécifié' && url_sign !== 'Non spécifié' ? (
+                            <TouchableOpacity
+                                style={styles.hintButton}
+                                onPress={() => openHintModal(url_def)}
+                            >
+                                <Text style={styles.hintButtonText}>Indice 1</Text>
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity
+                                style={styles.hintButton}
+                                onPress={() => openHintModal(url_def)}
+                            >
+                                <Text style={styles.hintButtonText}>Indice 1</Text>
+                            </TouchableOpacity>
+                        )
+                    )}
+                    {showSecondHint && url_sign !== 'Non spécifié' && (
                         <TouchableOpacity
                             style={styles.hintButton}
-                            onPress={() => {
-                                if (url_def !== 'Non spécifié') {
-                                    openHintModal(url_def);
-                                }
-                            }}
+                            onPress={() => openHintModal(url_sign)}
                         >
-                            <Text style={styles.hintButtonText}>Indice 1</Text>
+                            <Text style={styles.hintButtonText}>Indice 2</Text>
                         </TouchableOpacity>
-                    )
-                )}
-                {showSecondHint && url_sign !== 'Non spécifié' && (
-                    <TouchableOpacity
-                        style={styles.hintButton}
-                        onPress={() => {
-                            openHintModal(url_sign);
-                        }}
-                    >
-                        <Text style={styles.hintButtonText}>Indice 2</Text>
-                    </TouchableOpacity>
-                )}
+                    )}
+                </View>
             </View>
+
 
             <Modal
                 transparent={true}
@@ -335,8 +367,13 @@ const HomeListQuizz = () => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
+        flex: 1,
+        justifyContent: 'center',
+        gap: 10,
+        width: '100%',
     },
+
+
     backButton: {
         marginBottom: 20,
     },
@@ -347,23 +384,11 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
+        textTransform: 'capitalize',
     },
     questionText: {
         fontSize: 20,
         marginBottom: 20,
-    },
-    answerButton: {
-        padding: 10,
-        marginVertical: 10,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 5,
-    },
-    selectedAnswerButton: {
-        backgroundColor: '#cce5ff',
-    },
-    answerText: {
-        fontSize: 18,
     },
     validateButton: {
         marginTop: 20,
@@ -381,21 +406,22 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         marginTop: 20,
+        gap: 10,
     },
     hintButton: {
         padding: 10,
-        backgroundColor: '#ffc107',
-        borderRadius: 5,
+        borderRadius: 8,
         flex: 1,
-        marginHorizontal: 5,
+        borderWidth: 1,
+        borderColor: lightTheme.darkShade,
     },
     hintButtonText: {
         color: '#000',
-        fontSize: 18,
+        fontSize: 14,
         textAlign: 'center',
     },
     hintText: {
-        fontSize: 18,
+        fontSize: 14,
         color: '#ff5722',
         textAlign: 'center',
     },
@@ -407,6 +433,9 @@ const styles = StyleSheet.create({
     errorText: {
         color: 'red',
         textAlign: 'center',
+        marginVertical: 20,
+    },
+    svgIconWord:{
         marginVertical: 20,
     },
     modalContainer: {
