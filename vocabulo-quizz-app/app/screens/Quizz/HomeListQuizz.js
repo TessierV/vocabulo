@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert, Modal, Button } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { SvgXml } from 'react-native-svg';
 
@@ -18,6 +18,11 @@ const HomeListQuizz = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [score, setScore] = useState(0);
+    const [attempts, setAttempts] = useState(0); // Nombre d'essais
+    const [showFirstHint, setShowFirstHint] = useState(false);
+    const [showSecondHint, setShowSecondHint] = useState(false);
+    const [showHintModal, setShowHintModal] = useState(false);
+    const [hintContent, setHintContent] = useState('');
 
     useEffect(() => {
         const fetchWords = async () => {
@@ -187,6 +192,12 @@ const HomeListQuizz = () => {
                 setScore(prevScore => prevScore + 1);
                 moveToNextQuestion();
             } else {
+                setAttempts(prevAttempts => prevAttempts + 1);
+                if (attempts === 0) {
+                    setShowFirstHint(true);
+                } else if (attempts === 1) {
+                    setShowSecondHint(true);
+                }
                 Alert.alert('Incorrect', 'Réessayez!');
             }
         } else {
@@ -198,6 +209,9 @@ const HomeListQuizz = () => {
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
             setSelectedAnswer(null);
+            setAttempts(0);
+            setShowFirstHint(false);
+            setShowSecondHint(false);
         } else {
             Alert.alert(
                 'Félicitations',
@@ -214,6 +228,11 @@ const HomeListQuizz = () => {
         }
     };
 
+    const openHintModal = (content) => {
+        setHintContent(content);
+        setShowHintModal(true);
+    };
+
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
@@ -227,6 +246,9 @@ const HomeListQuizz = () => {
     }
 
     const currentQuestion = questions[currentQuestionIndex] || {};
+    const { answers = [] } = currentQuestion;
+    const correctAnswer = answers.find(answer => answer.correct) || {};
+    const { url_def = 'Non spécifié', url_sign = 'Non spécifié' } = correctAnswer;
 
     return (
         <View style={styles.container}>
@@ -241,7 +263,7 @@ const HomeListQuizz = () => {
             <Text style={styles.questionText}>{currentQuestion.questionText}</Text>
             {currentQuestion.svgIcon}
 
-            {currentQuestion.answers && currentQuestion.answers.map((answer, index) => (
+            {answers.map((answer, index) => (
                 <TouchableOpacity
                     key={index}
                     style={[
@@ -261,15 +283,52 @@ const HomeListQuizz = () => {
                 <Text style={styles.validateButtonText}>Valider</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-                style={styles.hintButton}
-                onPress={() => {
-                    const hintLevel = currentQuestionIndex < currentQuestion.hints.length ? currentQuestionIndex : currentQuestion.hints.length - 1;
-                    Alert.alert('Indice', currentQuestion.hints[hintLevel]);
-                }}
+            <View style={styles.hintsContainer}>
+                {showFirstHint && (
+                    url_def === 'Non spécifié' && url_sign === 'Non spécifié' ? (
+                        <Text style={styles.hintText}>Il n'y a pas d'indice pour ce mot</Text>
+                    ) : url_sign !== 'Non spécifié' ? (
+                        <View>
+                            <Text style={styles.hintText}>Indice bientot</Text>
+                        </View>
+
+                    ) : (
+                        <TouchableOpacity
+                            style={styles.hintButton}
+                            onPress={() => {
+                                if (url_def !== 'Non spécifié') {
+                                    openHintModal(url_def);
+                                }
+                            }}
+                        >
+                            <Text style={styles.hintButtonText}>Indice 1</Text>
+                        </TouchableOpacity>
+                    )
+                )}
+                {showSecondHint && url_sign !== 'Non spécifié' && (
+                    <TouchableOpacity
+                        style={styles.hintButton}
+                        onPress={() => {
+                            openHintModal(url_sign);
+                        }}
+                    >
+                        <Text style={styles.hintButtonText}>Indice 2</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+
+            <Modal
+                transparent={true}
+                visible={showHintModal}
+                onRequestClose={() => setShowHintModal(false)}
             >
-                <Text style={styles.hintButtonText}>Indice</Text>
-            </TouchableOpacity>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text>{hintContent}</Text>
+                        <Button title="Fermer" onPress={() => setShowHintModal(false)} />
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -317,15 +376,27 @@ const styles = StyleSheet.create({
         fontSize: 18,
         textAlign: 'center',
     },
-    hintButton: {
+    hintsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
         marginTop: 20,
+    },
+    hintButton: {
         padding: 10,
         backgroundColor: '#ffc107',
         borderRadius: 5,
+        flex: 1,
+        marginHorizontal: 5,
     },
     hintButtonText: {
         color: '#000',
         fontSize: 18,
+        textAlign: 'center',
+    },
+    hintText: {
+        fontSize: 18,
+        color: '#ff5722',
         textAlign: 'center',
     },
     loadingContainer: {
@@ -337,7 +408,20 @@ const styles = StyleSheet.create({
         color: 'red',
         textAlign: 'center',
         marginVertical: 20,
-    }
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    modalContent: {
+        width: 300,
+        padding: 20,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        alignItems: 'center',
+    },
 });
 
 export default HomeListQuizz;
