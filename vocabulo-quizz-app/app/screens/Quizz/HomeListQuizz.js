@@ -1,399 +1,343 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import CategoryWordSvg from '@/SVG/CategoryWordSvg'; // Assurez-vous que vous importez correctement votre SvgIcon
+import { SvgXml } from 'react-native-svg';
+
+import CategoryWordSvg from '@/SVG/CategoryWordSvg'; // Assurez-vous d'importer correctement vos SVG
 
 const HomeListQuizz = () => {
-  const route = useRoute();
-  const navigation = useNavigation();
-  const { categorie_id, filter } = route.params;
+    const route = useRoute();
+    const navigation = useNavigation();
+    const { categorie_id, filter } = route.params;
 
-  const [words, setWords] = useState([]);
-  const [categoryName, setCategoryName] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [questions, setQuestions] = useState([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [score, setScore] = useState(0);
-  const [showModal, setShowModal] = useState(false);
+    const [words, setWords] = useState([]);
+    const [categoryName, setCategoryName] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [questions, setQuestions] = useState([]);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
+    const [score, setScore] = useState(0);
 
-  useEffect(() => {
-    const fetchWords = async () => {
-      setLoading(true);
-      setError(null);
+    useEffect(() => {
+        const fetchWords = async () => {
+            setLoading(true);
+            setError(null);
 
-      try {
-        const response = await fetch(`http://10.3.0.8:3000/api/words/${categorie_id}`);
-        const textResponse = await response.text();
-        const data = JSON.parse(textResponse);
+            try {
+                const response = await fetch(`http://192.168.0.12:3000/api/words/${categorie_id}`);
+                const textResponse = await response.text();
+                const data = JSON.parse(textResponse);
 
-        if (!data) {
-          throw new Error('Aucune donnée trouvée pour cette catégorie');
-        }
+                if (!data) {
+                    throw new Error('Aucune donnée trouvée pour cette catégorie');
+                }
 
-        const wordMap = new Map();
+                const wordMap = new Map();
 
-        data.categoryWords.forEach(word => {
-          if (wordMap.has(word.mot_id)) {
-            wordMap.get(word.mot_id).definitions.add(word.definition || 'Non spécifiée');
-            wordMap.get(word.mot_id).signes = [
-              ...wordMap.get(word.mot_id).signes,
-              ...(word.signes || [])
-            ];
-          } else {
-            wordMap.set(word.mot_id, {
-              mot: word.mot,
-              definitions: new Set([word.definition || 'Non spécifiée']),
-              signes: word.signes || []
-            });
-          }
-        });
+                data.categoryWords.forEach(word => {
+                    if (wordMap.has(word.mot_id)) {
+                        wordMap.get(word.mot_id).definitions.add(word.definition || 'Non spécifiée');
+                        wordMap.get(word.mot_id).signes = [
+                            ...wordMap.get(word.mot_id).signes,
+                            ...(word.signes || [])
+                        ];
+                    } else {
+                        wordMap.set(word.mot_id, {
+                            mot: word.mot,
+                            definitions: new Set([word.definition || 'Non spécifiée']),
+                            signes: word.signes || []
+                        });
+                    }
+                });
 
-        data.subcategories.forEach(subcat => {
-          subcat.words.forEach(word => {
-            if (wordMap.has(word.mot_id)) {
-              wordMap.get(word.mot_id).definitions.add(word.definition || 'Non spécifiée');
-              wordMap.get(word.mot_id).signes = [
-                ...wordMap.get(word.mot_id).signes,
-                ...(word.signes || [])
-              ];
-            } else {
-              wordMap.set(word.mot_id, {
-                mot: word.mot,
-                definitions: new Set([word.definition || 'Non spécifiée']),
-                signes: word.signes || []
-              });
+                data.subcategories.forEach(subcat => {
+                    subcat.words.forEach(word => {
+                        if (wordMap.has(word.mot_id)) {
+                            wordMap.get(word.mot_id).definitions.add(word.definition || 'Non spécifiée');
+                            wordMap.get(word.mot_id).signes = [
+                                ...wordMap.get(word.mot_id).signes,
+                                ...(word.signes || [])
+                            ];
+                        } else {
+                            wordMap.set(word.mot_id, {
+                                mot: word.mot,
+                                definitions: new Set([word.definition || 'Non spécifiée']),
+                                signes: word.signes || []
+                            });
+                        }
+                    });
+                });
+
+                const allWords = Array.from(wordMap.values()).map(word => ({
+                    ...word,
+                    definitions: Array.from(word.definitions).join(', ')
+                }));
+
+                const filteredWords = allWords.filter(word => {
+                    const hasUrlSign = word.signes.some(signe => signe.url_sign && signe.url_sign !== 'Non spécifié');
+                    const hasUrlDef = word.signes.some(signe => signe.url_def && signe.url_def !== 'Non spécifié');
+
+                    if (filter === 'easy') {
+                        return hasUrlSign && hasUrlDef;
+                    }
+                    if (filter === 'medium') {
+                        return (hasUrlSign || hasUrlDef) && !(hasUrlSign && hasUrlDef);
+                    }
+                    if (filter === 'hard') {
+                        return !hasUrlSign && !hasUrlDef;
+                    }
+                    return true;
+                });
+
+                filteredWords.sort((a, b) => a.mot.localeCompare(b.mot));
+
+                setWords(filteredWords);
+                setCategoryName(data.categorie_name || 'Nom de catégorie non spécifié');
+                generateQuestions(filteredWords);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
             }
-          });
-        });
+        };
 
-        const allWords = Array.from(wordMap.values()).map(word => ({
-          ...word,
-          definitions: Array.from(word.definitions).join(', ')
-        }));
+        fetchWords();
+    }, [categorie_id, filter]);
 
-        const filteredWords = allWords.filter(word => {
-          const hasUrlSign = word.signes.some(signe => signe.url_sign && signe.url_sign !== 'Non spécifié');
-          const hasUrlDef = word.signes.some(signe => signe.url_def && signe.url_def !== 'Non spécifié');
+    const generateQuestions = (words) => {
+        const questions = [];
+        const usedWords = new Set();
 
-          if (filter === 'easy') {
-            return hasUrlSign && hasUrlDef;
-          }
-          if (filter === 'medium') {
-            return (hasUrlSign || hasUrlDef) && !(hasUrlSign && hasUrlDef);
-          }
-          if (filter === 'hard') {
-            return !hasUrlSign && !hasUrlDef;
-          }
-          return true;
-        });
+        const getRandomWord = () => {
+            let randomWord;
+            do {
+                randomWord = words[Math.floor(Math.random() * words.length)];
+            } while (usedWords.has(randomWord));
+            usedWords.add(randomWord);
+            return randomWord;
+        };
 
-        filteredWords.sort((a, b) => a.mot.localeCompare(b.mot));
+        while (questions.length < 4) {
+            if (words.length < 4) {
+                Alert.alert('Erreur', 'Pas assez de mots pour générer des questions.');
+                return;
+            }
 
-        setWords(filteredWords);
-        setCategoryName(data.categorie_name || 'Nom de catégorie non spécifié');
-        generateQuestions(filteredWords);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+            const correctWord = getRandomWord();
+            const correctWordIndex = words.indexOf(correctWord);
 
-    fetchWords();
-  }, [categorie_id, filter]);
+            const incorrectWords = [];
+            while (incorrectWords.length < 3) {
+                const randomIndex = Math.floor(Math.random() * words.length);
+                const word = words[randomIndex];
+                if (randomIndex !== correctWordIndex && !incorrectWords.includes(word) && !usedWords.has(word)) {
+                    incorrectWords.push(word);
+                }
+            }
 
-  const generateQuestions = (words) => {
-    const questions = [];
-    const usedWords = new Set(); // To keep track of words already used in questions
+            const hasImage = CategoryWordSvg[correctWord.mot];
+            const svgIcon = hasImage ? <SvgXml xml={CategoryWordSvg[correctWord.mot]} width="60" height="60" /> : null;
 
-    const getRandomWord = () => {
-      let randomWord;
-      do {
-        randomWord = words[Math.floor(Math.random() * words.length)];
-      } while (usedWords.has(randomWord));
-      usedWords.add(randomWord);
-      return randomWord;
-    };
+            const questionText = svgIcon
+                ? 'À quel mot correspond cette image?'
+                : `Quelle est la réponse correcte pour la définition suivante :\n${correctWord.definitions}`;
 
-    while (questions.length < 4) { // Generate 4 questions
-      if (words.length < 4) {
-        Alert.alert('Error', 'Not enough words to generate questions.');
-        return;
-      }
+            const hints = [
+                `Définition : ${correctWord.definitions}`,
+                `Définition : ${correctWord.definitions}, URL Définition : ${correctWord.signes[0]?.url_def || 'Non spécifié'}`,
+                `Définition : ${correctWord.definitions}, URL Définition : ${correctWord.signes[0]?.url_def || 'Non spécifié'}, URL Signe : ${correctWord.signes[0]?.url_sign || 'Non spécifié'}`
+            ];
 
-      const correctWord = getRandomWord();
-      const correctWordIndex = words.indexOf(correctWord);
+            const question = {
+                questionText,
+                svgIcon,
+                answers: [
+                    ...incorrectWords.map(word => ({
+                        text: word.mot,
+                        correct: false,
+                        definition: word.definitions,
+                        url_def: word.signes[0]?.url_def || 'Non spécifié',
+                        url_sign: word.signes[0]?.url_sign || 'Non spécifié',
+                    })),
+                    {
+                        text: correctWord.mot,
+                        correct: true,
+                        definition: correctWord.definitions,
+                        url_def: correctWord.signes[0]?.url_def || 'Non spécifié',
+                        url_sign: correctWord.signes[0]?.url_sign || 'Non spécifié',
+                    }
+                ].sort(() => 0.5 - Math.random()),
+                hints
+            };
 
-      const incorrectWords = [];
-      while (incorrectWords.length < 3) {
-        const randomIndex = Math.floor(Math.random() * words.length);
-        const word = words[randomIndex];
-        if (randomIndex !== correctWordIndex && !incorrectWords.includes(word) && !usedWords.has(word)) {
-          incorrectWords.push(word);
+            questions.push(question);
         }
-      }
 
-      // Check if the word has an SVG icon
-      const hasImage = correctWord.signes.some(signe => signe.url_sign && signe.url_sign !== 'Non spécifié');
-      let svgIcon = null;
+        setQuestions(questions);
+    };
 
-      if (hasImage) {
-        svgIcon = <CategoryWordSvg icon={correctWord.mot} width="60" height="60" />;
-      }
+    const handleAnswerSelection = (answer) => {
+        setSelectedAnswer(answer);
+    };
 
-      let questionText;
-      let hints;
+    const validateAnswer = () => {
+        if (selectedAnswer) {
+            if (selectedAnswer.correct) {
+                setScore(prevScore => prevScore + 1);
+                moveToNextQuestion();
+            } else {
+                Alert.alert('Incorrect', 'Réessayez!');
+            }
+        } else {
+            Alert.alert('Attention', 'Veuillez sélectionner une réponse avant de valider.');
+        }
+    };
 
-      if (hasImage) {
-        questionText = 'À quel mot correspond cette image?';
-        hints = [
-          `Définition : ${correctWord.definitions}`,
-          `Définition : ${correctWord.definitions}, URL Définition : ${correctWord.signes[0]?.url_def || 'Non spécifié'}`,
-          `Définition : ${correctWord.definitions}, URL Définition : ${correctWord.signes[0]?.url_def || 'Non spécifié'}, URL Signe : ${correctWord.signes[0]?.url_sign || 'Non spécifié'}`
-        ];
-      } else {
-        questionText = `Quelle est la réponse correcte pour la définition suivante :\n${correctWord.definitions}`;
-        hints = [
-          `URL Définition : ${correctWord.signes[0]?.url_def || 'Non spécifié'}`,
-          `URL Définition : ${correctWord.signes[0]?.url_def || 'Non spécifié'}, URL Signe : ${correctWord.signes[0]?.url_sign || 'Non spécifié'}`,
-          `URL Signe : ${correctWord.signes[0]?.url_sign || 'Non spécifié'}`
-        ];
-      }
+    const moveToNextQuestion = () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setSelectedAnswer(null);
+        } else {
+            Alert.alert(
+                'Félicitations',
+                `Vous avez terminé le quiz avec un score de ${score + (selectedAnswer && selectedAnswer.correct ? 1 : 0)}/${questions.length}!`,
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                            navigation.goBack(); // Retourner à la page précédente après le quiz
+                        }
+                    }
+                ]
+            );
+        }
+    };
 
-      const question = {
-        questionText,
-        svgIcon,
-        answers: [
-          ...incorrectWords.map(word => ({
-            text: word.mot,
-            correct: false,
-            definition: word.definitions,
-            url_def: word.signes[0]?.url_def || 'Non spécifié',
-            url_sign: word.signes[0]?.url_sign || 'Non spécifié',
-          })),
-          {
-            text: correctWord.mot,
-            correct: true,
-            definition: correctWord.definitions,
-            url_def: correctWord.signes[0]?.url_def || 'Non spécifié',
-            url_sign: correctWord.signes[0]?.url_sign || 'Non spécifié',
-          }
-        ].sort(() => 0.5 - Math.random()),
-        hints
-      };
-
-      questions.push(question);
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
     }
 
-    setQuestions(questions);
-  };
-
-  const handleAnswerSelection = (answer) => {
-    setSelectedAnswer(answer);
-  };
-
-  const validateAnswer = () => {
-    if (selectedAnswer) {
-      if (selectedAnswer.correct) {
-        setScore(prevScore => prevScore + 1);
-        moveToNextQuestion();
-      } else {
-        Alert.alert('Incorrect', 'Try again!');
-      }
-    } else {
-      Alert.alert('Warning', 'Please select an answer before validating.');
+    if (error) {
+        return <Text style={styles.errorText}>Erreur: {error}</Text>;
     }
-  };
 
-  const moveToNextQuestion = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedAnswer(null);
-    } else {
-      setShowModal(true);
-    }
-  };
+    const currentQuestion = questions[currentQuestionIndex] || {};
 
-  if (loading) {
-    return <View style={styles.loadingContainer}><ActivityIndicator size="large" color="#0000ff" /></View>;
-  }
+    return (
+        <View style={styles.container}>
+            <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+            >
+                <Text style={styles.backButtonText}>Retour</Text>
+            </TouchableOpacity>
 
-  if (error) {
-    return <Text style={styles.errorText}>Erreur: {error}</Text>;
-  }
+            <Text style={styles.title}>Quiz: {categoryName}</Text>
+            <Text style={styles.questionText}>{currentQuestion.questionText}</Text>
+            {currentQuestion.svgIcon}
 
-  const currentQuestion = questions[currentQuestionIndex] || {};
+            {currentQuestion.answers && currentQuestion.answers.map((answer, index) => (
+                <TouchableOpacity
+                    key={index}
+                    style={[
+                        styles.answerButton,
+                        selectedAnswer === answer && styles.selectedAnswerButton,
+                    ]}
+                    onPress={() => handleAnswerSelection(answer)}
+                >
+                    <Text style={styles.answerText}>{answer.text}</Text>
+                </TouchableOpacity>
+            ))}
 
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
-        <Text style={styles.backButtonText}>Retour</Text>
-      </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.validateButton}
+                onPress={validateAnswer}
+            >
+                <Text style={styles.validateButtonText}>Valider</Text>
+            </TouchableOpacity>
 
-      <Text style={styles.title}>Quiz: {categoryName}</Text>
-      <Text style={styles.questionText}>{currentQuestion.questionText}</Text>
-      {currentQuestion.svgIcon}
-
-      {currentQuestion.answers && currentQuestion.answers.map((answer, index) => (
-        <TouchableOpacity
-          key={index}
-          style={[
-            styles.answerButton,
-            selectedAnswer === answer && styles.selectedAnswerButton,
-          ]}
-          onPress={() => handleAnswerSelection(answer)}
-        >
-          <Text style={styles.answerText}>{answer.text}</Text>
-        </TouchableOpacity>
-      ))}
-
-      <TouchableOpacity style={styles.validateButton} onPress={validateAnswer}>
-        <Text style={styles.validateButtonText}>Validate</Text>
-      </TouchableOpacity>
-
-      {showModal && (
-        <View style={styles.modal}>
-          <Text style={styles.modalText}>Quiz finished! Your score: {score}</Text>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.backButtonText}>Back to Home</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.hintButton}
+                onPress={() => {
+                    const hintLevel = currentQuestionIndex < currentQuestion.hints.length ? currentQuestionIndex : currentQuestion.hints.length - 1;
+                    Alert.alert('Indice', currentQuestion.hints[hintLevel]);
+                }}
+            >
+                <Text style={styles.hintButtonText}>Indice</Text>
+            </TouchableOpacity>
         </View>
-      )}
-
-      <FlatList
-        data={words}
-        keyExtractor={(item) => item.mot}
-        renderItem={({ item }) => (
-          <View style={styles.wordItem}>
-            <CategoryWordSvg icon={item.mot} width="60" height="60" />
-            <Text style={styles.wordText}>{item.mot}</Text>
-            <Text style={styles.definitionText}>Définition(s): {item.definitions}</Text>
-            {item.signes.length > 0 && (
-              <View style={styles.signContainer}>
-                {item.signes.map((sign, index) => (
-                  <View key={index} style={styles.signItem}>
-                    <Text style={styles.signText}>Définition du signe: {sign.url_def}</Text>
-                    <Text style={styles.signText}>Définition du signe: {sign.url_sign}</Text>
-                  </View>
-                ))}
-              </View>
-            )}
-          </View>
-        )}
-        ListHeaderComponent={<Text style={styles.listHeader}>Word List:</Text>}
-        style={styles.list}
-      />
-    </View>
-  );
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  questionText: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  answerButton: {
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  selectedAnswerButton: {
-    backgroundColor: '#cce5ff',
-  },
-  answerText: {
-    fontSize: 16,
-  },
-  validateButton: {
-    padding: 10,
-    backgroundColor: '#007bff',
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  validateButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  modal: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalText: {
-    fontSize: 24,
-    color: '#ffffff',
-    marginBottom: 20,
-  },
-  backButton: {
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: '#007bff',
-    borderRadius: 5,
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  listHeader: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  wordItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  wordText: {
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  definitionText: {
-    fontSize: 14,
-    color: 'gray',
-  },
-  signContainer: {
-    marginLeft: 10,
-  },
-  signItem: {
-    marginBottom: 5,
-  },
-  signText: {
-    fontSize: 14,
-    color: 'gray',
-  },
+    container: {
+        padding: 20,
+    },
+    backButton: {
+        marginBottom: 20,
+    },
+    backButtonText: {
+        color: '#007BFF',
+        fontSize: 18,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    questionText: {
+        fontSize: 20,
+        marginBottom: 20,
+    },
+    answerButton: {
+        padding: 10,
+        marginVertical: 10,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 5,
+    },
+    selectedAnswerButton: {
+        backgroundColor: '#cce5ff',
+    },
+    answerText: {
+        fontSize: 18,
+    },
+    validateButton: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: '#28a745',
+        borderRadius: 5,
+    },
+    validateButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        textAlign: 'center',
+    },
+    hintButton: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: '#ffc107',
+        borderRadius: 5,
+    },
+    hintButtonText: {
+        color: '#000',
+        fontSize: 18,
+        textAlign: 'center',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    errorText: {
+        color: 'red',
+        textAlign: 'center',
+        marginVertical: 20,
+    }
 });
 
 export default HomeListQuizz;
