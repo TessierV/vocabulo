@@ -17,14 +17,14 @@ export const color = {
   neutralBlue: "#ABCDE8",
   lightBlue: "#D1E6F6",
 
-  darkPlum: "#AF7DD6",
-  neutralPlum: "#CA99FF",
-  lightPlum: "#E8D3FF",
+  darkPlum: "#AA8AC9",
+  neutralPlum: "#BA94D0",
+  lightPlum: "#E9D3F5",
 };
 
 export const lightTheme = {
   darkShade: '#0D1320',
-  light_darkShade: "#6D768B",
+  light_darkShade: "#42516D",
 
   lightShade: '#FFF',
   dark_lightShade: '#F6F6F6',
