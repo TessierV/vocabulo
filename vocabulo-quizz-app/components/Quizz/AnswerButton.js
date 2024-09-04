@@ -1,9 +1,11 @@
+// AnswerButton.js
 import React from 'react';
-import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
+import { Paragraph } from '@/constants/StyledText';
 
-const AnswerButton = ({ answer, onPress, isSelected, isDisabled }) => {
+const AnswerButton = ({ answer, onPress, isSelected, isDisabled, index }) => {
     const getIcon = () => {
         if (isDisabled) {
             return 'x-circle';
@@ -24,24 +26,23 @@ const AnswerButton = ({ answer, onPress, isSelected, isDisabled }) => {
             onPress={onPress}
             disabled={isDisabled}
         >
-            <Text
-                style={[
-                    styles.answerLabel,
-                    isSelected && styles.selectedAnswerText,
-                    isDisabled && styles.disabledAnswerText,
-                ]}
-            >
-                {answer.label}
-            </Text>
-            <Text
-                style={[
-                    styles.answerText,
-                    isSelected && styles.selectedAnswerText,
-                    isDisabled && styles.disabledAnswerText,
-                ]}
-            >
-                {answer.text}
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                <Paragraph style={[
+                        styles.answerLabel,
+                        isSelected && styles.selectedAnswerText,
+                        isDisabled && styles.disabledAnswerText,
+                    ]}>{index + 1}.</Paragraph>
+                <Paragraph
+                    style={[
+                        styles.answerLabel,
+                        isSelected && styles.selectedAnswerText,
+                        isDisabled && styles.disabledAnswerText,
+                    ]}
+                >
+                    {answer.text}
+                </Paragraph>
+            </View>
+
             <Feather
                 name={getIcon()}
                 size={20}
@@ -62,10 +63,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         width: '100%',
         padding: 10,
-        marginVertical: 5,
+        minHeight: 40,
+        marginBottom: 8,
         borderWidth: 1,
         borderColor: lightTheme.light_darkShade,
-        borderRadius: 5,
+        borderRadius: 8,
         backgroundColor: lightTheme.darkShade,
     },
     selectedAnswerButton: {
@@ -74,10 +76,13 @@ const styles = StyleSheet.create({
     },
     disabledAnswerButton: {
         borderColor: color.neutralCoral,
+        backgroundColor: color.disabledBackground,
+    },
+    indexLabel: {
+        marginRight: 10,
+        color: lightTheme.light_darkShade,
     },
     answerLabel: {
-        fontSize: 18,
-        marginRight: 10,
         color: lightTheme.light_darkShade,
     },
     selectedAnswerText: {
@@ -85,11 +90,6 @@ const styles = StyleSheet.create({
     },
     disabledAnswerText: {
         color: color.neutralCoral,
-    },
-    answerText: {
-        fontSize: 18,
-        flex: 1,
-        color: lightTheme.light_darkShade,
     },
     icon: {
         marginLeft: 10,
@@ -104,3 +104,4 @@ const styles = StyleSheet.create({
 });
 
 export default AnswerButton;
+

@@ -4,7 +4,7 @@ import AnswerButton from '@/components/Quizz/AnswerButton';
 
 const AnswerList = ({ answers, selectedAnswer, disabledAnswers, handleAnswerSelection }) => {
     return (
-        <View>
+        <>
             {answers?.map((answer, index) => (
                 <AnswerButton
                     key={index}
@@ -17,7 +17,7 @@ const AnswerList = ({ answers, selectedAnswer, disabledAnswers, handleAnswerSele
                     isDisabled={disabledAnswers.includes(answer.text)}
                 />
             ))}
-        </View>
+        </>
     );
 };
 
