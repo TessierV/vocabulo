@@ -15,12 +15,10 @@ const createThemedStyles = (darkMode: boolean | (() => Promise<void>)) => StyleS
   title: {
     fontFamily: 'font-base-bold',
     fontSize: 24,
-
   },
   subtitle: {
     fontFamily: 'font-base-bold',
     fontSize: 20,
-    lineHeight: 20,
   },
   text: {
     fontFamily: 'font-base',
