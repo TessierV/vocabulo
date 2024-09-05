@@ -63,7 +63,6 @@ const HomeScreen = () => {
           ]}
           darkMode={darkMode}
         />
-
         <SectionTitle
           title={texts.homeScreen.section_second?.title || 'Default Section Title'}
           text={texts.homeScreen.section_second?.text || 'Default Section Text'}
@@ -73,10 +72,7 @@ const HomeScreen = () => {
           popupButtonText={texts.homeScreen.section_second?.popup?.button || 'Default Button Text'}
           darkMode={darkMode}
         />
-
         <GridCardHome darkMode={darkMode}  />
-        <Paragraph>Old Version</Paragraph>
-        <CategoryCard categories={texts.categories} darkMode={darkMode} />
       </View>
     </ScrollView>
   );

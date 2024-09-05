@@ -54,9 +54,6 @@ const QuizScreen = () => {
     const [incorrectCount, setIncorrectCount] = useState(0); // State to count incorrect attempts
     const [hint, setHint] = useState(''); // State to store hint
     const [showModal, setShowModal] = useState(false); // State to control the result modal visibility
-    const [correctFirstAttempt, setCorrectFirstAttempt] = useState(0); // State to count correct answers on the first attempt
-    const [correctSecondAttempt, setCorrectSecondAttempt] = useState(0); // State to count correct answers on the second attempt
-    const [correctMoreAttempt, setCorrectMoreAttempt] = useState(0); // State to count correct answers on the second attempt
 
     const [showHintModal, setShowHintModal] = useState(false); // State to control the hint modal visibility
     const [hintModalTitle, setHintModalTitle] = useState(''); // State to set the hint modal title
@@ -67,7 +64,9 @@ const QuizScreen = () => {
     const parsedData = parseData(jardinData); // Parse the data
 
     const usedWords = []; // Array to track already used words in questions
-    const usedIncorrectWords = new Set(); // Set to track used incorrect answers
+    const [correctFirstAttempt, setCorrectFirstAttempt] = useState(0);
+    const [correctSecondAttempt, setCorrectSecondAttempt] = useState(0);
+    const [correctMoreAttempt, setCorrectMoreAttempt] = useState(0);
 
     // Function to generate a new question
     const generateQuestion = () => {
