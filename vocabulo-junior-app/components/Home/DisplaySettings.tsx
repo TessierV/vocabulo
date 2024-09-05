@@ -10,10 +10,16 @@ const DisplaySettings = () => {
     const [userName, setUserName] = useState('Utilisateur');
 
     useEffect(() => {
-        const user = auth().currentUser;
-        if (user?.displayName) {
-            setUserName(user.displayName);
-        }
+        const fetchUserData = () => {
+            const user = auth().currentUser;
+            if (user?.displayName) {
+                setUserName(user.displayName);
+            } else {
+                setUserName('Utilisateur');
+            }
+        };
+
+        fetchUserData();
     }, []);
 
     return (
@@ -45,7 +51,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginHorizontal: 'auto',
         padding: 15,
-        backgroundColor: Colors.white
+        backgroundColor: Colors.white,
     },
     textContainer: {
         flex: 1,
@@ -73,7 +79,7 @@ const styles = StyleSheet.create({
         width: 37,
         height: 35,
         tintColor: Colors.lightBlue,
-        marginRight: 15
+        marginRight: 15,
     },
 });
 
