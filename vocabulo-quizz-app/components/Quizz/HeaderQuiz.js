@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
     },
     questionCount: {
-        color: color.darkBlue,
+        color: color.neutral,
     },
     categoryName: {
         textTransform: 'capitalize',

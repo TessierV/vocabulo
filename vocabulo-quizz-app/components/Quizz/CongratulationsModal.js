@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Modal, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { lightTheme, color } from '@/constants/Colors';
-import SvgIcon from '@/components/SvgIcon';
+import { View, Text, Modal, StyleSheet, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
+import { lightTheme, color, darkTheme } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
+import { SvgXml } from 'react-native-svg';
+import InterfaceSvg from '@/SVG/InterfaceSvg';
+import SvgIcon from '@/SVG/CategorySvgIcon';
+import { AnnonceTitle, Paragraph, Subtitle } from '@/constants/StyledText';
+import Bubble from '@/components/Effect/Bubble';
+import logoBanner from '@/assets/images/Quizz/banner.png';
 import CategoryWordSvg from '@/SVG/CategoryWordSvg';
+import GradientSVG from '@/SVG/GradientSVG';
 
 const CongratulationsModal = ({
     visible,
@@ -13,9 +19,8 @@ const CongratulationsModal = ({
     correctSecondAttempt,
     correctMoreAttempt,
     categoryName,
-    correctWords, // Nouveau prop
+    correctWords,
     onClose,
-
 }) => {
     const router = useRouter();
     const [isPerfectRun, setIsPerfectRun] = useState(false);
@@ -49,6 +54,23 @@ const CongratulationsModal = ({
         onClose();
     };
 
+    const { width, height } = Dimensions.get('window');
+
+    const bubbles = Array.from({ length: 20 }).map((_, index) => ({
+        id: index.toString(),
+        size: Math.random() * 30 + 20,
+        color: index % 4 === 0
+            ? lightTheme.light_darkShade
+            : index % 4 === 1
+                ? color.neutralBlue
+                : index % 4 === 2
+                    ? color.neutralPlum
+                    : color.neutralGreen,
+        duration: 6000,
+        delay: Math.random() * 10000,
+        opacity: 0.8,
+    }));
+
     return (
         <Modal
             transparent
@@ -56,81 +78,106 @@ const CongratulationsModal = ({
             animationType="slide"
             onRequestClose={onClose}
         >
+            <View style={styles.bubblesContainer}>
+                {bubbles.map(bubble => (
+                    <Bubble
+                        key={bubble.id}
+                        size={bubble.size}
+                        color={bubble.color}
+                        duration={bubble.duration}
+                        delay={bubble.delay}
+                        opacity={bubble.opacity}
+                    />
+                ))}
+            </View>
             <View style={styles.modalOverlay}>
+                <Image
+                    source={logoBanner}
+                    style={styles.image}
+                    resizeMode="cover"
+                />
                 <View style={styles.modalContent}>
-                    <Text style={styles.title}>Félicitations!</Text>
-                    <Text style={styles.score}>Vous avez terminé le quiz :</Text>
-                    <Text style={styles.score}>Score : {score}/{totalQuestions}</Text>
+                    <Paragraph style={styles.title}>Félicitations!</Paragraph>
+                    <SvgIcon icon={categoryName} width={80} height={80} fillColor={color.neutralCoral} />
+                    <View style={{ paddingVertical: 10 }}>
+                        <Paragraph style={{ color: lightTheme.lightShade, textAlign: 'center' }}>
+                            Bravo ! Vous avez terminé le quizz
+                        </Paragraph>
+                        <Paragraph style={{ color: lightTheme.lightShade, textAlign: 'center', textTransform: 'capitalize' }}>
+                            {categoryName}
+                        </Paragraph>
+                    </View>
+
                     {isPerfectRun ? (
                         <View style={styles.perfectRunContainer}>
-                            <Text style={styles.perfectRunText}>Perfect Run!</Text>
+                            <AnnonceTitle style={styles.perfectRunText}>Perfect Run!</AnnonceTitle>
                         </View>
                     ) : (
                         <View style={styles.attemptsContainer}>
-                            <Text style={styles.attemptsTitle}>Tentatives :</Text>
+                            <Paragraph style={styles.attemptsTitle}>Tentatives :</Paragraph>
                             <View style={styles.attemptsList}>
-                                <View
-                                    key="firstAttempt"
-                                    style={[
-                                        styles.attemptItem,
-                                        { backgroundColor: 'green' }
-                                    ]}
-                                >
-                                    <Text style={styles.attemptText}>
-                                        1ère tentative : {correctFirstAttempt}
-                                    </Text>
+                                <View style={styles.attemptItem}>
+                                    <GradientSVG
+                                        style={[StyleSheet.absoluteFill]}
+                                        colors={[color.lightGreen, color.neutralGreen, color.darkGreen]}
+                                    />
+                                    <View style={styles.attemptTextContainer}>
+                                        <Paragraph style={styles.attemptText}>1 Coup</Paragraph>
+                                        <Subtitle style={styles.attemptResultText}>{correctFirstAttempt}</Subtitle>
+                                    </View>
                                 </View>
-                                <View
-                                    key="secondAttempt"
-                                    style={[
-                                        styles.attemptItem,
-                                        { backgroundColor: 'blue' }
-                                    ]}
-                                >
-                                    <Text style={styles.attemptText}>
-                                        2ème tentative : {correctSecondAttempt}
-                                    </Text>
+                                <View style={styles.attemptItem}>
+                                    <GradientSVG
+                                        style={StyleSheet.absoluteFill}
+                                        colors={[color.lightBlue, color.neutralBlue, color.darkBlue]}
+                                    />
+                                    <View style={styles.attemptTextContainer}>
+                                        <Paragraph style={styles.attemptText}>2 Coups</Paragraph>
+                                        <Subtitle style={styles.attemptResultText}>{correctSecondAttempt}</Subtitle>
+                                    </View>
                                 </View>
-                                <View
-                                    key="moreAttempts"
-                                    style={[
-                                        styles.attemptItem,
-                                        { backgroundColor: 'purple' }
-                                    ]}
-                                >
-                                    <Text style={styles.attemptText}>
-                                        Autres tentatives : {correctMoreAttempt}
-                                    </Text>
+                                <View style={styles.attemptItem}>
+                                    <GradientSVG
+                                        style={StyleSheet.absoluteFill}
+                                        colors={[color.lightPlum, color.neutralPlum, color.darkPlum]}
+                                    />
+                                    <View style={styles.attemptTextContainer}>
+                                        <Paragraph style={styles.attemptText}>Plus</Paragraph>
+                                        <Subtitle style={styles.attemptResultText}>{correctMoreAttempt}</Subtitle>
+                                    </View>
                                 </View>
                             </View>
                         </View>
                     )}
                     <ScrollView horizontal style={styles.scrollView}>
-                        {correctWords.map((word, index) => (
-                            <View key={index} style={styles.wordContainer}>
-                                <SvgIcon icon={word.svg} fillColor={lightTheme.lightShade} />
-                                <Text style={styles.wordText}>{word.mot}</Text>
-                            </View>
-                        ))}
+                        {correctWords.map((word, index) => {
+                            const svgXml = CategoryWordSvg[word.mot] || CategoryWordSvg['default'];
+                            return (
+                                <View key={index} style={styles.wordContainer}>
+                                    <SvgXml xml={svgXml} width="20" height="20" />
+                                    <Paragraph style={styles.wordText}>{word.mot}</Paragraph>
+                                </View>
+                            );
+                        })}
                     </ScrollView>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.iconButtonContainer} onPress={handleGamePress}>
-                            <View style={[styles.iconButton]}>
-                                <SvgIcon icon="category" fillColor={lightTheme.lightShade} />
-                            </View>
-                            <Text style={styles.iconButtonText}>Quizz</Text>
-                        </TouchableOpacity>
                         <TouchableOpacity style={styles.iconButtonContainer} onPress={handleRestartPress}>
-                            <View style={[styles.iconButton, { backgroundColor: color.neutralBlue }]}>
-                                <SvgIcon icon="refresh" fillColor={lightTheme.lightShade} />
+                            <View style={[styles.iconButton]}>
+                                <InterfaceSvg iconName="refresh" fillColor={color.neutralBlue} width={30} height={30} />
                             </View>
-                            <Text style={styles.iconButtonText}>Restart</Text>
+                            <Paragraph style={styles.iconButtonText}>Profil</Paragraph>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.iconButtonContainer} onPress={handleGamePress}>
+                            <View style={[styles.iconButton, { backgroundColor: color.neutralBlue }]}>
+                                <InterfaceSvg iconName="game" fillColor={lightTheme.darkShade} width={30} height={30} />
+                            </View>
+                            <Paragraph style={styles.iconButtonText}>Game</Paragraph>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.iconButtonContainer} onPress={handleDictionaryPress}>
                             <View style={[styles.iconButton]}>
-                                <SvgIcon icon="dictionary" fillColor={lightTheme.lightShade} />
+                                <InterfaceSvg iconName="url_def" fillColor={color.neutralBlue} width={30} height={30} />
                             </View>
-                            <Text style={styles.iconButtonText}>Dictionnaire</Text>
+                            <Paragraph style={styles.iconButtonText}>Dictionnaire</Paragraph>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -144,67 +191,78 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(66, 81, 109, 0.6)',
     },
     modalContent: {
         width: '90%',
-        height: '85%',
         backgroundColor: lightTheme.darkShade,
         padding: 20,
-        borderRadius: 10,
+        paddingTop: 60,
+        borderRadius: 8,
         alignItems: 'center',
+    },
+    image: {
+        width: '100%',
+        position: 'absolute',
+        top: 0,
+        zIndex: 1,
     },
     title: {
         fontSize: 24,
-        fontWeight: 'bold',
         color: lightTheme.lightShade,
         marginBottom: 10,
     },
-    score: {
-        fontSize: 18,
-        color: lightTheme.lightShade,
-        marginVertical: 10,
-    },
-    perfectRunContainer: {
-        marginVertical: 20,
-        padding: 10,
-        backgroundColor: 'gold',
-        borderRadius: 5,
-    },
     perfectRunText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: 'black',
+        color: color.neutralCoral,
+        marginVertical: 20,
     },
     attemptsContainer: {
         width: '100%',
         marginVertical: 10,
+
     },
     attemptsTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
         color: lightTheme.lightShade,
         marginBottom: 10,
     },
     attemptsList: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
     },
     attemptItem: {
-        padding: 10,
-        borderRadius: 5,
+        borderRadius: 8,
         alignItems: 'center',
-        width: '30%',
+        justifyContent: 'center',
+        width: 80,
+        height: 80,
+        position: 'relative',
+        overflow: 'hidden',
+
+    },
+    attemptTextContainer: {
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+        gap: 5,
     },
     attemptText: {
-        color: lightTheme.lightShade,
-        fontWeight: 'bold',
+        color: lightTheme.darkShade,
+        textAlign: 'center',
+        fontSize: 12,
+
+    },
+    attemptResultText: {
+        color: lightTheme.darkShade,
+        textAlign: 'center',
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         flexWrap: 'wrap',
         marginVertical: 20,
+        gap: 15,
     },
     iconButtonContainer: {
         alignItems: 'center',
@@ -215,8 +273,9 @@ const styles = StyleSheet.create({
         borderRadius: 25,
     },
     iconButtonText: {
-        color: lightTheme.light_darkShade,
+        color: lightTheme.dark_lightShade,
         marginTop: 5,
+        fontSize: 12,
     },
     scrollView: {
         width: '100%',
@@ -224,11 +283,28 @@ const styles = StyleSheet.create({
     },
     wordContainer: {
         alignItems: 'center',
-        marginHorizontal: 10,
+        flexDirection: 'row',
+        gap: 10,
+        padding: 10,
+        minWidth: 120,
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: lightTheme.light_darkShade,
+        borderRadius: 8,
+        marginRight: 10,
     },
     wordText: {
-        color: lightTheme.lightShade,
-        marginTop: 5,
+        color: lightTheme.light_darkShade,
+        textTransform: 'capitalize',
+    },
+    bubblesContainer: {
+        ...StyleSheet.absoluteFillObject,
+        zIndex: 0,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
     },
 });
 
