@@ -334,6 +334,80 @@ app.get('/api/subcategories', async (req, res) => {
     }
 });
 
+// For Basic Category page
+app.get('/api/categories/basique', async (req, res) => {
+  try {
+    // Retrieve the "Basique" category
+    const categoryQuery = `
+      SELECT c.categorie_id, c.name AS categorie_name
+      FROM categorie c
+      WHERE c.name = 'basique';
+    `;
+    const categoryResult = await pool.query(categoryQuery);
+
+    if (categoryResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    const category = categoryResult.rows[0];
+
+    // Fetch subcategories for this category with word count
+    const subcategoriesQuery = `
+      SELECT
+        s.subcat_id,
+        s.name AS subcategory_name,
+        COUNT(m.mot_id) AS word_count
+      FROM
+        subcategory s
+      LEFT JOIN
+        mot_subcategory ms ON s.subcat_id = ms.subcat_id
+      LEFT JOIN
+        mot m ON ms.mot_id = m.mot_id
+      WHERE
+        s.categorie_id = $1
+      GROUP BY
+        s.subcat_id, s.name;
+    `;
+    const subcategoriesResult = await pool.query(subcategoriesQuery, [category.categorie_id]);
+    category.subcategories = subcategoriesResult.rows;
+
+    // Loop through subcategories to retrieve words and sign data
+    for (const subcategory of category.subcategories) {
+      const wordsQuery = `
+        SELECT
+          m.mot_id,
+          m.mot,
+          m.definition,
+          json_agg(json_build_object(
+            'signe_id', ls.signe_id,
+            'url_sign', ls.url_sign,
+            'url_def', ls.url_def
+          )) AS signes
+        FROM
+          mot m
+        LEFT JOIN
+          mot_subcategory ms ON m.mot_id = ms.mot_id
+        LEFT JOIN
+          lsf_signe ls ON m.mot_id = ls.mot_id
+        WHERE
+          ms.subcat_id = $1
+        GROUP BY
+          m.mot_id, m.mot, m.definition
+        ORDER BY
+          m.mot;
+      `;
+      const wordsResult = await pool.query(wordsQuery, [subcategory.subcat_id]);
+      subcategory.words = wordsResult.rows;
+    }
+
+    res.json(category);
+  } catch (err) {
+    console.error('Error retrieving the Basique category:', err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+
 
 
 
