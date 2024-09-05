@@ -40,7 +40,9 @@ const GridCardHome = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
+                // maison const response = await fetch('http://192.168.0.12:3000/api/categories');
                 const response = await fetch('http://192.168.0.12:3000/api/categories');
+
                 const data = await response.json();
                 setCategories(data);
                 setLoading(false);
@@ -161,7 +163,7 @@ const GridCardHome = () => {
                         >
                             <SvgIcon icon={category.categorie_name} fillColor={color.neutralCoral} />
                             <View>
-                                <Paragraph style={{ textAlign: 'center', fontSize: 12, paddingTop: 5, color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>
+                                <Paragraph style={{ textAlign: 'center', textTransform: 'capitalize', fontSize: 12, paddingTop: 5, color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>
                                     {category.categorie_name}
                                 </Paragraph>
                                 <Paragraph style={{ textAlign: 'center', fontSize: 9, color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>
@@ -229,7 +231,7 @@ const GridCardHome = () => {
                                                 styles.filterButton,
                                                 {
                                                     borderColor: selectedFilter === option ?
-                                                        option === 'all' ? lightTheme.dark_lightShade :
+                                                        option === 'all' ? color.neutral :
                                                             option === 'easy' ? color.neutralGreen :
                                                                 option === 'medium' ? color.neutralBlue :
                                                                     color.neutralPlum
@@ -247,10 +249,10 @@ const GridCardHome = () => {
                                                 <View style={styles.gradientContainer}>
                                                     <GradientSVG
                                                         colors={
-                                                            option === 'all' ? [color.lightPlum, color.neutralBlue, color.neutralGreen] :
-                                                                option === 'easy' ? [color.darkGreen, color.neutralGreen, color.lightGreen] :
-                                                                    option === 'medium' ? [color.darkBlue, color.neutralBlue, color.lightBlue] :
-                                                                        [color.darkPlum, color.neutralPlum, color.lightPlum]
+                                                            option === 'all' ? [color.neutralGreen, color.neutralBlue, color.neutralPlum] :
+                                                                option === 'easy' ? [color.lightGreen, color.neutralGreen, color.darkGreen] :
+                                                                    option === 'medium' ? [color.lightBlue, color.neutralBlue, color.darkBlue] :
+                                                                        [color.lightPlum, color.neutralPlum, color.darkPlum]
                                                         }
                                                     />
                                                 </View>
@@ -304,12 +306,21 @@ const GridCardHome = () => {
                                 </View>
                             </View>
 
-                            <GradientBorderButton
-                                background={darkMode ? 'dark' : 'light'}
-                                textColor={darkMode ? 'light' : 'dark'}
-                                onPress={handleNavigateToWordList}
-                                text="Commencer"
-                            />
+                            {getTotalFilteredWordCount(selectedCategory) > 6 ? (
+                                <GradientBorderButton
+                                    background={darkMode ? 'dark' : 'light'}
+                                    textColor={darkMode ? 'light' : 'dark'}
+                                    onPress={handleNavigateToWordList}
+                                    text="Commencer"
+                                />
+                            ) : (
+                                <View style={styles.warningContainer}>
+                                    <Paragraph style={styles.warningText}>
+                                        Attention, la catégorie doit avoir au moins 7 mots pour lancer une série
+                                    </Paragraph>
+                                </View>
+                            )}
+
                         </View>
                     </View>
                 </Modal>
@@ -372,7 +383,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
     },
     subcategoryContainer: {
-        justifyContent: 'space-evenly',
+        justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,
         overflow: 'hidden',
@@ -464,7 +475,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginHorizontal: 5,
         width: Dimensions.get('window').width - 50,
-
     },
 
     paginationContainer: {
@@ -484,8 +494,18 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     inactiveDot: {
-        backgroundColor: "#DDD",
+        backgroundColor: color.neutral,
         borderRadius: 8,
+    },
+    warningContainer: {
+        marginTop: 20,
+        padding: 10,
+        borderRadius: 8,
+        backgroundColor: color.warningBackground, // couleur pour le fond d'avertissement
+    },
+    warningText: {
+        color: color.warningText, // couleur du texte d'avertissement
+        textAlign: 'center',
     },
 });
 

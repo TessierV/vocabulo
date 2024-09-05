@@ -1,7 +1,7 @@
 // SubcategoryModal.js
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import SvgIcon from '@/SVG/CategorySvgIcon'; // Make sure this path is correct
+import SvgIcon from '@/SVG/CategorySvgIcon';
 import { lightTheme } from '@/constants/Colors';
 
 const SubcategoryModal = ({ subcategory }) => {
@@ -10,14 +10,12 @@ const SubcategoryModal = ({ subcategory }) => {
         return <Text>Aucun mot disponible</Text>;
     }
 
-    console.log('SubcategoryModal Subcategory:', subcategory); // Debugging
+    console.log('SubcategoryModal Subcategory:', subcategory);
 
     return (
         <View style={styles.container}>
-
             <View style={styles.subcategoryDetailContainer}>
             <View style={styles.categoryRowIcon}>
-
                 <SvgIcon icon={subcategory.subcategory_name} fillColor="pink" width="25" height="25"/>
                 <Text style={styles.recapTitle}>
                     {subcategory.subcategory_name}
