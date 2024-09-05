@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     cardText: {
-        color: '#fff',
+        color: lightTheme.dark_lightShade,
         fontSize: 14,
         fontWeight: 'bold',
         zIndex: 1,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     },
     pastBorder: {
         borderWidth: 1,
-        borderColor: color.darkGreen,
+        borderColor: color.neutral,
         borderStyle: 'solid',
     },
     svgBackground: {
