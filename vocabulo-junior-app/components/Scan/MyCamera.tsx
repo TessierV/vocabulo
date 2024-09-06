@@ -1,21 +1,59 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Image, Animated, Alert } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Colors } from '@/constants/Colors';
 import { ButtonText, InformationText } from '@/constants/StyledText';
 import { router } from 'expo-router';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import * as MediaLibrary from 'expo-media-library';
+import LinearGradient from 'react-native-linear-gradient'; // Import the LinearGradient component
 
 export default function MyCamera() {
   const [facing, setFacing] = useState<CameraType>('back');
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [mediaPermission, requestMediaPermission] = MediaLibrary.usePermissions();
   const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [photoB64, setPhotoB64] = useState<string | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
   const cameraRef = useRef<CameraView>(null);
 
-  // Check for camera permissions
+  const [animationValue] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    if (isScanning) {
+      const animation = Animated.loop(
+        Animated.sequence([
+          Animated.timing(animationValue, {
+            toValue: 1,
+            duration: 2000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(animationValue, {
+            toValue: 0,
+            duration: 2000,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+
+      animation.start();
+
+      return () => animation.stop();
+    } else {
+      animationValue.setValue(0);
+    }
+  }, [isScanning]);
+
+  const lineTranslateY = animationValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 385],
+  });
+
+  const animatedLineStyle = {
+    transform: [{ translateY: lineTranslateY }],
+  };
+
   if (!cameraPermission) {
     console.log('Camera permission state is undefined');
     return <View />;
@@ -40,7 +78,6 @@ export default function MyCamera() {
     );
   }
 
-  // Check for media library permissions
   if (!mediaPermission) {
     console.log('Media library permission state is undefined');
     return <View />;
@@ -101,9 +138,12 @@ export default function MyCamera() {
   const scanText = async () => {
     if (photoUri) {
       console.log('Preparing to scan text');
+      setIsScanning(true);
+
       const savedUri = await savePhotoToGallery(photoUri);
       if (!savedUri) {
         console.error('Failed to save photo to gallery');
+        setIsScanning(false);
         return;
       }
 
@@ -114,13 +154,18 @@ export default function MyCamera() {
         type: 'image/jpeg',
       } as any);
 
+      let response;
+      console.log(formData);
+      console.log(savedUri);
       try {
+
         console.log('Sending image to server');
-        const response = await fetch('http://10.3.1.126:8000/process-image/', {
+        response = await fetch('http://10.10.1.126:3000/send-img/', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          // headers: {
+          //   Accept: 'application/json',
+          //   'Content-Type': 'multipart/form-data',
+          // },
           body: formData,
         });
 
@@ -133,17 +178,30 @@ export default function MyCamera() {
 
         const data = await response.json();
         console.log('Data received from server:', data);
+
         router.push({
-          pathname: './../../screens/ScannedTextScreen', // Make sure this path is correct
+          pathname: './../../screens/ScannedTextScreen',
           params: { ocrData: JSON.stringify(data) }
         });
 
       } catch (error) {
-        console.error('Erreur lors de l\'envoi de l\'image à l\'API', error);
+        console.error(error, response);
+        Alert.alert(
+          'Impossible de charger l\'image',
+          'Vérifier l\'adresse IP réseau wifi ipconfig + containers',
+          [
+            {
+              text: 'Ok',
+              style: 'cancel',
+            },
+          ],
+        );
+        return;
+      } finally {
+        setIsScanning(false);
       }
     }
   };
-
   return (
     <View style={styles.container}>
       {photoUri ? (
@@ -158,13 +216,23 @@ export default function MyCamera() {
           >
             <ButtonText style={styles.buttonText}>Scanner le texte</ButtonText>
           </TouchableOpacity>
+          {isScanning && (
+            <Animated.View style={[styles.animatedLineContainer, animatedLineStyle]}>
+              <LinearGradient
+                colors={['transparent', 'white', 'transparent']}
+                style={styles.animatedLine}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+              />
+            </Animated.View>
+          )}
         </View>
       ) : (
         <CameraView style={styles.camera} ref={cameraRef}>
           <View style={styles.referenceLineContainer} >
             <View style={styles.targetContainer}>
               <SimpleLineIcons name="target" style={styles.targetIcon} />
-              <InformationText style={styles.referenceLineText}>Ligne de repère</InformationText>
+              <InformationText style={styles.referenceLineText}>Cadre de repère</InformationText>
             </View>
             <View style={styles.referenceLine}></View>
           </View>
@@ -217,8 +285,9 @@ const styles = StyleSheet.create({
     borderColor: Colors.white,
     justifyContent: 'center',
     alignSelf: 'center',
-    bottom: '45%',
+    bottom: '15%',
     position: 'absolute',
+    zIndex: 10
   },
   photoContainer: {
     flex: 1,
@@ -239,6 +308,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: Colors.darkGreen,
     alignItems: 'center',
+    zIndex: 10
   },
   buttonText: {
     textAlign: 'center',
@@ -258,20 +328,21 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   referenceLineContainer: {
-    top: '5%',
+    top: '7%',
   },
   referenceLine: {
     width: '90%',
-    height: 500,
+    height: 630,
     borderRadius: 5,
     borderWidth: 2,
     borderStyle: 'dotted',
     borderColor: Colors.white,
     justifyContent: 'center',
     alignSelf: 'center',
+    position: 'absolute'
   },
   targetContainer: {
-    marginHorizontal: '5%',
+    marginHorizontal: '8%',
     marginVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -286,5 +357,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.white,
     marginRight: 5
-  }
+  },
+  animatedLineContainer: {
+    position: 'absolute',
+    top: '6%',
+    left: '5%',
+    right: '5%',
+    height: 4,
+  },
+  animatedLine: {
+    flex: 1,
+    height: '100%',
+  },
 });
