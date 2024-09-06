@@ -1,6 +1,5 @@
-import { FontAwesome } from "@expo/vector-icons";
-import { SplashScreen, Stack } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import { SplashScreen, Stack } from 'expo-router';
 import useCustomFonts from '@/constants/useCustomFonts';
 import useDarkMode from '@/components/useDarkMode';
 
@@ -25,6 +24,8 @@ export default function RootLayout() {
         setFontsLoaded(true);
         SplashScreen.hideAsync();
       } else {
+        // Handle the case where fonts did not load successfully
+        console.error('Échec du chargement des polices.');
       }
     }
     loadFonts();
@@ -47,6 +48,10 @@ function RootLayoutNav() {
       <Stack.Screen name="quiz" options={{ headerShown: false, title: 'Quizz' }} />
 
       <Stack.Screen name="index" options={{ headerShown: false, title: 'Index' }} />
+      <Stack.Screen name="wordlist/[categorie_id]" initialParams={{ mainCategoryWords: [], subcategories: [] }}
+        options={{ headerShown: false, title: 'Liste des mots' }} />
+      <Stack.Screen name="subcat/[subcat_id]" options={{ title: 'Subcategory Details' }} />
+
     </Stack>
   );
 }
