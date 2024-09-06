@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
@@ -15,14 +15,26 @@ export default function LoginScreen() {
                 <BackgroundLogin />
             </View>
             <View style={styles.container}>
-                <BigTitle>Bienvenue</BigTitle>
-                <Text style={styles.loremText}>lorem ipsum</Text>
+                <BigTitle style={styles.welcomeText}>Bienvenue</BigTitle>
+                <View style={styles.pictoLSFContainer}>
+                    <Image source={require('./../../assets/images/pictoLSF/B.png')} style={styles.pictoLSF}/>
+                    <Image source={require('./../../assets/images/pictoLSF/I.png')} style={styles.pictoLSF}/>
+                    <Image source={require('./../../assets/images/pictoLSF/E.png')} style={styles.pictoLSF}/>
+                    <Image source={require('./../../assets/images/pictoLSF/N.png')} style={styles.pictoLSF}/>
+                    <Image source={require('./../../assets/images/pictoLSF/V.png')} style={styles.pictoLSF}/>
+                    <Image source={require('./../../assets/images/pictoLSF/E.png')} style={styles.pictoLSF}/>
+                    <Image source={require('./../../assets/images/pictoLSF/N.png')} style={styles.pictoLSF}/>
+                    <Image source={require('./../../assets/images/pictoLSF/U.png')} style={styles.pictoLSF}/>
+                    <Image source={require('./../../assets/images/pictoLSF/E.png')} style={styles.pictoLSF}/>
+                </View>
+                <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={() => router.push('./../auth/authLogin/Login')}>
                     <ButtonText style={styles.buttonText}>Se connecter</ButtonText>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={() => router.push('./../auth/authSignup/Signup')}>
                     <ButtonText style={styles.buttonText}>Créer un compte</ButtonText>
                 </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
@@ -32,30 +44,41 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.white,
         height: '40%',
+        width: '100%',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        padding: 30,
+        paddingHorizontal: 30,
     },
     welcomeText: {
-        fontSize: 50,
         textAlign: 'center',
-        color: Colors.black,
+        marginTop: 30
     },
-    loremText: {
-        fontSize: 20,
-        textAlign: 'center',
-        color: Colors.black,
+    pictoLSFContainer: {
+        flexDirection: 'row',
         marginTop: 0,
-        marginBottom: 30,
+        height: 20,
+        width: 175,
+        alignSelf: 'center',
+        justifyContent: 'space-between'
+    },
+    pictoLSF: {
+        width: '9%',
+        resizeMode: 'contain',
+        height: 'auto'
+    },
+    buttonContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        bottom: 50,
     },
     button: {
         padding: 15,
         borderRadius: 100,
-        marginTop: '6%',
+        marginTop: 15,
         backgroundColor: Colors.neutralPlum
-      },
-      buttonText: {
+    },
+    buttonText: {
         textAlign: 'center',
         color: Colors.white
-      },
+    },
 });
