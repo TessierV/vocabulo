@@ -407,7 +407,66 @@ app.get('/api/categories/basique', async (req, res) => {
   }
 });
 
+app.get('/api/categories/basique/:id', async (req, res) => {
+  const { id } = req.params;
 
+  console.log(`Received ID: ${id}`); // Debugging line
+
+  try {
+    // Vérifier si l'id est valide
+    if (!id) {
+      return res.status(400).json({ error: 'ID de sous-catégorie requis' });
+    }
+
+    // Récupérer les détails de la sous-catégorie
+    const subcategoryQuery = `
+      SELECT s.subcat_id, s.name AS subcategory_name
+      FROM subcategory s
+      WHERE s.subcat_id = $1
+    `;
+    const subcategoryResult = await pool.query(subcategoryQuery, [id]);
+
+    if (subcategoryResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Sous-catégorie non trouvée' });
+    }
+
+    const subcategory = subcategoryResult.rows[0];
+
+    // Récupérer les mots pour la sous-catégorie
+    const wordsQuery = `
+      SELECT
+        m.mot_id,
+        m.mot,
+        m.definition,
+        json_agg(json_build_object(
+          'signe_id', ls.signe_id,
+          'url_sign', ls.url_sign,
+          'url_def', ls.url_def
+        )) AS signes
+      FROM
+        mot m
+      LEFT JOIN
+        mot_subcategory ms ON m.mot_id = ms.mot_id
+      LEFT JOIN
+        lsf_signe ls ON m.mot_id = ls.mot_id
+      WHERE
+        ms.subcat_id = $1
+      GROUP BY
+        m.mot_id, m.mot, m.definition
+      ORDER BY
+        m.mot
+    `;
+    const wordsResult = await pool.query(wordsQuery, [id]);
+
+    // Préparer la réponse
+    subcategory.words = wordsResult.rows;
+
+    res.json(subcategory);
+  } catch (err) {
+    console.error('Erreur lors de la récupération des sous-catégories:', err.message);
+    res.status(500).send('Erreur lors de la récupération des sous-catégories');
+  }
+});
 
 
 
