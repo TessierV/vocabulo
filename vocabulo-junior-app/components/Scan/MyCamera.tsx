@@ -9,6 +9,9 @@ import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import * as MediaLibrary from 'expo-media-library';
 import LinearGradient from 'react-native-linear-gradient'; // Import the LinearGradient component
 
+const IPvillagebyca = '10.10.1.126';
+const IPmyHome = '192.168.1.12';
+
 export default function MyCamera() {
   const [facing, setFacing] = useState<CameraType>('back');
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
@@ -17,6 +20,7 @@ export default function MyCamera() {
   const [photoB64, setPhotoB64] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const cameraRef = useRef<CameraView>(null);
+
 
   const [animationValue] = useState(new Animated.Value(0));
 
@@ -160,7 +164,7 @@ export default function MyCamera() {
       try {
 
         console.log('Sending image to server');
-        response = await fetch('http://10.10.1.126:3000/send-img/', {
+        response = await fetch(`http://${IPmyHome}:3000/send-img/`, {
           method: 'POST',
           // headers: {
           //   Accept: 'application/json',
@@ -188,7 +192,7 @@ export default function MyCamera() {
         console.error(error, response);
         Alert.alert(
           'Impossible de charger l\'image',
-          'Vérifier l\'adresse IP réseau wifi ipconfig + containers',
+          'Vérifier l\'adresse IP réseau wifi ipconfig + containers + node .\\server.js',
           [
             {
               text: 'Ok',

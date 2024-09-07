@@ -12,6 +12,8 @@ dotenv.config({ path: '../BDD/quick_setup/.env' });
 
 const app = express();
 const port = 3000;
+const IPvillagebyca = '10.10.1.126';
+const IPmyHome = '192.168.1.12';
 
 //
 const upload = multer({ storage: multer.memoryStorage() })
@@ -422,7 +424,7 @@ app.post('/send-img', upload.single('file'), async (req, res) => {
     f.append('file', new Blob([req.file.buffer], { type: req.file.mimetype }), {filename: req.file.originalname, contentType: req.file.mimetype});
 
     console.log(await req.file, req.headers);
-    const response = await fetch('http://10.10.1.126:8000/process-image/', {
+    const response = await fetch(`http://${IPmyHome}:8000/process-image/`, {
       method: 'POST',
       body: f,
     });
