@@ -1,11 +1,10 @@
-// AnswerButton.js
 import React from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import { Paragraph } from '@/constants/StyledText';
 
-const AnswerButton = ({ answer, onPress, isSelected, isDisabled, index }) => {
+const AnswerButton = ({ answer, onPress, isSelected, isDisabled, isCorrect, index, highlightCorrect }) => {
     const getIcon = () => {
         if (isDisabled) {
             return 'x-circle';
@@ -21,6 +20,7 @@ const AnswerButton = ({ answer, onPress, isSelected, isDisabled, index }) => {
             style={[
                 styles.answerButton,
                 isSelected && styles.selectedAnswerButton,
+                isSelected && isCorrect && highlightCorrect && styles.correctAnswerButton,
                 isDisabled && styles.disabledAnswerButton,
             ]}
             onPress={onPress}
@@ -28,10 +28,10 @@ const AnswerButton = ({ answer, onPress, isSelected, isDisabled, index }) => {
         >
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                 <Paragraph style={[
-                        styles.answerLabel,
-                        isSelected && styles.selectedAnswerText,
-                        isDisabled && styles.disabledAnswerText,
-                    ]}>{index + 1}.</Paragraph>
+                    styles.answerLabel,
+                    isSelected && styles.selectedAnswerText,
+                    isDisabled && styles.disabledAnswerText,
+                ]}>{index + 1}.</Paragraph>
                 <Paragraph
                     style={[
                         styles.answerLabel,
@@ -74,13 +74,13 @@ const styles = StyleSheet.create({
         borderColor: color.darkBlue,
         backgroundColor: color.neutralBlue,
     },
+    correctAnswerButton: {
+        backgroundColor: color.darkGreen,
+        borderColor: darkTheme.light_darkShade,
+    },
     disabledAnswerButton: {
         borderColor: color.neutralCoral,
         backgroundColor: color.disabledBackground,
-    },
-    indexLabel: {
-        marginRight: 10,
-        color: lightTheme.light_darkShade,
     },
     answerLabel: {
         color: lightTheme.light_darkShade,
