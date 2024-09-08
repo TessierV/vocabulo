@@ -413,12 +413,10 @@ app.get('/api/categories/basique/:id', async (req, res) => {
   console.log(`Received ID: ${id}`); // Debugging line
 
   try {
-    // Vérifier si l'id est valide
     if (!id) {
       return res.status(400).json({ error: 'ID de sous-catégorie requis' });
     }
 
-    // Récupérer les détails de la sous-catégorie
     const subcategoryQuery = `
       SELECT s.subcat_id, s.name AS subcategory_name
       FROM subcategory s
@@ -432,7 +430,6 @@ app.get('/api/categories/basique/:id', async (req, res) => {
 
     const subcategory = subcategoryResult.rows[0];
 
-    // Récupérer les mots pour la sous-catégorie
     const wordsQuery = `
       SELECT
         m.mot_id,
@@ -458,8 +455,9 @@ app.get('/api/categories/basique/:id', async (req, res) => {
     `;
     const wordsResult = await pool.query(wordsQuery, [id]);
 
-    // Préparer la réponse
     subcategory.words = wordsResult.rows;
+
+    console.log("Response Data:", subcategory); // Debugging line
 
     res.json(subcategory);
   } catch (err) {
@@ -467,6 +465,7 @@ app.get('/api/categories/basique/:id', async (req, res) => {
     res.status(500).send('Erreur lors de la récupération des sous-catégories');
   }
 });
+
 
 
 
