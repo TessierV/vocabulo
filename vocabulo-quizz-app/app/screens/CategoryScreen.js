@@ -61,7 +61,7 @@ const Page = () => {
 
       try {
         //const categoryResponse = await fetch('http://192.168.0.12:3000/api/categories/basique');
-        const categoryResponse = await fetch('http://192.168.1.15:3000/api/categories/basique');
+        const categoryResponse = await fetch('http://192.168.0.12:3000/api/categories/basique');
 
         const categoryData = await categoryResponse.json();
 
@@ -481,9 +481,6 @@ const Page = () => {
           ) : (
             <Text style={{ color: darkMode ? color.neutral : color.neutral }}>No subcategories found</Text>
           )}
-
-
-
           {selectedSection && selectedSection.subcat && (
             <Modal
               transparent={true}
@@ -521,28 +518,32 @@ const Page = () => {
                     </View>
 
                     {/* Liste des mots filtrés */}
-                        <ScrollView style={{ height: 200 }}>
-                    {filterWordsByDifficulty(selectedSection.subcat.words, selectedSection.difficulty).map(word => (
-                      <View key={word.mot_id}>
-                        <Text style={{ color: darkMode ? darkTheme.text : lightTheme.text }}>
-                          {word.mot} - {word.definition}
-                        </Text>
-                        {word.signs.map((sign, index) => (
-                          <View key={index}>
-                            <Text>Sign Video: {sign.urlSign}</Text>
-                            <Text>Definition Video: {sign.urlDef}</Text>
-                          </View>
-                        ))}
-                      </View>
+                    <ScrollView style={{ height: 200 }}>
+                      {filterWordsByDifficulty(selectedSection.subcat.words, selectedSection.difficulty).map(word => (
+                        <View key={word.mot_id}>
+                          <Text style={{ color: darkMode ? darkTheme.text : lightTheme.text }}>
+                            {word.mot} - {word.definition}
+                          </Text>
+                          {word.signs.map((sign, index) => (
+                            <View key={index}>
+                              <Text>Sign Video: {sign.urlSign}</Text>
+                              <Text>Definition Video: {sign.urlDef}</Text>
+                            </View>
+                          ))}
+                        </View>
                       ))}
                     </ScrollView>
 
                     <TouchableOpacity
   onPress={() => {
+    const filteredWords = filterWordsByDifficulty(selectedSection.subcat.words, selectedSection.difficulty);
+
     navigation.navigate('subcat/[subcat_id]', {
-      subcat_id: selectedSection.subcat.subcat_id, // Ensure this matches your parameter name
+      subcat_id: selectedSection.subcat.subcat_id, // Passe l'ID de la sous-catégorie
+      difficulty: selectedSection.difficulty, // Passe le filtre de difficulté
+      words: filteredWords, // Passe les mots filtrés
     });
-    setModalVisible(false);
+    setModalVisible(false); // Ferme le modal après la navigation
   }}
   style={styles.closeButton}
 >
@@ -550,9 +551,6 @@ const Page = () => {
     Go to Subcategory Page
   </Text>
 </TouchableOpacity>
-
-
-
 
                   </View>
                 </View>
