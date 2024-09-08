@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, useIsFocused } from '@react-navigation/native';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert, Modal, Button } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { lightTheme, color, darkTheme } from '@/constants/Colors';
-
+import { Feather } from '@expo/vector-icons';
+import { lightTheme, color } from '@/constants/Colors';
 import CategoryWordSvg from '@/SVG/CategoryWordSvg';
-
-
 import AnswerButton from '@/components/Quizz/AnswerButton';
 import Pagination from '@/components/Quizz/Pagination';
+import { AnnonceTitle, Paragraph, Subtitle } from '@/constants/StyledText';
+import { GradientBackgroundButton } from '@/components/Button';
+import InterfaceSvg from '@/SVG/InterfaceSvg';
+import HeaderQuiz from '@/components/Quizz/HeaderQuiz';
+import HintComponent from '@/components/Quizz/HintComponent';
+import VideoModal from '@/components/Quizz/HintVideoModal';
+import CustomModal from '@/components/General/CustomModal';
+import useDarkMode from '@/components/useDarkMode';
+import CancelModal from '@/components/Quizz/CancelModal';
+import CongratulationsModal from '@/components/Quizz/CongratulationsModal';
 
 const HomeListQuizz = () => {
     const route = useRoute();
+    const [darkMode] = useDarkMode();
     const navigation = useNavigation();
     const { categorie_id, filter } = route.params;
 
@@ -29,6 +38,18 @@ const HomeListQuizz = () => {
     const [showHintModal, setShowHintModal] = useState(false);
     const [hintContent, setHintContent] = useState('');
     const [disabledAnswers, setDisabledAnswers] = useState([]);
+    const [showDefinitionModal, setShowDefinitionModal] = useState(false);
+    const [definitionContent, setDefinitionContent] = useState('');
+    const [showExitModal, setShowExitModal] = useState(false);
+    const [showCongratulationsModal, setShowCongratulationsModal] = useState(false);
+    const isFocused = useIsFocused();
+
+    const [correctWords, setCorrectWords] = useState(new Set());
+    const [correctWordsDetails, setCorrectWordsDetails] = useState([]);
+
+    const [correctFirstAttempt, setCorrectFirstAttempt] = useState(0);
+    const [correctSecondAttempt, setCorrectSecondAttempt] = useState(0);
+    const [correctMoreAttempt, setCorrectMoreAttempt] = useState(0);
 
     useEffect(() => {
         const fetchWords = async () => {
@@ -86,6 +107,7 @@ const HomeListQuizz = () => {
                 }));
 
                 const filteredWords = allWords.filter(word => {
+
                     const hasUrlSign = word.signes.some(signe => signe.url_sign && signe.url_sign !== 'Non spécifié');
                     const hasUrlDef = word.signes.some(signe => signe.url_def && signe.url_def !== 'Non spécifié');
 
@@ -129,8 +151,8 @@ const HomeListQuizz = () => {
             return randomWord;
         };
 
-        while (questions.length < 4) {
-            if (words.length < 4) {
+        while (questions.length < 5) {
+            if (words.length < 6) {
                 Alert.alert('Erreur', 'Pas assez de mots pour générer des questions.');
                 return;
             }
@@ -148,20 +170,32 @@ const HomeListQuizz = () => {
             }
 
             const hasImage = CategoryWordSvg[correctWord.mot];
-            const svgIconWord = hasImage ? <SvgXml xml={CategoryWordSvg[correctWord.mot]} width="130" height="130" /> : null;
+            const svgIconWord = hasImage ? (
+                <TouchableOpacity onPress={() => {
+                    setDefinitionContent(correctWord.definitions);
+                    setShowDefinitionModal(true);
+                }}>
+                    <View style={{ position: 'relative' }}>
+                        <SvgXml xml={CategoryWordSvg[correctWord.mot]} width="110" height="110" />
+                        <Feather style={{ position: 'absolute', right: 0, top: 0 }} name="help-circle" size={15} color={lightTheme.light_darkShade} />
+                    </View>
+                </TouchableOpacity>
+            ) : null;
 
             const questionText = svgIconWord ? (
-                <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
-                    À quel mot correspond cette image?
-                </Text>
+                <View style={{ width: '100%', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                    <Paragraph style={{ fontSize: 15, color: color.neutral }}>
+                        Quel mot cette image représente-t-elle ?
+                    </Paragraph>
+                </View>
             ) : (
                 <>
-                    <Text style={{ fontSize: 15 }}>
-                        Quelle est la réponse pour la définition suivante :{'\n\n'}
-                    </Text>
-                    <Text style={{ fontWeight: 'bold', fontSize: 25,}}>
+                    <Paragraph style={{ fontSize: 15, color: lightTheme.light_darkShade }}>
+                        Quelle est la réponse à cette définition ?{'\n\n'}
+                    </Paragraph>
+                    <Subtitle style={{  color: lightTheme.dark_lightShade }}>
                         {correctWord.definitions}
-                    </Text>
+                    </Subtitle>
                 </>
             );
 
@@ -184,7 +218,7 @@ const HomeListQuizz = () => {
                         url_sign: correctWord.signes[0]?.url_sign || 'Non spécifié',
                     }
                 ].sort(() => 0.5 - Math.random()),
-                hints
+                hints: []
             };
 
             questions.push(question);
@@ -197,24 +231,57 @@ const HomeListQuizz = () => {
         setSelectedAnswer(answer);
     };
 
+    const [highlightCorrect, setHighlightCorrect] = useState(false);
+
+
     const validateAnswer = () => {
         if (selectedAnswer) {
             if (selectedAnswer.correct) {
+                // Mise à jour du score en fonction du nombre de tentatives
+                if (attempts === 0) {
+                    setCorrectFirstAttempt(prev => prev + 1);
+                } else if (attempts === 1) {
+                    setCorrectSecondAttempt(prev => prev + 1);
+                } else {
+                    setCorrectMoreAttempt(prev => prev + 1);
+                }
+
+                // Mise à jour des bons mots avec leurs détails
+                setCorrectWordsDetails(prev => [
+                    ...prev,
+                    {
+                        mot: selectedAnswer.text,
+                        mot_id: selectedAnswer.mot_id, // Assurez-vous que mot_id est bien défini dans selectedAnswer
+                        categoryName: categoryName
+                    }
+                ]);
+
+                // Mise à jour du score
                 setScore(prevScore => prevScore + 1);
-                moveToNextQuestion();
+
+
+                // Passage à la prochaine question
+                setHighlightCorrect(true);
+                setTimeout(() => {
+                  setHighlightCorrect(false);
+                  moveToNextQuestion(); // Move to the next question after the highlight effect
+                }, 2000); // Highlight for 2 seconds
             } else {
+                // Mise à jour des tentatives et affichage des indices en fonction du nombre de tentatives
                 setAttempts(prevAttempts => prevAttempts + 1);
                 setDisabledAnswers(prev => [...prev, selectedAnswer]);
+
                 if (attempts === 0) {
-                    setShowFirstHint(true);
+                    setShowFirstHint(true); // Affiche le premier indice
                 } else if (attempts === 1) {
-                    setShowSecondHint(true);
+                    setShowSecondHint(true); // Affiche le deuxième indice
                 }
             }
         } else {
             Alert.alert('Attention', 'Veuillez sélectionner une réponse avant de valider.');
         }
     };
+
 
     const moveToNextQuestion = () => {
         if (currentQuestionIndex < questions.length - 1) {
@@ -225,18 +292,7 @@ const HomeListQuizz = () => {
             setShowSecondHint(false);
             setDisabledAnswers([]);
         } else {
-            Alert.alert(
-                'Félicitations',
-                `Vous avez terminé le quiz avec un score de ${score + (selectedAnswer && selectedAnswer.correct ? 1 : 0)}/${questions.length}!`,
-                [
-                    {
-                        text: 'OK',
-                        onPress: () => {
-                            navigation.goBack();
-                        }
-                    }
-                ]
-            );
+            setShowCongratulationsModal(true);
         }
     };
 
@@ -245,16 +301,35 @@ const HomeListQuizz = () => {
         setShowHintModal(true);
     };
 
+    const handleQuit = () => {
+        setShowExitModal(true);
+    };
+
+    const confirmExit = () => {
+        setShowExitModal(false);
+        navigation.goBack();
+    };
+
+    const cancelExit = () => {
+        setShowExitModal(false);
+    };
+
+    useEffect(() => {
+        if (!isFocused) {
+            setShowExitModal(false);
+        }
+    }, [isFocused]);
+
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <ActivityIndicator size="large" color={color.neutralBlue} />
             </View>
         );
     }
 
     if (error) {
-        return <Text style={styles.errorText}>Erreur: {error}</Text>;
+        return <Paragraph style={{ color: color.neutralCoral, textAlign: 'center', marginVertical: 20 }}>Erreur: {error}</Paragraph>;
     }
 
     const currentQuestion = questions[currentQuestionIndex] || {};
@@ -264,192 +339,105 @@ const HomeListQuizz = () => {
     const url_sign = correctAnswer.url_sign || 'Non spécifié';
 
     return (
-        <View style={styles.container}>
-            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'flex-start', }}>
-                <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Text style={styles.backButtonText}>Retour</Text>
-                </TouchableOpacity>
-
-                <View>
-                    <Text style={styles.title}>Quizz: {categoryName}</Text>
-                    <Text>Question {currentQuestionIndex + 1}/{questions.length}
-                    </Text>
-                    <Pagination
-                        currentIndex={currentQuestionIndex}
-                        totalQuestions={questions.length}
-                    />
+        <View style={{ flex: 1, justifyContent: 'center', gap: 10, width: '100%', backgroundColor: lightTheme.darkShade }}>
+            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'flex-start' }}>
+                <HeaderQuiz
+                    handleQuit={handleQuit}
+                    currentQuestionIndex={currentQuestionIndex}
+                    totalQuestions={questions.length}
+                    categoryName={categoryName}
+                    darkMode={darkMode}
+                />
+            </View>
+            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', alignItems: 'center' }}>
+                <Paragraph style={{ fontSize: 20, marginBottom: 20 }}>{currentQuestion.questionText}</Paragraph>
+                <View style={{ marginVertical: 10 }}>
+                    {currentQuestion.svgIconWord}
                 </View>
             </View>
-            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', alignItems: 'center', }}>
-                <Text style={styles.questionText}>{currentQuestion.questionText}</Text>
-                <View style={styles.svgIconWord}>{currentQuestion.svgIconWord}</View>
-            </View>
-
-            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', }}>
-
+            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center' }}>
                 {answers.map((answer, index) => (
+
                     <AnswerButton
-                        key={index}
-                        answer={answer}
-                        onPress={() => handleAnswerSelection(answer)}
-                        isSelected={selectedAnswer === answer}
-                        isDisabled={disabledAnswers.includes(answer)}
-                    />
+          key={index}
+          answer={answer}
+          onPress={() => handleAnswerSelection(answer)}
+          isSelected={selectedAnswer === answer}
+          isDisabled={disabledAnswers.includes(answer)}
+          isCorrect={answer.correct}
+          index={index}
+          highlightCorrect={highlightCorrect} // Pass the highlight prop
+      />
                 ))}
             </View>
-            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', }}>
-
-                <TouchableOpacity
-                    style={styles.validateButton}
+            <View style={{ width: '90%', alignItems: 'center', marginTop: 10, alignSelf: 'center', alignContent: 'center', justifyContent: 'center' }}>
+                <GradientBackgroundButton
+                    text="Valider"
+                    textColor={'light'}
                     onPress={validateAnswer}
-                >
-                    <Text style={styles.validateButtonText}>Valider</Text>
-                </TouchableOpacity>
+                />
             </View>
-            <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', }}>
-
-
-
-                <View style={styles.hintsContainer}>
-                    {showFirstHint && (
-                        url_def === 'Non spécifié' && url_sign === 'Non spécifié' ? (
-                            <Text style={styles.hintText}>Il n'y a pas d'indice pour ce mot</Text>
-                        ) : url_sign !== 'Non spécifié' && url_def === 'Non spécifié' ? (
-                            <View style={styles.hintButton}>
-                                <Text style={styles.hintButtonText}>Indice bientot</Text>
-                            </View>
-                        ) : url_def !== 'Non spécifié' && url_sign !== 'Non spécifié' ? (
-                            <TouchableOpacity
-                                style={styles.hintButton}
-                                onPress={() => openHintModal(url_def)}
-                            >
-                                <Text style={styles.hintButtonText}>Indice 1</Text>
-                            </TouchableOpacity>
-                        ) : (
-                            <TouchableOpacity
-                                style={styles.hintButton}
-                                onPress={() => openHintModal(url_def)}
-                            >
-                                <Text style={styles.hintButtonText}>Indice 1</Text>
-                            </TouchableOpacity>
-                        )
-                    )}
-                    {showSecondHint && url_sign !== 'Non spécifié' && (
-                        <TouchableOpacity
-                            style={styles.hintButton}
-                            onPress={() => openHintModal(url_sign)}
-                        >
-                            <Text style={styles.hintButtonText}>Indice 2</Text>
-                        </TouchableOpacity>
-                    )}
-                </View>
+            <View style={{ width: '90%', alignItems: 'center', marginTop: 10, alignSelf: 'center', alignContent: 'center', justifyContent: 'center' }}>
+                <HintComponent
+                    showFirstHint={showFirstHint}
+                    showSecondHint={showSecondHint}
+                    url_def={url_def}
+                    url_sign={url_sign}
+                    openHintModal={openHintModal}
+                />
             </View>
 
+            {/* Modals */}
+            <CancelModal
+                visible={showExitModal}
+                onConfirm={confirmExit}
+                onCancel={cancelExit}
+            />
 
-            <Modal
-                transparent={true}
+            <VideoModal
                 visible={showHintModal}
-                onRequestClose={() => setShowHintModal(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text>{hintContent}</Text>
-                        <Button title="Fermer" onPress={() => setShowHintModal(false)} />
-                    </View>
-                </View>
-            </Modal>
+                onClose={() => setShowHintModal(false)}
+                videoUrl={hintContent}
+                hintText={hintContent}
+                svgXml={null}
+            />
+            <CustomModal
+                visible={showDefinitionModal}
+                title="Définition"
+                content={definitionContent}
+                buttonText="Fermer"
+                onPress={() => setShowDefinitionModal(false)}
+            />
+            <CongratulationsModal
+                visible={showCongratulationsModal}
+                score={score}
+                totalQuestions={questions.length}
+                correctFirstAttempt={correctFirstAttempt}
+                correctSecondAttempt={correctSecondAttempt}
+                correctMoreAttempt={correctMoreAttempt}
+                categoryName={categoryName}
+                correctWords={correctWordsDetails}
+                onClose={() => setShowCongratulationsModal(false)}
+            />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        gap: 10,
-        width: '100%',
-    },
-
-
-    backButton: {
-        marginBottom: 20,
-    },
-    backButtonText: {
-        color: '#007BFF',
-        fontSize: 18,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        textTransform: 'capitalize',
-    },
-    questionText: {
-        fontSize: 20,
-        marginBottom: 20,
-    },
-    validateButton: {
-        marginTop: 20,
-        padding: 10,
-        backgroundColor: '#28a745',
-        borderRadius: 5,
-    },
-    validateButtonText: {
-        color: '#fff',
-        fontSize: 18,
-        textAlign: 'center',
-    },
-    hintsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        marginTop: 20,
-        gap: 10,
-    },
     hintButton: {
         padding: 10,
         borderRadius: 8,
         flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 10,
+        alignSelf: 'center',
         borderWidth: 1,
-        borderColor: lightTheme.darkShade,
-    },
-    hintButtonText: {
-        color: '#000',
-        fontSize: 14,
-        textAlign: 'center',
-    },
-    hintText: {
-        fontSize: 14,
-        color: '#ff5722',
-        textAlign: 'center',
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    errorText: {
-        color: 'red',
-        textAlign: 'center',
-        marginVertical: 20,
-    },
-    svgIconWord:{
-        marginVertical: 20,
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-    },
-    modalContent: {
-        width: 300,
-        padding: 20,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        alignItems: 'center',
+        borderColor: lightTheme.light_darkShade,
+        maxWidth: 230,
+        minHeight: 40,
     },
 });
 
