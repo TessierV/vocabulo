@@ -89,7 +89,7 @@ const DictionaryScreen = ({ darkMode }) => {
       );
 
       setFilteredWordCount(filteredWords.length);
-      setWordSuggestions(filteredWords.slice(0, 20));
+      setWordSuggestions(filteredWords.slice(0, 100));
       setError(null);
     } catch (error) {
       setError(error.message);
