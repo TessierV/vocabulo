@@ -3,6 +3,9 @@ import { StyleSheet, Text, View, ActivityIndicator, ScrollView, TouchableOpacity
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
 import { BigTitle } from '@/constants/StyledText';
+import SectionTitle from '@/components/SectionTitle';
+import { texts } from '@/constants/texts';
+import SvgIcon from '@/SVG/CategorySvgIcon';
 
 const Page = () => {
   const [darkMode] = useDarkMode();
@@ -61,6 +64,13 @@ const Page = () => {
     setRandomItem(validRandomItem);
   };
 
+  // Appeler le randomize après avoir récupéré les catégories
+  useEffect(() => {
+    if (categories.length > 0) {
+      handleRandomize();
+    }
+  }, [categories]); // Se déclenche après la récupération des catégories
+
   const getFilteredWords = (words) => {
     switch (filter) {
       case 'Easy':
@@ -81,7 +91,6 @@ const Page = () => {
         return words;
     }
   };
-
 
   const countWordsByDifficulty = (words) => {
     return words.reduce((counts, word) => {
@@ -154,52 +163,92 @@ const Page = () => {
   return (
     <View style={{ flex: 1, padding: 20, backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }}>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <BigTitle style={{ color: darkMode ? color.neutralCoral : color.neutralCoral, marginBottom: 20 }}>
-          Categories
-        </BigTitle>
 
-        {/* Filter Buttons */}
-        <View style={styles.filterContainer}>
-          {['Tout', 'Easy', 'Middle', 'Hard'].map((filterOption) => (
-            <TouchableOpacity
-              key={filterOption}
-              style={[
-                styles.filterButton,
-                filter === filterOption && styles.selectedFilterButton
-              ]}
-              onPress={() => setFilter(filterOption)}
-            >
-              <Text
-                style={[
-                  styles.filterButtonText,
-                  filter === filterOption && styles.selectedFilterButtonText
-                ]}
-              >
-                {filterOption}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <Button title="Randomize" onPress={handleRandomize} color={color.neutralCoral} />
 
         {randomItem && (
           <View style={styles.randomContainer}>
+            <View style={{alignSelf: 'center', alignItems: 'center', gap: 10}}>
+            <SvgIcon
+              width='100' height='100'
+              icon={randomItem?.data?.subcategory_name || randomItem?.data?.categorie_name}
+              fillColor={color.neutralCoral}
+            />
+
             <Text style={styles.randomTitle}>
               {randomItem.type === 'category' ?
                 `Random Category: ${randomItem.data.categorie_name}` :
                 `Random Subcategory: ${randomItem.data.subcategory_name} (from ${randomItem.parentCategoryName})`}
             </Text>
+            </View>
+
+            <SectionTitle
+              title={texts.categoryScreen.Category.title}
+              text={texts.categoryScreen.Category.text}
+              iconName="help-circle"
+              popupTitle={texts.categoryScreen.Category.popup.title}
+              popupText={texts.categoryScreen.Category.popup.text}
+              popupButtonText={texts.categoryScreen.Category.popup.button}
+              darkMode={darkMode}
+            />
+            <Button title="Randomize" onPress={handleRandomize} color={color.neutralCoral} />
 
             {(() => {
               const { total, Easy, Middle, Hard } = randomItemWordCounts;
 
               return (
                 <View>
-                  <Text>Total Words: {total}</Text>
-                  <Text>Easy: {Easy}/{total}</Text>
-                  <Text>Middle: {Middle}/{total}</Text>
-                  <Text>Hard: {Hard}/{total}</Text>
+                  <SectionTitle
+                    title={texts.categoryScreen.Category.title}
+                    text={texts.categoryScreen.Category.text}
+                    iconName="help-circle"
+                    popupTitle={texts.categoryScreen.Category.popup.title}
+                    popupText={texts.categoryScreen.Category.popup.text}
+                    popupButtonText={texts.categoryScreen.Category.popup.button}
+                    darkMode={darkMode}
+                  />
+                  {/* Filter Buttons */}
+                  <View style={styles.filterContainer}>
+                    {['Tout', 'Easy', 'Middle', 'Hard'].map((filterOption) => {
+                      const counts = getTotalWordCounts(); // Get total counts based on the current filter
+
+                      return (
+                        <TouchableOpacity
+                          key={filterOption}
+                          style={[
+                            styles.filterButton,
+                            filter === filterOption && styles.selectedFilterButton
+                          ]}
+                          onPress={() => setFilter(filterOption)}
+                        >
+                          <Text
+                            style={[
+                              styles.filterButtonText,
+                              filter === filterOption && styles.selectedFilterButtonText
+                            ]}
+                          >
+                            {filterOption}
+
+                          </Text>
+                          <Text
+                            style={[
+                              styles.filterButtonTextCount,
+                              filter === filterOption && styles.selectedFilterButtonText
+                            ]}
+                          >
+                            {filterOption === 'Tout' ?
+                              `${total}` :
+                              filterOption === 'Easy' ?
+                                `${Easy}/${total}` :
+                                filterOption === 'Middle' ?
+                                  `${Middle}/${total}` :
+                                  `${Hard}/${total}`
+                            }
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+
                   {(randomItem.type === 'category' ? getFilteredWords(randomItem.data.categoryWords || []) : getFilteredWords(randomItem.data.words || [])).map((word) => (
                     <View key={word.mot_id} style={styles.wordItemContainer}>
                       <Text style={styles.word}>{word.mot}</Text>
@@ -240,57 +289,69 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  scrollView: {
-    flexGrow: 1,
+  randomTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   filterContainer: {
     flexDirection: 'row',
-    marginBottom: 20,
+    justifyContent: 'space-around',
+    marginVertical: 10,
+
   },
   filterButton: {
-    marginRight: 10,
     padding: 10,
+    backgroundColor: color.lightBlue,
     borderRadius: 5,
-    borderWidth: 1,
-    borderColor: color.neutralCoral,
+    flexDirection: 'column',
+    width: 80,
+    minHeight: 40,
+
   },
   selectedFilterButton: {
-    backgroundColor: color.neutralCoral,
+    backgroundColor: color.darkBlue,
   },
   filterButtonText: {
-    color: color.neutralCoral,
+    fontSize: 14,
+    color: color.darkBlue,
+    textAlign: 'center',
+
+  },
+  filterButtonTextCount: {
+    fontSize: 12,
+    textAlign: 'center',
+
   },
   selectedFilterButtonText: {
-    color: '#fff',
-  },
-  randomContainer: {
-    marginTop: 20,
-  },
-  randomTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    color: color.white,
   },
   wordItemContainer: {
-    marginBottom: 10,
+    marginBottom: 15,
+    padding: 10,
+    borderColor: color.neutral,
+    borderWidth: 1,
+    borderRadius: 5,
   },
   word: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   definition: {
-    fontSize: 14,
+    marginVertical: 5,
   },
   signContainer: {
-    marginTop: 10,
+    marginTop: 5,
   },
   signText: {
     fontSize: 12,
-    fontWeight: 'bold',
+    color: color.neutral,
   },
   signUrl: {
-    fontSize: 12,
-    color: 'blue',
+    color: color.neutralBlue,
+  },
+  scrollView: {
+    flexGrow: 1,
   },
 });
 
