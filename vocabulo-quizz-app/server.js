@@ -407,6 +407,7 @@ app.get('/api/categories/basique', async (req, res) => {
   }
 });
 
+// For Basic Category page Quizz
 app.get('/api/categories/basique/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -465,6 +466,73 @@ app.get('/api/categories/basique/:id', async (req, res) => {
     res.status(500).send('Erreur lors de la récupération des sous-catégories');
   }
 });
+
+
+app.get('/api/alphabet/search', async (req, res) => {
+  const { searchTerm = '' } = req.query;
+
+  try {
+    if (!searchTerm) {
+      return res.status(400).json({ error: 'Terme de recherche requis' });
+    }
+
+    // Requête pour récupérer les mots associés qui correspondent au terme de recherche
+    const searchQuery = `
+      SELECT
+        a.alphabet_id,
+        a.letter,
+        m.mot_id,
+        m.mot,
+        m.definition,
+        m.frequence,
+        g.name AS grammatical_category,
+        json_agg(json_build_object(
+          'signe_id', ls.signe_id,
+          'url_sign', ls.url_sign,
+          'url_def', ls.url_def
+        )) AS signes
+      FROM
+        alphabet a
+      LEFT JOIN
+        mot m ON a.alphabet_id = m.alphabet_id
+      LEFT JOIN
+        grammatical_cat g ON m.gramm_id = g.gramm_id
+      LEFT JOIN
+        lsf_signe ls ON m.mot_id = ls.mot_id
+      WHERE
+        m.mot ILIKE $1 -- Recherche fléchée insensible à la casse
+      GROUP BY
+        a.alphabet_id, a.letter, m.mot_id, m.mot, m.definition, m.frequence, g.name
+      ORDER BY
+        a.letter, m.mot
+    `;
+
+    // Requête pour obtenir le nombre total de mots correspondants
+    const countQuery = `
+      SELECT COUNT(*)
+      FROM mot
+      WHERE mot ILIKE $1
+    `;
+
+    // Exécuter les requêtes en parallèle
+    const [searchResult, countResult] = await Promise.all([
+      pool.query(searchQuery, [`%${searchTerm}%`]),
+      pool.query(countQuery, [`%${searchTerm}%`])
+    ]);
+
+    // Associer les mots aux lettres
+    const result = searchResult.rows;
+    const totalCount = countResult.rows[0].count;
+
+    // Envoyer les résultats et le nombre total de mots
+    res.json({ totalCount, words: result });
+  } catch (err) {
+    console.error('Erreur lors de la recherche des mots:', err.message);
+    res.status(500).send('Erreur lors de la recherche des mots');
+  }
+});
+
+
 
 
 
