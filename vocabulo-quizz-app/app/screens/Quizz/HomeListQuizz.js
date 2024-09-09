@@ -175,15 +175,15 @@ const HomeListQuizz = () => {
                     setDefinitionContent(correctWord.definitions);
                     setShowDefinitionModal(true);
                 }}>
-                    <View style={{ position: 'relative' }}>
+                    <View style={{ position: 'relative', width: '100%', alignSelf:'center', alignItems:'center', }}>
                         <SvgXml xml={CategoryWordSvg[correctWord.mot]} width="110" height="110" />
-                        <Feather style={{ position: 'absolute', right: 0, top: 0 }} name="help-circle" size={15} color={lightTheme.light_darkShade} />
+                        <Feather style={{ position: 'absolute', right: 0, top: 0 }} name="help-circle" size={18} color={lightTheme.light_darkShade} />
                     </View>
                 </TouchableOpacity>
             ) : null;
 
             const questionText = svgIconWord ? (
-                <View style={{ width: '100%', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={{ width: '100%',  justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                     <Paragraph style={{ fontSize: 15, color: color.neutral }}>
                         Quel mot cette image représente-t-elle ?
                     </Paragraph>
@@ -351,7 +351,7 @@ const HomeListQuizz = () => {
             </View>
             <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', alignItems: 'center' }}>
                 <Paragraph style={{ fontSize: 20, marginBottom: 20 }}>{currentQuestion.questionText}</Paragraph>
-                <View style={{ marginVertical: 10 }}>
+                <View style={{ marginVertical: 10, width: '100%' }} >
                     {currentQuestion.svgIconWord}
                 </View>
             </View>

@@ -154,9 +154,9 @@ const NewPage = () => {
           setDefinitionContent(correctWord.definitions);
           setShowDefinitionModal(true);
         }}>
-          <View style={{ position: 'relative' }}>
+          <View style={{ position: 'relative', width: '100%', alignSelf: 'center', alignItems: 'center', }}>
             <SvgXml xml={CategoryWordSvg[correctWord.mot]} width="110" height="110" />
-            <Feather style={{ position: 'absolute', right: 0, top: 0 }} name="help-circle" size={15} color={lightTheme.light_darkShade} />
+            <Feather style={{ position: 'absolute', right: 0, top: 0 }} name="help-circle" size={18} color={lightTheme.light_darkShade} />
           </View>
         </TouchableOpacity>
       ) : null;
@@ -345,22 +345,22 @@ const NewPage = () => {
       </View>
       <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', alignItems: 'center' }}>
         <Paragraph style={{ fontSize: 20, marginBottom: 20 }}>{currentQuestion.questionText}</Paragraph>
-        <View style={{ marginVertical: 10 }}>
+        <View style={{width: '100%', marginVertical: 10 }}>
           {currentQuestion.svgIconWord}
         </View>
       </View>
       <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center' }}>
         {answers.map((answer, index) => (
           <AnswerButton
-          key={index}
-          answer={answer}
-          onPress={() => handleAnswerSelection(answer)}
-          isSelected={selectedAnswer === answer}
-          isDisabled={disabledAnswers.includes(answer)}
-          isCorrect={answer.correct}
-          index={index}
-          highlightCorrect={highlightCorrect} // Pass the highlight prop
-      />
+            key={index}
+            answer={answer}
+            onPress={() => handleAnswerSelection(answer)}
+            isSelected={selectedAnswer === answer}
+            isDisabled={disabledAnswers.includes(answer)}
+            isCorrect={answer.correct}
+            index={index}
+            highlightCorrect={highlightCorrect} // Pass the highlight prop
+          />
         ))}
       </View>
       <View style={{ width: '90%', alignItems: 'center', marginTop: 10, alignSelf: 'center', alignContent: 'center', justifyContent: 'center' }}>
