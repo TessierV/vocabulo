@@ -146,7 +146,7 @@ const QuizScreen = () => {
     useEffect(() => {
         const generateQuestions = () => {
             const newQuestions = [];
-            for (let i = 0; i < 5; i++) { // Generate 5 questions
+            for (let i = 0; i < 4; i++) { // Generate 5 questions
                 let question = generateQuestion();
                 while (question === null) { // Ensure the question is valid
                     question = generateQuestion();

@@ -200,7 +200,7 @@ const Page = () => {
 
   return (
     <>
-      <Header darkMode={darkMode} title={categoryName} firstLink="/home" secondLink="none" />
+      <Header darkMode={darkMode}  PageTitle="Catégorie" title={categoryName} firstLink="/home" secondLink="none" />
       <ScrollView contentContainerStyle={[styles.mainContainer, { paddingBottom: 50 }]}>
         <Slider
           data={[
