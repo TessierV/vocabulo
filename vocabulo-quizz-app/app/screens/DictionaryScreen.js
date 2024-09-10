@@ -89,7 +89,7 @@ const DictionaryScreen = ({ darkMode }) => {
       );
 
       setFilteredWordCount(filteredWords.length);
-      setWordSuggestions(filteredWords.slice(0, 100));
+      setWordSuggestions(filteredWords.slice(0, 50));
       setError(null);
     } catch (error) {
       setError(error.message);
@@ -135,7 +135,7 @@ const DictionaryScreen = ({ darkMode }) => {
 
   return (
     <View style={{ flex: 1, position: 'relative' }}>
-      <Header darkMode={darkMode} title="Game" firstLink="/home" secondLink="none" />
+      <Header darkMode={darkMode} PageTitle="Dictionnaire" title="Dictionary" firstLink="/home" secondLink="none" />
       <ScrollView >
 
         <Slider
