@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, Dimensions, FlatList } from 'react-native';
-import Bubble from './Bubble';
+import Bubble from '../Effect/Bubble';
 import { Video } from 'expo-av';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import { GradientBorderButton } from '../Button';
