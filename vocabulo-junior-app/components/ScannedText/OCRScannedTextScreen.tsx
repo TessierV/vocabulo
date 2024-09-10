@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import WordCard from './WordCard'; // Ajustez le chemin d'importation si nécessaire
 import LegendModal from './LegendModal'; // Ajustez le chemin d'importation si nécessaire
+import NoScannedText from './NoScannedText'; // Ajustez le chemin d'importation si nécessaire
 import { Colors } from '@/constants/Colors';
 import { InformationText, OriginalScannedtext, OriginalScannedtextTitle } from '@/constants/StyledText';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
@@ -132,7 +133,9 @@ export default function OCRScannedTextScreen() {
         {/* Affichage de la phrase et des cartes */}
         {parsedData.processed_results && parsedData.processed_results.length > 0 ? (
           renderSentence(parsedData.processed_results[currentSentenceIndex])
-        ) : null}
+        ) : (
+          <NoScannedText />
+        )}
       </ScrollView>
 
       <View style={styles.legendContainer}>
@@ -155,6 +158,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: -50,
     paddingTop: 60,
+    marginBottom: 60,
     marginHorizontal: 'auto',
   },
   scrollContainer: {

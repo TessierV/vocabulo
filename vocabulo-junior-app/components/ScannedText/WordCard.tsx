@@ -34,7 +34,7 @@ const handlePress = async (url: string) => {
 };
 
 const DictionnaryCard: React.FC<InformationData> = ({ word, lemma, pos, func, definition, url }) => {
-    if (['.', ',', '!', '?', ';', ':', '(', ')', '[', ']', '{', '}', '-', '—', '’', '“', '”' , '|', '‘' , '>', '<', '..', '...', '»', '«' ].includes(word)) {
+    if (['.', ',', '!', '?', ';', ':', '(', ')', '[', ']', '{', '}', '-', '—', '’', '“', '”' , '|', '‘' , '>', '<', '…', '»', '«' ].includes(word)) {
         return null;
     }
 
