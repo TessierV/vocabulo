@@ -9,7 +9,7 @@ const slides = [
   {
     id: '1',
     title: 'Bienvenue',
-    text: '1ère application pour aider la communauté sourde.',
+    text: 'La première application de quizz pour personnes malentendantes',
     image: require('../assets/images/Onboarding/1.png'),
     backgroundImage: require('@/assets/images/Onboarding/2.png'),
     backgroundColor: "#99CDBD",
@@ -56,9 +56,11 @@ const Onboarding = () => {
       flatListRef?.current.scrollToOffset({ offset });
       setCurrentSlideIndex(nextSlideIndex);
     } else {
-      navigation.navigate('home');
+      // Navigate to login screen after onboarding
+      navigation.navigate('login');
     }
   };
+
 
   const updateCurrentSlideIndex = (e) => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
