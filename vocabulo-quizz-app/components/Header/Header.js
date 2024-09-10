@@ -5,8 +5,9 @@ import logoImage from '@/assets/images/Logo_vocabuloText.png';
 import logoImage_white from '@/assets/images/Logo_vocabuloText_white.png';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import HeaderSvg from './SvgIcon';
+import { Paragraph, Title } from '@/constants/StyledText';
 
-const Header = ({ darkMode, firstLink, secondLink, customSvg }) => {
+const Header = ({ darkMode, PageTitle, firstLink, secondLink, customSvg }) => {
   const router = useRouter();
 
   const navigateTo = (path) => {
@@ -26,6 +27,7 @@ const Header = ({ darkMode, firstLink, secondLink, customSvg }) => {
       </View>
       <View style={styles.logoContainer}>
         <Image source={darkMode ? logoImage_white : logoImage} style={styles.logo} />
+        <Paragraph style={{marginTop: 2, fontSize: 10}}>{PageTitle}</Paragraph>
       </View>
       <View style={styles.rightContainer}>
         {secondLink !== "none" && (
@@ -46,7 +48,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     width: '100%',
-    height: 100,
+    height: 110,
   },
   leftContainer: {
     flex: 1,
