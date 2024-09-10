@@ -3,20 +3,34 @@ import { View, Animated, StyleSheet } from 'react-native';
 import LogoSplash from '../../components/Splash/LogoSplash';
 import WaveSplash from '../../components/Splash/WaveSplash';
 import { Colors } from '@/constants/Colors';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = {
+  SplashScreen: undefined;
+  LoginScreen: undefined;
+  HomeScreen: undefined;
+  SettingsScreen: undefined;
+};
+type SplashScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SplashScreen'>;
 
 export default function SplashScreen() {
-  const router = useRouter();
+  const navigation = useNavigation<SplashScreenNavigationProp>();
   const movewaveAnim = useRef(new Animated.Value(1400)).current;
 
   useEffect(() => {
-    // Start the wave animation
     Animated.timing(movewaveAnim, {
       toValue: 300,
       duration: 7000,
       useNativeDriver: false,
     }).start();
-  }, [movewaveAnim]);
+
+    const timeout = setTimeout(() => {
+      navigation.navigate("LoginScreen");
+    }, 8000);
+
+    return () => clearTimeout(timeout);
+  }, [movewaveAnim, navigation]);
 
   return (
     <View style={styles.container}>

@@ -1,30 +1,29 @@
-import { FontAwesome } from "@expo/vector-icons";
-import { SplashScreen, Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { createStackNavigator } from '@react-navigation/stack';
+import SplashScreen from "./SplashScreen";
+import LoginScreen from "./LoginScreen";
+import HomeScreen from "./HomeScreen";
+import SettingsScreen from "./SettingsScreen";
 import useCustomFonts from '@/constants/useCustomFonts';
 
 
-export {
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  initialRouteName: '(tabs)',
+type RootStackParamList = {
+  SplashScreen: undefined;
+  LoginScreen: undefined;
+  HomeScreen: undefined;
+  SettingsScreen: undefined;
 };
 
-SplashScreen.preventAutoHideAsync();
+const Stack = createStackNavigator<RootStackParamList>();
 
-export default function RootLayout() {
+export default function ScreensLayout() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
-
 
   useEffect(() => {
     async function loadFonts() {
       const fontsSuccessfullyLoaded = await useCustomFonts();
       if (fontsSuccessfullyLoaded) {
         setFontsLoaded(true);
-        SplashScreen.hideAsync();
-      } else {
       }
     }
     loadFonts();
@@ -34,20 +33,12 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
   return (
-    <Stack>
-      <Stack.Screen name="HomeScreen" options={{ headerShown: false }} />
-      <Stack.Screen name="DictionnaryScreen" options={{ headerShown: false }} />
-      <Stack.Screen name="LoginScreen" options={{ headerShown: false }} />
-      <Stack.Screen name="ProfileScreen" options={{ headerShown: false }} />
-      <Stack.Screen name="ScannedTextScreen" options={{ headerShown: false }} />
-      <Stack.Screen name="SettingsScreen" options={{ headerShown: false }} />
-      <Stack.Screen name="SplashScreen" options={{ headerShown: false }} />
-      <Stack.Screen name="TakePhotoScreen" options={{ headerShown: false }} />
-    </Stack>
+    <Stack.Navigator initialRouteName="SplashScreen">
+      <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
   );
 }
