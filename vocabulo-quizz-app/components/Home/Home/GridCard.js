@@ -40,9 +40,10 @@ const GridCardHome = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                // maison const response = await fetch('http://192.168.0.12:3000/api/categories');
-                const response = await fetch('http://192.168.0.12:3000/api/categories');
+                // maison const response = await fetch('http://192.168.1.15:3000/api/categories');
+                // Ecole const response = await fetch('http://10.10.0.8:3000/api/categories');
 
+                const response = await fetch('http://192.168.0.12:3000/api/categories');
                 const data = await response.json();
                 setCategories(data);
                 setLoading(false);
