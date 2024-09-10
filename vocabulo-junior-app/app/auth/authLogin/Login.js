@@ -36,9 +36,9 @@ const Login = () => {
       const userDocument = await firestore().collection("users").doc(user.uid).get();
 
       if (userDocument.exists) {
-        navigation.navigate("/HomeScreen");
+        navigation.navigate("HomeScreen");
       } else {
-        navigation.navigate("/Signup", { uid: user.uid });
+        navigation.navigate("Signup", { uid: user.uid });
       }
     } catch (error) {
       console.error("Invalid code.", error);

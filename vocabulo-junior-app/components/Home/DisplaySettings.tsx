@@ -4,18 +4,30 @@ import { Colors } from '@/constants/Colors';
 import { ButtonText } from '@/constants/StyledText';
 import { router } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
 const DisplaySettings = () => {
-    const [userName, setUserName] = useState('Utilisateur');
+    const [userName, setUserName] = useState<string>('Utilisateur');
 
     useEffect(() => {
-        const fetchUserData = () => {
+        const fetchUserData = async () => {
             const user = auth().currentUser;
-            if (user?.displayName) {
-                setUserName(user.displayName);
-            } else {
-                setUserName('Utilisateur');
+            if (user) {
+                // Attempt to get the display name from Firebase Auth
+                if (user.displayName) {
+                    setUserName(user.displayName);
+                } else {
+                    // Fetch the user's name from Firestore if it's not available in Auth
+                    try {
+                        const userDoc = await firestore().collection('users').doc(user.uid).get();
+                        if (userDoc.exists && userDoc.data()?.name) {
+                            setUserName(userDoc.data()?.name);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user data from Firestore: ', error);
+                    }
+                }
             }
         };
 

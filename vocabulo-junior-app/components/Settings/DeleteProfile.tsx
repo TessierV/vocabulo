@@ -15,14 +15,11 @@ export default function DeleteProfile() {
         return;
       }
 
-      // Supprimer les données de l'utilisateur dans Firestore
       await firestore().collection('users').doc(user.uid).delete();
 
-      // Supprimer le compte de l'utilisateur
       await user.delete();
 
       Alert.alert('Succès', 'Votre compte a été supprimé avec succès');
-      // Redirection ou action après la suppression
     } catch (error) {
       console.error('Erreur lors de la suppression du compte:', error);
       Alert.alert('Erreur', 'Une erreur est survenue lors de la suppression du compte');

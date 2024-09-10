@@ -1,13 +1,15 @@
-import { View, Animated, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Animated, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import React, { useRef, useEffect, useState } from 'react';
 import { Colors } from '@/constants/Colors';
 import { ButtonText } from '@/constants/StyledText';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth'; // Import Firebase Auth
+import auth from '@react-native-firebase/auth';
 
 export default function CustomProfile() {
   const [userName, setUserName] = useState<string>('Utilisateur');
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [newUserName, setNewUserName] = useState<string>(userName);
   const moveAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -20,6 +22,7 @@ export default function CustomProfile() {
             const userData = userDoc.data();
             if (userData && userData.name) {
               setUserName(userData.name);
+              setNewUserName(userData.name);
             }
           } else {
             console.log('User document does not exist');
@@ -51,6 +54,25 @@ export default function CustomProfile() {
     moveAnimation.start();
   }, [moveAnim]);
 
+  // Function to update user name in Firestore
+  const updateUserName = async () => {
+    try {
+      const user = auth().currentUser;
+      if (user) {
+        await firestore().collection('users').doc(user.uid).update({
+          name: newUserName,
+        });
+        setUserName(newUserName);
+        setIsEditing(false);
+      } else {
+        Alert.alert('Error', 'No user is authenticated');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update user name');
+      console.error('Error updating user name: ', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Animated.Image
@@ -58,10 +80,22 @@ export default function CustomProfile() {
         style={[styles.logo, { transform: [{ translateY: moveAnim }] }]}
       />
       <View style={styles.UserNameContainer}>
-        <ButtonText style={styles.UserName}>{userName}</ButtonText>
-        <TouchableOpacity>
-          <EvilIcons name="pencil" style={styles.ModifyUserNameiconButton} />
-        </TouchableOpacity>
+        {isEditing ? (
+          <TextInput
+            style={styles.input}
+            value={newUserName}
+            onChangeText={setNewUserName}
+            autoFocus
+            onSubmitEditing={updateUserName}
+          />
+        ) : (
+          <ButtonText style={styles.UserName}>{userName}</ButtonText>
+        )}
+        {!isEditing && (
+          <TouchableOpacity onPress={() => setIsEditing(true)}>
+            <EvilIcons name="pencil" style={styles.ModifyUserNameiconButton} />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -97,5 +131,11 @@ const styles = StyleSheet.create({
   },
   ModifyUserNameiconButton: {
     fontSize: 25,
+  },
+  input: {
+    color: Colors.grey,
+    fontFamily: 'MontserratRegular',
+    fontSize: 18,
+    paddingHorizontal: 20,
   },
 });

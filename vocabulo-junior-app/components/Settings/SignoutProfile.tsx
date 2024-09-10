@@ -1,21 +1,20 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Importation du hook useNavigation
-import { StackNavigationProp } from '@react-navigation/stack'; // Type de navigation pour la pile
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { Colors } from '@/constants/Colors';
 import { ButtonText } from '@/constants/StyledText';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import auth from '@react-native-firebase/auth';
 
-// Définissez le type de la navigation pour votre écran de connexion
 type RootStackParamList = {
-  LoginScreen: undefined; // Définir les paramètres de l'écran de connexion
+  LoginScreen: undefined;
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'LoginScreen'>;
 
 export default function SignoutProfile() {
-  const navigation = useNavigation<NavigationProp>(); // Initialisation du hook useNavigation avec type
+  const navigation = useNavigation<NavigationProp>();
 
   const handleSignOut = async () => {
     try {
@@ -24,7 +23,6 @@ export default function SignoutProfile() {
         {
           text: 'OK',
           onPress: () => {
-            // Redirection vers l'écran de connexion après la déconnexion
             navigation.navigate('LoginScreen');
           },
         },

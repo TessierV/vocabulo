@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import useCustomFonts from '@/constants/useCustomFonts';
-import { Stack } from "expo-router";
+import { createStackNavigator } from "@react-navigation/stack";
+import HomeScreen from "@/app/screens/HomeScreen";
+import Signup from "../authSignup/Signup";
+import Login from "../authLogin/Login";
 
+const Stack = createStackNavigator();
 
-export default function LoginLayout() {
+export default function SignupLayout() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -21,10 +25,10 @@ export default function LoginLayout() {
   }
 
   return (
-
-    <Stack>
-      <Stack.Screen name="Login" options={{ headerShown: false }} />
-      <Stack.Screen name="screens" options={{ headerShown: false }} />
-    </Stack>
+    <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
+    </Stack.Navigator>
   );
 }
