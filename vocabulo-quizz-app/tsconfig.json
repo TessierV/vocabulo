@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "app/ThemeContext.js", "app/parameter.tsx", "app/screens/RandomScreen.js", "app/newpage.tsx"  ]
+, "app/ThemeContext.js", "app/parameter.tsx", "app/screens/RandomScreen.js", "app/newpage.tsx", "components/Reset/PasswordResetConfirm.js", "components/Reset/PasswordResetRequest.js"  ]
 }
