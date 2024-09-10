@@ -50,33 +50,33 @@ const Section = ({ mot, categorie_grammaticale, items, iconName, darkMode }) => 
         </ContainerParagraph>
         <View style={[styles.buttonContainer, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.lightShade }]}>
 
-        {videoDefinitionUrl ? (
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleVideoPress(videoDefinitionUrl)}
-          >
-            <SvgXml xml={DefineSVG} width={18} height={18} />
-            <Text style={[styles.buttonText, styles.definitionText]}>Définition LSF</Text>
-          </TouchableOpacity>
-        ) : null}
-        {videoMotUrl ? (
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => handleVideoPress(videoMotUrl)}
-          >
-            <SvgXml xml={signSVG} width={18} height={18} />
-            <Text style={[styles.buttonText, styles.signText]}>Signe</Text>
-          </TouchableOpacity>
-        ) : null}
+          {videoDefinitionUrl ? (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleVideoPress(videoDefinitionUrl)}
+            >
+              <SvgXml xml={DefineSVG} width={18} height={18} />
+              <Text style={[styles.buttonText, styles.definitionText]}>Définition LSF</Text>
+            </TouchableOpacity>
+          ) : null}
+          {videoMotUrl ? (
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => handleVideoPress(videoMotUrl)}
+            >
+              <SvgXml xml={signSVG} width={18} height={18} />
+              <Text style={[styles.buttonText, styles.signText]}>Signe</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
 
         <TouchableOpacity
-            style={[styles.sourceButton]}
-            href={item.url_source}
-          >
-            <SvgXml xml={sourceSVG} width={18} height={18} />
-            <Text style={[styles.buttonText, styles.sourceText]}>Source URL</Text>
-          </TouchableOpacity>
+          style={[styles.sourceButton]}
+          href={item.url_source}
+        >
+          <SvgXml xml={sourceSVG} width={18} height={18} />
+          <Text style={[styles.buttonText, styles.sourceText]}>Source URL</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -109,12 +109,12 @@ const Section = ({ mot, categorie_grammaticale, items, iconName, darkMode }) => 
         />
       </Animated.View>
       <VideoModal
-  visible={modalVisible}
-  onClose={() => setModalVisible(false)}
-  videoUrl={currentVideoUrl}
-  mot={mot}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        videoUrl={currentVideoUrl}
+        mot={mot}
 
-/>
+      />
     </View>
   );
 };

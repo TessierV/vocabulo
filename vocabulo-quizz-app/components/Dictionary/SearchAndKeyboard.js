@@ -88,9 +88,9 @@ const SearchAndKeyboard = ({ searchTerm, setSearchTerm, handleLetterPress, darkM
         paddingHorizontal: 10,
         marginBottom: 10,
         gap: 10,
-        backgroundColor: darkMode ? darkTheme.dark_lightShade : lightTheme.lightShade,
+        backgroundColor: darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade, borderColor: color.neutral, borderWidth: 1,
       }}>
-        <Feather name="search" size={20} color={darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade} />
+        <Feather name="search" size={20} color={darkMode ? darkTheme.dark_lightShade : lightTheme.darkShade} />
         <TextInput
           value={searchTerm}
           onChangeText={handleSearchChange}
