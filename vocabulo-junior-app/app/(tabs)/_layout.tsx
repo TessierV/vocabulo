@@ -30,7 +30,7 @@ export default function TabLayout() {
       })}
     >
       <Tabs.Screen
-        name="Dictionnary"
+        name="Dictionary"
         options={{
           title: '',
           tabBarIcon: ({ color, focused }) => (
@@ -65,8 +65,8 @@ export default function TabLayout() {
           title: '',
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.iconRight}>
-              <TabBarIonicons
-                name={focused ? 'document-text' : 'document-text-outline'}
+              <TabBarMaterialCommunityIcon
+                name={focused ? 'sticker-text' : 'sticker-text-outline'}
                 color={color}
                 style={[focused && styles.activeIcon]}
               />

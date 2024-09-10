@@ -1,20 +1,9 @@
-import { FontAwesome } from "@expo/vector-icons";
 import { SplashScreen, Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
 import useCustomFonts from '@/constants/useCustomFonts';
 
 
-export {
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  initialRouteName: 'screen',
-};
-
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
+export default function OtherScreensLayout() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
 
@@ -40,11 +29,10 @@ export default function RootLayout() {
 function RootLayoutNav() {
   return (
     <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="auth"  options={{ headerShown: false }} />
-      <Stack.Screen name="screens"  options={{ headerShown: false }} />
-      <Stack.Screen name="otherScreens"  options={{ headerShown: false }} />
+      <Stack.Screen name="CategoryScreen" options={{ headerShown: false }} />
+      <Stack.Screen name="DictionaryScreen" options={{ headerShown: false }} />
+      <Stack.Screen name="TakePhotoScreen"  options={{ headerShown: false }} />
+      <Stack.Screen name="ScannedTextScreen"  options={{ headerShown: false }} />
     </Stack>
   );
 }

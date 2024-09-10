@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
-import TakePhotoScreen from '../screens/TakePhotoScreen'
+import TakePhotoScreen from '../otherScreens/TakePhotoScreen';
 
 export default function TakePhoto() {
   return (

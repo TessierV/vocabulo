@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
-import ScannedTextScreen from '../screens/ScannedTextScreen'
+import React from 'react';
+import ScannedTextScreen from '../otherScreens/ScannedTextScreen';
 
 export default function ScannedText() {
   return (

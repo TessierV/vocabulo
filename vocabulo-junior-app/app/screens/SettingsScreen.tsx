@@ -34,10 +34,11 @@ const styles = StyleSheet.create({
   SignoutProfileComponent: {
     flex: 1,
     justifyContent: 'flex-end',
-    bottom: 70
+    bottom: 70,
+    paddingHorizontal: 15
   },
   DeleteProfileComponent: {
-    
+    paddingHorizontal: 15,
     justifyContent: 'flex-end',
     bottom: 50
   },
