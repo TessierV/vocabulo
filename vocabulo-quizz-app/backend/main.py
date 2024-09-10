@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+from passlib.context import CryptContext  # Import passlib context for password hashing
 from pydantic import BaseModel
 from datetime import timedelta, datetime
 from sqlalchemy import create_engine, Column, Integer, String
@@ -20,7 +20,7 @@ engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Password hashing context
+# Password hashing context using bcrypt
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # OAuth2 setup (required for token generation)
@@ -34,7 +34,7 @@ class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    hashed_password = Column(String)  # Hashed password field
 
 # Create tables in the database
 Base.metadata.create_all(bind=engine)
@@ -84,6 +84,7 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
             detail="Username already registered"
         )
 
+    # Hash the password before saving
     hashed_password = get_password_hash(user.password)
     new_user = User(username=user.username, hashed_password=hashed_password)
     db.add(new_user)
@@ -99,9 +100,16 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
         )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
-    return {"access_token": access_token, "token_type": "bearer"}
+    try:
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+        return {"access_token": access_token, "token_type": "bearer"}
+    except Exception as e:
+        print(f"Error creating access token: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error generating access token",
+        )
 
 # Protected route (accessible only with valid token)
 @app.get("/protected")
@@ -112,5 +120,22 @@ def read_protected_data(token: str = Depends(oauth2_scheme)):
         if username is None:
             raise HTTPException(status_code=403, detail="Invalid token")
         return {"msg": f"Hello, {username}"}
+    except JWTError:
+        raise HTTPException(status_code=403, detail="Invalid token")
+
+# Fetch user info (requires a valid token)
+@app.get("/user")
+def get_user_data(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+        if username is None:
+            raise HTTPException(status_code=403, detail="Invalid token")
+
+        user = db.query(User).filter(User.username == username).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        return {"username": user.username}
     except JWTError:
         raise HTTPException(status_code=403, detail="Invalid token")
