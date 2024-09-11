@@ -1,3 +1,4 @@
+//db.js
 const { Pool } = require('pg');
 
 // Database connection
