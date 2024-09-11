@@ -13,7 +13,7 @@ const ProfileScreen = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
-      <Header darkMode={darkMode} firstLink="/home" secondLink="/parameter" />
+      <Header darkMode={darkMode} PageTitle="Profile" firstLink="/home" secondLink="/parameter" />
       <ScrollView style={{ width: '100%' }}>
       <View style={styles.section}>
         <Section title={texts.profilScreen.section.title} iconName="user" darkMode={darkMode}>

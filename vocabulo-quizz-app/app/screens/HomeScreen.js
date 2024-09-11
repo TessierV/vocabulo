@@ -11,9 +11,9 @@ import CategoryGrid from '@/components/CategoryGrid';
 import Slider from '@/components/Slider/Slider';
 import CategoryCard from '@/components/CategoryCard';
 import { useNavigation } from '@react-navigation/native';
-import HomeCategoryCard from '@/components/Home/HomeCard/CategoryCard';
 import GridCardHome from '@/components/Home/Home/GridCard';
 import TitleSlider from '@/components/Slider/SliderTitleWithInfo';
+import Header from '@/components/Header/Header';
 
 const HomeScreen = () => {
   const [darkMode] = useDarkMode();
@@ -26,15 +26,7 @@ const HomeScreen = () => {
     <ScrollView
       contentContainerStyle={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}
     >
-      <View style={styles.container}>
-        <BigTitle style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }}>
-          {texts.homeScreen.bigTitle?.title || 'Default Title'}
-        </BigTitle>
-        <Subtitle style={{ color: darkMode ? darkTheme.lightShade : lightTheme.light_darkShade }}>
-          {texts.homeScreen.bigTitle?.text || 'Default Subtitle Text'}
-        </Subtitle>
-      </View>
-
+      <Header darkMode={darkMode} PageTitle="Bienvenue" title="Home" firstLink="none" secondLink="none" />
       <Slider
         data={[
           { key: '1', component: <WeeklyOverview darkMode={darkMode} /> },
@@ -80,7 +72,6 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    paddingVertical: 40,
     width: '100%',
     alignSelf: 'center',
   },

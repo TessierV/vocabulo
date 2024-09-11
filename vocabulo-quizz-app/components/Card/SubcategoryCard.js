@@ -11,7 +11,6 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategoryData, setSelectedCategoryData] = useState(null);
-  const [filteredWords, setFilteredWords] = useState({ easy: [], middle: [], hard: [] });
 
   const screenWidth = Dimensions.get('window').width;
   const squareSize = screenWidth / 3 - 25;
@@ -23,7 +22,7 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
 
   const fetchSubcategories = async () => {
     try {
-      const response = await fetch('http://192.168.23.25:3000/api/subcategories');
+      const response = await fetch('http://192.168.0.12:3000/api/subcategories');
       const data = await response.json();
       setSubcategories(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -35,12 +34,9 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
 
   const fetchWords = async (categorieId) => {
     try {
-      const response = await fetch(`http://192.168.23.25:3000/api/words/${categorieId}`);
+      const response = await fetch(`http://192.168.0.12:3000/api/words/${categorieId}`);
       const data = await response.json();
-      const easyWords = data.find(d => d.difficulty === 'easy')?.words || [];
-      const middleWords = data.find(d => d.difficulty === 'middle')?.words || [];
-      const hardWords = data.find(d => d.difficulty === 'hard')?.words || [];
-      setFilteredWords({ easy: easyWords, middle: middleWords, hard: hardWords });
+      setWords(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Erreur lors de la récupération des mots:', error);
     }
@@ -50,10 +46,20 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
     fetchSubcategories();
   }, []);
 
+  useEffect(() => {
+    console.log('Selected Category:', selectedCategory);
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    console.log('Modal Visibility:', modalVisible);
+  }, [modalVisible]);
+
   const handleCategoryClick = (category) => {
     if (selectedCategory === category.categorie_id) {
       onCategoryClick(null);
-      setFilteredWords({ easy: [], middle: [], hard: [] });
+      setWords([]);
+      setSelectedCategoryData(null);
+      setModalVisible(false);
     } else {
       onCategoryClick(category.categorie_id);
       fetchWords(category.categorie_id);
@@ -118,16 +124,16 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
           );
         })
       ) : (
-        <Text style={styles.noDataText}>No categories available</Text>
+        <Text style={styles.noDataText}>Aucune catégorie disponible</Text>
       )}
 
       {selectedCategoryData && (
         <CategoryModal
+          key={selectedCategoryData.categorie_id}
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
           category={selectedCategoryData}
           darkMode={darkMode}
-          filteredWords={filteredWords}
         />
       )}
     </ScrollView>
@@ -177,6 +183,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: color.neutralCoral,
     padding: 20,
+  },
+  subcategoryContainer: {
+    paddingLeft: 20,
+    paddingTop: 10,
+  },
+  subcategoryItem: {
+    paddingVertical: 5,
   },
 });
 

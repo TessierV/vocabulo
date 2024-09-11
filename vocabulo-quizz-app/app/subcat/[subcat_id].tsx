@@ -257,9 +257,6 @@ const NewPage = () => {
     }
   };
 
-
-
-
   const resetQuiz = () => {
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
@@ -273,7 +270,6 @@ const NewPage = () => {
     setQuestions([]);
   };
 
-
   const moveToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prevIndex => prevIndex + 1);
@@ -286,8 +282,6 @@ const NewPage = () => {
       setShowCongratulationsModal(true);
     }
   };
-
-
 
   const openHintModal = (content) => {
     setHintContent(content);

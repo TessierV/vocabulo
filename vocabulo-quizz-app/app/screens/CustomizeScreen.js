@@ -82,7 +82,7 @@ const Page = () => {
 
   return (
     <>
-      <Header darkMode={darkMode} title="Category" firstLink="/home" secondLink="none" />
+      <Header darkMode={darkMode} PageTitle="Personalisé" title="Category" firstLink="/home" secondLink="none" />
       <ScrollView
         contentContainerStyle={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}
       >

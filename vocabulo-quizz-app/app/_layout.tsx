@@ -3,10 +3,6 @@ import { SplashScreen, Stack } from 'expo-router';
 import useCustomFonts from '@/constants/useCustomFonts';
 import useDarkMode from '@/components/useDarkMode';
 
-export {
-  ErrorBoundary,
-} from 'expo-router';
-
 export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
@@ -24,7 +20,6 @@ export default function RootLayout() {
         setFontsLoaded(true);
         SplashScreen.hideAsync();
       } else {
-        // Handle the case where fonts did not load successfully
         console.error('Échec du chargement des polices.');
       }
     }
@@ -46,12 +41,13 @@ function RootLayoutNav() {
       <Stack.Screen name="random" options={{ headerShown: false, title: 'Random' }} />
       <Stack.Screen name="customize" options={{ headerShown: false, title: 'Customize' }} />
       <Stack.Screen name="quiz" options={{ headerShown: false, title: 'Quizz' }} />
+      <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="signup" options={{ headerShown: false }} />
 
       <Stack.Screen name="index" options={{ headerShown: false, title: 'Index' }} />
       <Stack.Screen name="wordlist/[categorie_id]" initialParams={{ mainCategoryWords: [], subcategories: [] }}
         options={{ headerShown: false, title: 'Liste des mots' }} />
-      <Stack.Screen name="subcat/[subcat_id]" options={{ title: 'Subcategory Details' }} />
-
+      <Stack.Screen name="subcat/[subcat_id]" options={{ headerShown: false, title: 'Basic Quiz' }} />
     </Stack>
   );
 }

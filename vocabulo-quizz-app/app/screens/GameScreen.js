@@ -66,7 +66,7 @@ const GameScreen = ({ darkMode }) => {
 
   return (
     <>
-      <Header darkMode={darkMode} title="Game" firstLink="/home" secondLink="none" />
+      <Header darkMode={darkMode} PageTitle="Jeux" title="Game" firstLink="/home" secondLink="none" />
       <ScrollView contentContainerStyle={styles.mainContainer}>
         <Slider
           data={[
