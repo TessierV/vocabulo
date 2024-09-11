@@ -255,7 +255,7 @@ const SvgIcon = ({ icon, fillColor, width = "38", height = "38" }) => {
 	</svg>
     `,
 
-    gateau_dessert: `
+    'gateau_dessert': `
 	<svg id="Capa_1" enable-background="new 0 0 512.002 512.002" height="512" viewBox="0 0 512.002 512.002" width="512"
 		xmlns="http://www.w3.org/2000/svg">
 		<g>
