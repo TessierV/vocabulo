@@ -1,13 +1,14 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
-import WordCard from './WordCard'; // Ajustez le chemin d'importation si nécessaire
+import DictionaryCard from './DictionaryCard';
 import LegendModal from './LegendModal'; // Ajustez le chemin d'importation si nécessaire
 import NoScannedText from './NoScannedText'; // Ajustez le chemin d'importation si nécessaire
 import { Colors } from '@/constants/Colors';
 import { InformationText, OriginalScannedtext, OriginalScannedtextTitle } from '@/constants/StyledText';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { Scannedtext } from '@/constants/StyledText';
+import { FontAwesome } from '@expo/vector-icons';
 
 interface Word {
   word: string;
@@ -54,7 +55,8 @@ const isPlaceholderDefinition = (definition: string) => {
 export default function OCRScannedTextScreen() {
   const { ocrData } = useLocalSearchParams();
   const [modalVisible, setModalVisible] = useState(false);
-  const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0); // Suivi de l'index de la phrase affichée
+  const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
+  const [showOriginalText, setShowOriginalText] = useState(false);
 
   const dataString = Array.isArray(ocrData) ? ocrData.join(' ') : ocrData;
 
@@ -82,7 +84,7 @@ export default function OCRScannedTextScreen() {
     return words
       .filter(wordObj => !isPlaceholderDefinition(wordObj.definition)) // Filtrer les définitions d'espace réservé
       .map((wordObj, index) => (
-        <WordCard
+        <DictionaryCard
           key={index}
           word={wordObj.word}
           lemma={wordObj.lemma}
@@ -123,9 +125,18 @@ export default function OCRScannedTextScreen() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
-        {parsedData.original_text ? (
+        {parsedData.original_text && (
+          <TouchableOpacity style={styles.originalTextButton} onPress={() => setShowOriginalText(!showOriginalText)}>
+            <FontAwesome name={showOriginalText ? "eye" : "eye-slash"} style={styles.originalTextButtonIcon} />
+            <InformationText style={styles.originalTextButtonText}>
+              {showOriginalText ? 'Masquer le texte original' : 'Afficher le texte original'}
+            </InformationText>
+          </TouchableOpacity>
+        )}
+        {/* Affichage conditionnel du texte original */}
+        {showOriginalText && parsedData.original_text ? (
           <View style={styles.originalTextContainer}>
-            <OriginalScannedtextTitle style={styles.originalTextTitle}>Texte original :</OriginalScannedtextTitle>
+            <OriginalScannedtextTitle style={styles.originalTextTitle}>Texte original</OriginalScannedtextTitle>
             <OriginalScannedtext style={styles.originalText}>{parsedData.original_text}</OriginalScannedtext>
           </View>
         ) : null}
@@ -138,15 +149,19 @@ export default function OCRScannedTextScreen() {
         )}
       </ScrollView>
 
-      <View style={styles.legendContainer}>
-        <TouchableOpacity
-          style={styles.legendButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <InformationText>À quoi correspondent les couleurs</InformationText>
-        </TouchableOpacity>
-        <EvilIcons name="question" style={styles.legendIcon} />
-      </View>
+      {/* Légende des couleurs uniquement si des résultats scannés sont disponibles */}
+      {parsedData.processed_results && parsedData.processed_results.length > 0 && (
+        <View style={styles.legendContainer}>
+          <TouchableOpacity
+            style={styles.legendButton}
+            onPress={() => setModalVisible(true)}
+          >
+            <InformationText>À quoi correspondent les couleurs</InformationText>
+          </TouchableOpacity>
+          <EvilIcons name="question" style={styles.legendIcon} />
+        </View>
+      )}
+
       <LegendModal visible={modalVisible} onClose={() => setModalVisible(false)} />
     </View>
   );
@@ -168,6 +183,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   sentenceContainer: {
+    marginTop: 20,
     marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -196,13 +212,35 @@ const styles = StyleSheet.create({
   wordsContainer: {
     paddingHorizontal: 0,
   },
+  originalTextButton: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  originalTextButtonText: {
+    color: Colors.black,
+  },
+  originalTextButtonIcon: {
+    marginRight: 5,
+    fontSize: 15,
+    color: Colors.black,
+  },
   originalTextContainer: {
+    marginBottom: 0,
+    marginTop: 10,
+    backgroundColor: Colors.lightGreen,
+    borderRadius: 15,
+    padding: 15
   },
   originalTextTitle: {
     marginBottom: 10,
+    color: Colors.black,
+    alignSelf: 'center'
   },
   originalText: {
-    color: Colors.grey,
+    color: Colors.black,
   },
   legendContainer: {
     flexDirection: 'row',
@@ -212,7 +250,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderTopWidth: 1,
     borderTopColor: Colors.grey,
-    backgroundColor: Colors.lightGrey,
   },
   legendButton: {
     marginRight: 3,
