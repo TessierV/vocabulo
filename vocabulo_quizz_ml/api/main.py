@@ -18,15 +18,13 @@ Functions:
 Author: Marianne Arrué
 Date: 07/09/24
 """
-from fastapi import FastAPI, HTTPException, Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from uuid import UUID
 from core.recommendations import get_word_recommendations
 from core.model_loader import load_model
 from utils.helpers import user_exists
 import logging
-from jose import JWTError, jwt
 
 # Configuration du logging
 logging.basicConfig(level=logging.INFO)
@@ -34,13 +32,6 @@ logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI()
-
-# JWT configuration
-SECRET_KEY = "your_secret_key"  # Replace with your actual secret key
-ALGORITHM = "HS256"
-
-# OAuth2 setup
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 class UserRequest(BaseModel):
     """
@@ -51,41 +42,16 @@ class UserRequest(BaseModel):
     """
     user_id: str
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
-    """
-    Extracts and validates the current user from the provided JWT token.
-
-    Args:
-        token (str): The JWT token provided by the user for authentication.
-
-    Returns:
-        str: The user ID extracted from the token if the token is valid and the user exists.
-
-    Raises:
-        HTTPException: If the token is invalid, expired, or the user does not exist.
-    """
-    credentials_exception = HTTPException(status_code=401, detail="Could not validate credentials")
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: str = payload.get("sub")
-        if user_id is None:
-            raise credentials_exception
-    except JWTError:
-        raise credentials_exception
-    return user_id
-
-
 @app.post("/get_recommendations")
-async def get_recommendations(request: UserRequest, current_user: str = Depends(get_current_user)):
+async def get_recommendations(request: UserRequest):
     """
     Endpoint to get word recommendations for a user.
 
     Args:
         request (UserRequest): The request object containing the user ID.
-        current_user (str): The authenticated user's ID.
 
     Returns:
-        dict: A dictionary containing the recommendations or if the user is not authorized.
+        dict: A dictionary containing the recommendations.
 
     Raises:
         HTTPException: If there is an error generating recommendations.
@@ -97,9 +63,12 @@ async def get_recommendations(request: UserRequest, current_user: str = Depends(
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid user ID format")
 
-    # Check if the authenticated user matches the requested user
-    if request.user_id != current_user:
-        raise HTTPException(status_code=403, detail="Not authorized to access this user's data")
+    # Check if user exists
+    logger.info(f"Checking if user exists: {user_id}")
+    if not user_exists(str(user_id)):
+        logger.warning(f"User not found: {user_id}")
+        raise HTTPException(status_code=404, detail="User not found")
+    logger.info(f"User found, generating recommendations: {user_id}")
 
     try:
         pipeline = load_model()
