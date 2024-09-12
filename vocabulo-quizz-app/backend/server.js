@@ -16,6 +16,19 @@ const routes = require('./routes/routes');
 // Utiliser les routes importées
 app.use(routes);
 
+app.get('/api/test-db-connection', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    res.send('Connexion réussie à PostgreSQL');
+    client.release();
+  } catch (err) {
+    console.error('Erreur lors de la connexion à PostgreSQL:', err.message);
+    res.status(500).send('Erreur lors de la connexion à PostgreSQL');
+  }
+});
+
+
+
 // Route par défaut pour attraper les requêtes non définies
 app.use('*', (req, res) => {
   res.status(404).send('Route non trouvée');
