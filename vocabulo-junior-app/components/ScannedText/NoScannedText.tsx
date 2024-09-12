@@ -37,9 +37,16 @@ const NoScannedText: React.FC = () => {
           style={[styles.logo, { transform: [{ translateY: moveAnim }] }]}
         />
         <InformationText style={styles.text}>Aucun texte scanné n'est disponible.</InformationText>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('./../../(tabs)/TakePhoto')}>
-          <ButtonText style={styles.buttonText}>Prends un texte en photo !</ButtonText>
-        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => router.push('./../../(tabs)/TakePhoto')}>
+  <View style={styles.button}>
+    <ButtonText style={styles.buttonText}>Prends un texte en photo</ButtonText>
+  </View>
+  <Image
+    source={require('./../../assets/images/stars.png')}
+    style={styles.stars}
+  />
+</TouchableOpacity>
+
       </View>
       <View style={styles.NoScannedTextBackgroundComponent}>
         <NoScannedTextBackground />
@@ -68,11 +75,23 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignSelf: 'center',
   },
-  button: {
+  buttonContainer: { 
     padding: 15,
     borderRadius: 100,
     marginTop: 15,
     backgroundColor: Colors.grey,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  button: {
+    marginRight: -15
+  },
+  stars: {
+    resizeMode: 'contain',
+    height: 20,
+    marginRight: -15,
+    tintColor: Colors.white
   },
   buttonText: {
     textAlign: 'center',

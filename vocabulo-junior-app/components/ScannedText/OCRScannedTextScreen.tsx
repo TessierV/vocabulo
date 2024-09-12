@@ -2,13 +2,14 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import React, { useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import DictionaryCard from './DictionaryCard';
-import LegendModal from './LegendModal'; // Ajustez le chemin d'importation si nécessaire
-import NoScannedText from './NoScannedText'; // Ajustez le chemin d'importation si nécessaire
+import LegendModal from './LegendModal';
+import NoScannedText from './NoScannedText';
 import { Colors } from '@/constants/Colors';
 import { InformationText, OriginalScannedtext, OriginalScannedtextTitle } from '@/constants/StyledText';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { Scannedtext } from '@/constants/StyledText';
 import { FontAwesome } from '@expo/vector-icons';
+import { getColorForPOS } from './PosColors';
 
 interface Word {
   word: string;
@@ -31,7 +32,6 @@ interface ParsedData {
   processed_results?: Sentence[];
 }
 
-// Fonction pour nettoyer la définition
 const cleanDefinition = (definition: string) => {
   let cleanedDefinition = definition.replace(/["]/g, '');
   cleanedDefinition = cleanedDefinition.replace(/;/g, ',');
@@ -46,7 +46,6 @@ const cleanDefinition = (definition: string) => {
   return cleanedDefinition;
 };
 
-// Fonction pour vérifier si la définition est un espace réservé
 const isPlaceholderDefinition = (definition: string) => {
   const placeholder = 'Non trouvé dans la BDD';
   return definition.trim() === placeholder;
@@ -57,6 +56,7 @@ export default function OCRScannedTextScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const [showOriginalText, setShowOriginalText] = useState(false);
+  const [selectedWord, setSelectedWord] = useState<Word | null>(null);
 
   const dataString = Array.isArray(ocrData) ? ocrData.join(' ') : ocrData;
 
@@ -67,60 +67,114 @@ export default function OCRScannedTextScreen() {
     console.error('Error parsing JSON data:', error);
   }
 
-  // Gérer la navigation des phrases
   const handleNextSentence = () => {
     if (parsedData.processed_results && currentSentenceIndex < parsedData.processed_results.length - 1) {
+      setSelectedWord(null);
       setCurrentSentenceIndex(currentSentenceIndex + 1);
     }
   };
 
   const handlePreviousSentence = () => {
     if (currentSentenceIndex > 0) {
+      setSelectedWord(null);
       setCurrentSentenceIndex(currentSentenceIndex - 1);
     }
   };
 
+
+  const allowedPOS = ['NOUN', 'VERB', 'ADJ', 'ADV'];
+
   const renderWords = (words: Word[]) => {
-    return words
-      .filter(wordObj => !isPlaceholderDefinition(wordObj.definition)) // Filtrer les définitions d'espace réservé
-      .map((wordObj, index) => (
-        <DictionaryCard
-          key={index}
-          word={wordObj.word}
-          lemma={wordObj.lemma}
-          pos={wordObj.pos}
-          func={wordObj.function}
-          definition={cleanDefinition(wordObj.definition)} // Appliquer la fonction cleanDefinition
-          url={wordObj.url}
-        />
-      ));
+    const uniqueWords = new Map<string, Word>();
+    words.forEach(wordObj => {
+      if (allowedPOS.includes(wordObj.pos) && !isPlaceholderDefinition(wordObj.definition)) {
+        uniqueWords.set(wordObj.word, wordObj);
+      }
+    });
+
+    return (
+      <>
+        {Array.from(uniqueWords.values()).map((wordObj, index) => (
+          <DictionaryCard
+            key={index}
+            word={wordObj.word}
+            lemma={wordObj.lemma}
+            pos={wordObj.pos}
+            func={wordObj.function}
+            definition={cleanDefinition(wordObj.definition)}
+            url={wordObj.url}
+          />
+        ))}
+      </>
+    );
   };
 
-  const renderSentence = (sentenceObj: Sentence) => (
-    <View key={currentSentenceIndex} style={styles.sentenceAndWordCardContainer}>
-      <View style={styles.sentenceContainer}>
-        <TouchableOpacity onPress={handlePreviousSentence} disabled={currentSentenceIndex === 0}>
-          <EvilIcons
-            name="arrow-left"
-            style={[styles.iconLeft, currentSentenceIndex === 0 && styles.disabledIcon]} // Flèche rouge si désactivée
-          />
-        </TouchableOpacity>
-        <Scannedtext style={styles.sentenceText}>{sentenceObj.sentence}</Scannedtext>
-        <TouchableOpacity onPress={handleNextSentence} disabled={parsedData.processed_results && currentSentenceIndex === parsedData.processed_results.length - 1}>
-          <EvilIcons
-            name="arrow-right"
-            style={[
-              styles.iconRight,
-              parsedData.processed_results && currentSentenceIndex === parsedData.processed_results.length - 1 && styles.disabledIcon, // Flèche rouge si désactivée
-            ]}
-          />
-        </TouchableOpacity>
+  const addSpacesAroundPunctuation = (text: string) => {
+    return text
+      .replace(/([.,!?;:'"`])(?=\S)/g, '$1 ') // Add space after punctuation if followed by a non-whitespace character
+      .replace(/(?<=\S)([.,!?;:'"`])/g, ' $1'); // Add space before punctuation if preceded by a non-whitespace character
+  };
+
+  const renderSentence = (sentenceObj: Sentence) => {
+    const foundWordsWithColors = sentenceObj.words
+      .filter(wordObj => allowedPOS.includes(wordObj.pos) && !isPlaceholderDefinition(wordObj.definition))
+      .reduce((acc, wordObj) => {
+        acc[wordObj.word] = getColorForPOS(wordObj.pos).color;
+        return acc;
+      }, {} as Record<string, string>);
+
+    const processedSentence = addSpacesAroundPunctuation(sentenceObj.sentence);
+
+    return (
+      <View key={currentSentenceIndex} style={styles.sentenceAndWordCardContainer}>
+        <View style={styles.sentenceContainer}>
+          <TouchableOpacity onPress={handlePreviousSentence} disabled={currentSentenceIndex === 0}>
+            <EvilIcons
+              name="arrow-left"
+              style={[styles.iconLeft, currentSentenceIndex === 0 && styles.disabledIcon]}
+            />
+          </TouchableOpacity>
+          <Scannedtext style={styles.sentenceText}>
+            {processedSentence.split(' ').map((word, index) => {
+              const wordWithoutPunctuation = word.replace(/[.,!?;:'"`]/g, ''); // Remove punctuation for color mapping
+              const cardColor = foundWordsWithColors[wordWithoutPunctuation];
+              const wordStyle = [
+                styles.wordText,
+                cardColor ? { backgroundColor: cardColor, marginHorizontal: 2 } : {}
+              ];
+
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.wordButton}
+                  onPress={() => {
+                    const selectedWordObj = sentenceObj.words.find(w => w.word === wordWithoutPunctuation);
+                    if (selectedWordObj) {
+                      setSelectedWord(selectedWordObj);
+                    }
+                  }}
+                >
+                  <Scannedtext style={wordStyle}>{word + ' '}</Scannedtext>
+                </TouchableOpacity>
+              );
+            })}
+          </Scannedtext>
+          <TouchableOpacity onPress={handleNextSentence} disabled={parsedData.processed_results && currentSentenceIndex === parsedData.processed_results.length - 1}>
+            <EvilIcons
+              name="arrow-right"
+              style={[
+                styles.iconRight,
+                parsedData.processed_results && currentSentenceIndex === parsedData.processed_results.length - 1 && styles.disabledIcon,
+              ]}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.cardsContainer}>
+          {selectedWord && renderWords([selectedWord])}
+        </View>
       </View>
-      <View style={styles.wordsContainer}>
-        {renderWords(sentenceObj.words)}
-      </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -133,7 +187,6 @@ export default function OCRScannedTextScreen() {
             </InformationText>
           </TouchableOpacity>
         )}
-        {/* Affichage conditionnel du texte original */}
         {showOriginalText && parsedData.original_text ? (
           <View style={styles.originalTextContainer}>
             <OriginalScannedtextTitle style={styles.originalTextTitle}>Texte original</OriginalScannedtextTitle>
@@ -141,7 +194,6 @@ export default function OCRScannedTextScreen() {
           </View>
         ) : null}
 
-        {/* Affichage de la phrase et des cartes */}
         {parsedData.processed_results && parsedData.processed_results.length > 0 ? (
           renderSentence(parsedData.processed_results[currentSentenceIndex])
         ) : (
@@ -149,7 +201,6 @@ export default function OCRScannedTextScreen() {
         )}
       </ScrollView>
 
-      {/* Légende des couleurs uniquement si des résultats scannés sont disponibles */}
       {parsedData.processed_results && parsedData.processed_results.length > 0 && (
         <View style={styles.legendContainer}>
           <TouchableOpacity
@@ -209,8 +260,15 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'left',
   },
-  wordsContainer: {
-    paddingHorizontal: 0,
+  wordButton: {
+  },
+  wordText: {
+    borderRadius: 5,
+    paddingLeft: 6,
+    lineHeight: 30,
+    marginHorizontal: -3
+  },
+  cardsContainer: {
   },
   originalTextButton: {
     width: '100%',
