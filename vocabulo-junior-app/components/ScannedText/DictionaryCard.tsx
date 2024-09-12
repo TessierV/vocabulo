@@ -16,6 +16,10 @@ interface InformationData {
     url: string;
 }
 
+interface DictionaryCardProps extends InformationData {
+    onUnlike?: () => void; // Add onUnlike callback prop
+}
+
 const isValidUrl = (url: string) => {
     try {
         new URL(url);
@@ -37,8 +41,8 @@ const handlePress = async (url: string) => {
     }
 };
 
-const DictionaryCard: React.FC<InformationData> = ({ word, lemma, pos, func, definition, url }) => {
-    const [isLiked, setIsLiked] = useState(false); 
+const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func, definition, url, onUnlike }) => {
+    const [isLiked, setIsLiked] = useState(false);
 
     useEffect(() => {
         const fetchLikeState = async () => {
@@ -61,7 +65,6 @@ const DictionaryCard: React.FC<InformationData> = ({ word, lemma, pos, func, def
 
     const handleIconPress = async () => {
         const newLikeState = !isLiked;
-        console.log(`Toggling like state for ${word}: ${newLikeState}`);
         setIsLiked(newLikeState);
         try {
             await AsyncStorage.setItem(`like-${word}`, JSON.stringify(newLikeState));
@@ -71,6 +74,9 @@ const DictionaryCard: React.FC<InformationData> = ({ word, lemma, pos, func, def
             } else {
                 console.log(`Removing card data for ${word}`);
                 await AsyncStorage.removeItem(`card-${word}`);
+                if (onUnlike) {
+                    onUnlike(); // Call the onUnlike function if provided
+                }
             }
         } catch (error) {
             console.error('Failed to save the like state:', error);

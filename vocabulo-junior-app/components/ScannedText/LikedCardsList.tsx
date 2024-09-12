@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, FlatList, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DictionaryCard from './DictionaryCard'; 
 import { Colors } from '@/constants/Colors';
 
-const LikedCardsList: React.FC = () => {
-    const [likedCard, setLikedCard] = useState<any | null>(null);
+interface LikedCardsListProps {
+    refreshKey: number; // Ajoutez cette prop
+}
+
+const LikedCardsList: React.FC<LikedCardsListProps> = ({ refreshKey }) => {
+    const [likedCards, setLikedCards] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchLikedCards = async () => {
@@ -28,48 +32,51 @@ const LikedCardsList: React.FC = () => {
                 );
 
                 const validLikedCards = likedCardsData.filter(card => card !== null);
-                if (validLikedCards.length > 0) {
-                    // Vous pouvez choisir soit la première carte aimée, soit une carte aléatoire :
-                    const randomIndex = Math.floor(Math.random() * validLikedCards.length); // Sélectionner une carte aléatoire
-                    setLikedCard(validLikedCards[randomIndex]);
-                }
+                setLikedCards(validLikedCards);
             } catch (error) {
                 console.error('Failed to fetch liked cards:', error);
             }
         };
 
         fetchLikedCards();
-    }, []);
+    }, [refreshKey]); // Ajoutez refreshKey comme dépendance
+
+    const handleUnlike = useCallback(async (cardWord: string) => {
+        try {
+            await AsyncStorage.removeItem(`card-${cardWord}`);
+            await AsyncStorage.removeItem(`like-${cardWord}`);
+            
+            const updatedLikedCards = likedCards.filter(card => card.word !== cardWord);
+            setLikedCards(updatedLikedCards);
+        } catch (error) {
+            console.error('Failed to unlike card:', error);
+        }
+    }, [likedCards]);
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            {likedCard ? (
-                <DictionaryCard
-                    word={likedCard.word}
-                    lemma={likedCard.lemma}
-                    pos={likedCard.pos}
-                    func={likedCard.func}
-                    definition={likedCard.definition}
-                    url={likedCard.url}
-                />
-            ) : (
-                <Text style={styles.noCardsText}>Aucune carte likée</Text>
-            )}
-        </ScrollView>
+        <View style={styles.container}>
+            <FlatList
+                data={likedCards}
+                keyExtractor={(item) => item.word}
+                renderItem={({ item }) => (
+                    <DictionaryCard
+                        word={item.word}
+                        lemma={item.lemma}
+                        pos={item.pos}
+                        func={item.func}
+                        definition={item.definition}
+                        url={item.url}
+                        onUnlike={() => handleUnlike(item.word)}
+                    />
+                )}
+            />
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
-        padding: 15,
-        backgroundColor: Colors.white,
-    },
-    noCardsText: {
-        fontSize: 18,
-        color: Colors.grey,
-        textAlign: 'center',
-        marginTop: 20,
+        flex: 1,
     },
 });
 

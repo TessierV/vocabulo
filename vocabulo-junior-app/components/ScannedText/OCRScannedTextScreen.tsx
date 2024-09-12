@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import DictionaryCard from './DictionaryCard';
 import LegendModal from './LegendModal';
@@ -10,6 +10,7 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { Scannedtext } from '@/constants/StyledText';
 import { FontAwesome } from '@expo/vector-icons';
 import { getColorForPOS } from './PosColors';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 interface Word {
   word: string;
@@ -57,6 +58,7 @@ export default function OCRScannedTextScreen() {
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const [showOriginalText, setShowOriginalText] = useState(false);
   const [selectedWord, setSelectedWord] = useState<Word | null>(null);
+  const [refreshKey, setRefreshKey] = useState<number>(0); // Ajouter un état pour gérer le rafraîchissement
 
   const dataString = Array.isArray(ocrData) ? ocrData.join(' ') : ocrData;
 
@@ -80,7 +82,6 @@ export default function OCRScannedTextScreen() {
       setCurrentSentenceIndex(currentSentenceIndex - 1);
     }
   };
-
 
   const allowedPOS = ['NOUN', 'VERB', 'ADJ', 'ADV'];
 
@@ -162,10 +163,7 @@ export default function OCRScannedTextScreen() {
           <TouchableOpacity onPress={handleNextSentence} disabled={parsedData.processed_results && currentSentenceIndex === parsedData.processed_results.length - 1}>
             <EvilIcons
               name="arrow-right"
-              style={[
-                styles.iconRight,
-                parsedData.processed_results && currentSentenceIndex === parsedData.processed_results.length - 1 && styles.disabledIcon,
-              ]}
+              style={[styles.iconRight, parsedData.processed_results && currentSentenceIndex === parsedData.processed_results.length - 1 && styles.disabledIcon]}
             />
           </TouchableOpacity>
         </View>
@@ -176,8 +174,13 @@ export default function OCRScannedTextScreen() {
     );
   };
 
+  const handleRefresh = () => {
+    setRefreshKey(prevKey => prevKey + 1); // Change la clé pour rafraîchir les données
+  };
+
   return (
     <View style={styles.container}>
+
       <ScrollView style={styles.scrollContainer}>
         {parsedData.original_text && (
           <TouchableOpacity style={styles.originalTextButton} onPress={() => setShowOriginalText(!showOriginalText)}>
@@ -200,7 +203,9 @@ export default function OCRScannedTextScreen() {
           <NoScannedText />
         )}
       </ScrollView>
-
+      <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
+        <EvilIcons name="retweet" style={styles.refreshIcon}/>
+      </TouchableOpacity>
       {parsedData.processed_results && parsedData.processed_results.length > 0 && (
         <View style={styles.legendContainer}>
           <TouchableOpacity
@@ -230,6 +235,15 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
   },
+
+  refreshButton: {
+    padding: 10,
+    alignSelf: 'center'
+  },
+  refreshIcon: {
+    fontSize: 30,
+    color: Colors.black
+},
   sentenceAndWordCardContainer: {
     marginBottom: 0,
   },
@@ -241,12 +255,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconLeft: {
-    fontSize: 40,
+    fontSize: 30,
     marginRight: 5,
     color: Colors.grey,
   },
   iconRight: {
-    fontSize: 40,
+    fontSize: 30,
     marginLeft: 5,
     color: Colors.grey,
   },
@@ -260,16 +274,14 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'left',
   },
-  wordButton: {
-  },
+  wordButton: {},
   wordText: {
     borderRadius: 5,
     paddingLeft: 6,
     lineHeight: 30,
     marginHorizontal: -3
   },
-  cardsContainer: {
-  },
+  cardsContainer: {},
   originalTextButton: {
     width: '100%',
     flexDirection: 'row',
