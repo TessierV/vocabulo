@@ -141,7 +141,7 @@ export default function OCRScannedTextScreen() {
               const cardColor = foundWordsWithColors[wordWithoutPunctuation];
               const wordStyle = [
                 styles.wordText,
-                cardColor ? { backgroundColor: cardColor, marginHorizontal: 2 } : {}
+                cardColor ? { backgroundColor: cardColor, marginHorizontal: 2, color: Colors.white } : {}
               ];
 
               return (
@@ -180,7 +180,6 @@ export default function OCRScannedTextScreen() {
 
   return (
     <View style={styles.container}>
-
       <ScrollView style={styles.scrollContainer}>
         {parsedData.original_text && (
           <TouchableOpacity style={styles.originalTextButton} onPress={() => setShowOriginalText(!showOriginalText)}>
@@ -202,22 +201,24 @@ export default function OCRScannedTextScreen() {
         ) : (
           <NoScannedText />
         )}
-      </ScrollView>
-      <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
-        <EvilIcons name="retweet" style={styles.refreshIcon}/>
-      </TouchableOpacity>
-      {parsedData.processed_results && parsedData.processed_results.length > 0 && (
-        <View style={styles.legendContainer}>
-          <TouchableOpacity
-            style={styles.legendButton}
-            onPress={() => setModalVisible(true)}
-          >
-            <InformationText>À quoi correspondent les couleurs</InformationText>
-          </TouchableOpacity>
-          <EvilIcons name="question" style={styles.legendIcon} />
-        </View>
-      )}
 
+      </ScrollView>
+      {parsedData.processed_results && parsedData.processed_results.length > 0 && (
+        <>
+          <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
+            <EvilIcons name="retweet" style={styles.refreshIcon} />
+          </TouchableOpacity>
+          <View style={styles.legendContainer}>
+            <TouchableOpacity
+              style={styles.legendButton}
+              onPress={() => setModalVisible(true)}
+            >
+              <InformationText>À quoi correspondent les couleurs</InformationText>
+            </TouchableOpacity>
+            <EvilIcons name="question" style={styles.legendIcon} />
+          </View>
+        </>
+      )}
       <LegendModal visible={modalVisible} onClose={() => setModalVisible(false)} />
     </View>
   );
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
   refreshIcon: {
     fontSize: 30,
     color: Colors.black
-},
+  },
   sentenceAndWordCardContainer: {
     marginBottom: 0,
   },
@@ -318,7 +319,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 10,
     marginBottom: 20,
-    borderTopWidth: 1,
+    borderTopWidth: 0.5,
     borderTopColor: Colors.grey,
   },
   legendButton: {
