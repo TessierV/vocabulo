@@ -6,24 +6,15 @@ import SwitchButton from './SwitchButton';
 import letterImages from './letterImages';
 import { InformationText } from '@/constants/StyledText';
 import LikedCardsList from '../ScannedText/LikedCardsList';
-import { MaterialIcons } from '@expo/vector-icons';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { getColorForPOS } from '../ScannedText/PosColors';
 
-const categoryMap: { [key: string]: string } = {
-    'n.': 'Nom',
-    'n.m.': 'Nom masculin',
-    'n.f.': 'Nom féminin',
-    'v.': 'Verbe',
-    'adj.': 'Adjectif',
-    'prep.': 'Préposition',
-    'det.': 'Déterminent',
-    'pro.': 'Pronom',
-    'n.p.': 'Nom propre',
-    'adv.': 'Adverbe',
-    'int.': 'Interjection',
-    'conj.': 'Conjonction',
-    'Faute Ortho': 'Faute Ortho'
-};
+enum POSCategory {
+    NOUN = 'Nom',
+    VERB = 'Verbe',
+    ADJ = 'Adjectif',
+}
+
+const categoryMap: { [key in keyof typeof POSCategory]: string } = POSCategory;
 
 const ByCategory = Object.values(categoryMap);
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -35,7 +26,6 @@ const AllFilters = () => {
     const [isTextMode, setIsTextMode] = useState<boolean>(false);
     const [refreshKey, setRefreshKey] = useState<number>(0);
 
-    // Référence pour FlatList des mots
     const flatListRef = useRef<FlatList<any> | null>(null);
 
     useEffect(() => {
@@ -48,8 +38,6 @@ const AllFilters = () => {
     const handleCategorySelect = (category: string) => {
         setSelectedCategory(category === selectedCategory ? null : category);
         setSearchTerm('');
-
-        // Défilement vers le haut de la liste des mots
         if (flatListRef.current) {
             flatListRef.current.scrollToOffset({ offset: 0, animated: true });
         }
@@ -58,8 +46,6 @@ const AllFilters = () => {
     const handleLetterSelect = (letter: string) => {
         setSelectedLetter(letter === selectedLetter ? null : letter);
         setSearchTerm('');
-
-        // Défilement vers le haut lorsque la lettre est sélectionnée
         if (flatListRef.current) {
             flatListRef.current.scrollToOffset({ offset: 0, animated: true });
         }
@@ -73,7 +59,7 @@ const AllFilters = () => {
         setSearchTerm('');
         setSelectedCategory(null);
         setSelectedLetter(null);
-        setRefreshKey(prevKey => prevKey + 1); // Change la clé pour rafraîchir les cartes
+        setRefreshKey(prevKey => prevKey + 1);
         if (flatListRef.current) {
             flatListRef.current.scrollToOffset({ offset: 0, animated: true });
         }
@@ -95,21 +81,21 @@ const AllFilters = () => {
                 style={[styles.alphabetButton, isSelected && styles.selectedButton]}
             >
                 {isTextMode ? (
-                    <InformationText style={styles.alphabetButtonText}>{item}</InformationText>
+                    <InformationText
+                        style={[styles.alphabetButtonText, isSelected && { color: Colors.white }]}
+                    >
+                        {item}
+                    </InformationText>
                 ) : (
                     <Image
                         source={letterImages[item]}
-                        style={styles.buttonImage}
+                        style={[styles.buttonImage, isSelected && styles.selectedImage]}
                         resizeMode="contain"
                     />
                 )}
             </TouchableOpacity>
         );
     }, [handleSwitchPress, handleLetterSelect, isTextMode, selectedLetter]);
-
-    const onViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: any[] }) => {
-        // Traitez les éléments visibles ici si nécessaire
-    }, []);
 
     return (
         <View style={styles.container}>
@@ -122,20 +108,29 @@ const AllFilters = () => {
                     onChangeText={setSearchTerm}
                 />
             </View>
+            <View style={styles.categoryButtonContainer}>
+                {ByCategory.map(category => {
+                    const posIdentifier = Object.keys(categoryMap).find(
+                        key => categoryMap[key as keyof typeof categoryMap] === category
+                    );
+                    const colorInfo = getColorForPOS(posIdentifier || '');
 
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScrollView}>
-                <View style={styles.buttonsWrapper}>
-                    {ByCategory.map(category => (
+                    const isSelected = category === selectedCategory;
+                    return (
                         <TouchableOpacity
                             key={category}
                             onPress={() => handleCategorySelect(category)}
-                            style={[styles.categoryButton, category === selectedCategory && styles.selectedButton]}
+                            style={[styles.categoryButton, isSelected && { backgroundColor: colorInfo.color }]}
                         >
-                            <InformationText style={styles.categoryButtonText}>{category}</InformationText>
+                            <InformationText
+                                style={[styles.categoryButtonText, isSelected && { color: Colors.white }]}
+                            >
+                                {category}
+                            </InformationText>
                         </TouchableOpacity>
-                    ))}
-                </View>
-            </ScrollView>
+                    );
+                })}
+            </View>
 
             <View style={styles.alphabetContainer}>
                 <FlatList
@@ -145,13 +140,16 @@ const AllFilters = () => {
                     numColumns={10}
                 />
             </View>
-
-            <ScrollView style={styles.dictionnaryContainer}>
             <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
-                    <EvilIcons name="retweet" style={styles.refreshIcon}/>
-                </TouchableOpacity>
-                {/* Affichage des cartes likées */}
-                <LikedCardsList refreshKey={refreshKey} />
+                <EvilIcons name="retweet" style={styles.refreshIcon} />
+            </TouchableOpacity>
+            <ScrollView style={styles.dictionnaryContainer}>
+                <LikedCardsList 
+                    refreshKey={refreshKey} 
+                    selectedCategory={selectedCategory} 
+                    selectedLetter={selectedLetter} 
+                    searchTerm={searchTerm} 
+                />
             </ScrollView>
 
             <View style={styles.footerContainer} />
@@ -172,13 +170,12 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         width: '100%',
         height: 40,
-        marginVertical: 10,
-        marginBottom: '2%',
+        marginVertical: 15,
     },
     inputText: {
         color: Colors.black,
         fontFamily: 'MontserratRegular',
-        fontSize: 12,
+        fontSize: 14,
         flex: 1,
     },
     searchIcon: {
@@ -187,35 +184,27 @@ const styles = StyleSheet.create({
         color: Colors.black,
     },
     refreshButton: {
-        padding: 10,
-        alignSelf: 'center'
-      },
-      refreshIcon: {
+        paddingBottom: 5,
+        alignSelf: 'center',
+    },
+    refreshIcon: {
         fontSize: 30,
-        color: Colors.black
+        color: Colors.black,
     },
-    categoryScrollView: {
-        position: 'absolute',
-        marginVertical: '6%',
-        width: '100%',
-        height: 40,
-        top: 40,
+    categoryButtonContainer: {
         flexDirection: 'row',
-    },
-    buttonsWrapper: {
-        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     categoryButton: {
         backgroundColor: Colors.white,
-        paddingHorizontal: 20,
+        width: '32%',
         borderRadius: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        height: 40,
-        marginHorizontal: 3,
+        height: 35,
     },
     selectedButton: {
-        backgroundColor: Colors.neutralGreen,
+        backgroundColor: Colors.neutralGrey,
     },
     categoryButtonText: {
         color: Colors.black,
@@ -225,28 +214,33 @@ const styles = StyleSheet.create({
     },
     alphabetContainer: {
         width: '100%',
-        top: 40,
-        marginVertical: '3%',
+        marginVertical: 15,
     },
     buttonImage: {
         width: '100%',
         height: '100%',
     },
     alphabetButton: {
-        backgroundColor: Colors.white,
+        borderWidth: 0.6,
+        backgroundColor: Colors.whiteTransparent,
+        borderColor: Colors.neutralGrey,
         padding: 7,
-        borderRadius: 5,
+        borderRadius: 7,
         width: '10.5%',
         height: 45,
         margin: '1%',
         alignItems: 'center',
         justifyContent: 'center',
     },
+    selectedImage: {
+        tintColor: Colors.white,
+        width: '100%',
+        height: '100%',
+    },
     dictionnaryContainer: {
         height: '100%',
         marginTop: 0,
         padding: 0,
-        top: '3%',
     },
     footerContainer: {
         height: '56%',
@@ -261,11 +255,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.grey,
         margin: '1%',
     },
-    noDataText: {
-        fontSize: 16,
-        color: Colors.black,
-        textAlign: 'center',
-        marginTop: 50,
+    switchButtonText: {
+        color: Colors.white,
     },
 });
 

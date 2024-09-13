@@ -75,7 +75,7 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
                 console.log(`Removing card data for ${word}`);
                 await AsyncStorage.removeItem(`card-${word}`);
                 if (onUnlike) {
-                    onUnlike(); // Call the onUnlike function if provided
+                    onUnlike();
                 }
             }
         } catch (error) {
@@ -99,9 +99,9 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
             <View style={styles.titleContainer}>
                 <View style={styles.emptyContainer}></View>
                 <View style={styles.textContainer}>
-                    <WordCard style={styles.wordText}>{word}</WordCard>
+                    <WordCard style={styles.wordText}>{lemma}</WordCard>
                     {shouldShowLemma ? (
-                        <Text style={styles.detailText}>({lemma})</Text>
+                        <Text style={styles.detailText}>({word})</Text>
                     ) : null}
                 </View>
                 {showIcon ? (
