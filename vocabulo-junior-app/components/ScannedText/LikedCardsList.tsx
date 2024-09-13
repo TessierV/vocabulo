@@ -5,7 +5,6 @@ import DictionaryCard from './DictionaryCard';
 import { Colors } from '@/constants/Colors';
 import { InformationText } from '@/constants/StyledText';
 
-
 interface Card {
     word: string;
     lemma: string;
@@ -14,14 +13,16 @@ interface Card {
     definition: string;
     url: string;
 }
+
 interface LikedCardsListProps {
     refreshKey: number;
     selectedCategory: string | null;
     selectedLetter: string | null;
     searchTerm: string;
+    sortDirection: 'A-Z' | 'Z-A'; // Add sortDirection prop
 }
 
-const LikedCardsList: React.FC<LikedCardsListProps> = ({ refreshKey, selectedCategory, selectedLetter, searchTerm }) => {
+const LikedCardsList: React.FC<LikedCardsListProps> = ({ refreshKey, selectedCategory, selectedLetter, searchTerm, sortDirection }) => {
     const [likedCards, setLikedCards] = useState<Card[]>([]);
 
     const getPOSFromCategory = (category: string | null): string | null => {
@@ -68,7 +69,11 @@ const LikedCardsList: React.FC<LikedCardsListProps> = ({ refreshKey, selectedCat
                     );
                 }
 
-                validLikedCards.sort((a, b) => a.lemma.localeCompare(b.lemma));
+                // Sort by alphabet based on the direction
+                validLikedCards.sort((a, b) => {
+                    const comparison = a.lemma.localeCompare(b.lemma);
+                    return sortDirection === 'A-Z' ? comparison : -comparison;
+                });
 
                 setLikedCards(validLikedCards);
             } catch (error) {
@@ -77,7 +82,7 @@ const LikedCardsList: React.FC<LikedCardsListProps> = ({ refreshKey, selectedCat
         };
 
         fetchLikedCards();
-    }, [refreshKey, selectedCategory, selectedLetter, searchTerm]);
+    }, [refreshKey, selectedCategory, selectedLetter, searchTerm, sortDirection]);
 
     const handleUnlike = useCallback(async (cardWord: string) => {
         try {
@@ -116,6 +121,7 @@ const LikedCardsList: React.FC<LikedCardsListProps> = ({ refreshKey, selectedCat
         </View>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {

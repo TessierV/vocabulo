@@ -70,7 +70,8 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
             await AsyncStorage.setItem(`like-${word}`, JSON.stringify(newLikeState));
             if (newLikeState) {
                 console.log(`Saving card data for ${word}`);
-                await AsyncStorage.setItem(`card-${word}`, JSON.stringify({ word, lemma, pos, func, definition, url }));
+                const cardData = { word, lemma, pos, func, definition, url, addedDate: Date.now() };
+                await AsyncStorage.setItem(`card-${word}`, JSON.stringify(cardData));
             } else {
                 console.log(`Removing card data for ${word}`);
                 await AsyncStorage.removeItem(`card-${word}`);
@@ -95,7 +96,7 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
     const showIcon = ['NOUN', 'VERB', 'ADJ'].includes(identifier);
 
     return (
-        <View style={[styles.card, { backgroundColor: cardColor }]}>
+        <View style={[styles.card, { backgroundColor: cardColor }]} >
             <View style={styles.titleContainer}>
                 <View style={styles.emptyContainer}></View>
                 <View style={styles.textContainer}>
