@@ -100,14 +100,21 @@ const svgMarkup = {
     `,
 
   arrowRight: (fillColor) => `
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-    xmlns="http://www.w3.org/2000/svg">
-    <path d="M8.90991 19.92L15.4299 13.4C16.1999 12.63 16.1999 11.37 15.4299 10.6L8.90991 4.07996" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.90991 19.92L15.4299 13.4C16.1999 12.63 16.1999 11.37 15.4299 10.6L8.90991 4.07996" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
     `,
 
+    arrowLeft: (fillColor) => `
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15.0001 19.92L8.48009 13.4C7.71009 12.63 7.71009 11.37 8.48009 10.6L15.0001 4.07996" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+    `,
+
+
+
   // clavier || keyboard
-  key_delete: (fillColor) =>`
+  key_delete: (fillColor) => `
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
     xmlns="http://www.w3.org/2000/svg">
     <path d="M10.28 20.25H17C19.76 20.25 22 18.01 22 15.25V8.75C22 5.99 19.76 3.75 17 3.75H10.28C8.86999 3.75 7.52999 4.34 6.57999 5.39L3.04999 9.27C1.63999 10.82 1.63999 13.18 3.04999 14.73L6.57999 18.61C7.52999 19.66 8.86999 20.25 10.28 20.25Z" stroke="${fillColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -158,9 +165,47 @@ const svgMarkup = {
   </svg>
   `,
 
+  // IA
+  hybrid: (fillColor) => `
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 2V5" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16 2V5" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M21 8.5V13.63C20.11 12.92 18.98 12.5 17.75 12.5C16.52 12.5 15.37 12.93 14.47 13.66C13.26 14.61 12.5 16.1 12.5 17.75C12.5 18.73 12.78 19.67 13.26 20.45C13.63 21.06 14.11 21.59 14.68 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M7 11H13" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M7 16H9.62" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M23 17.75C23 18.73 22.72 19.67 22.24 20.45C21.96 20.93 21.61 21.35 21.2 21.69C20.28 22.51 19.08 23 17.75 23C16.6 23 15.54 22.63 14.68 22C14.11 21.59 13.63 21.06 13.26 20.45C12.78 19.67 12.5 18.73 12.5 17.75C12.5 16.1 13.26 14.61 14.47 13.66C15.37 12.93 16.52 12.5 17.75 12.5C18.98 12.5 20.11 12.92 21 13.63C22.22 14.59 23 16.08 23 17.75Z" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M17.75 20.25C17.75 18.87 18.87 17.75 20.25 17.75C18.87 17.75 17.75 16.63 17.75 15.25C17.75 16.63 16.63 17.75 15.25 17.75C16.63 17.75 17.75 18.87 17.75 20.25Z" stroke="${fillColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  `,
+
+  calendarMonths: (fillColor) => `
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 2V5" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16 2V5" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M3.5 9.08997H20.5" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M15.6947 13.7H15.7037" stroke="${fillColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M15.6947 16.7H15.7037" stroke="${fillColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M11.9955 13.7H12.0045" stroke="${fillColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M11.9955 16.7H12.0045" stroke="${fillColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M8.29431 13.7H8.30329" stroke="${fillColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M8.29431 16.7H8.30329" stroke="${fillColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  `,
+
+  calendarWeek: (fillColor) => `
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 2V5" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16 2V5" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16 3.5C19.33 3.68 21 4.95 21 9.65V15.83C21 19.95 20 22.01 15 22.01H9C4 22.01 3 19.95 3 15.83V9.65C3 4.95 4.67 3.69 8 3.5H16Z" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M20.75 8.59998H3.25" stroke="${fillColor}" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10.4221 19C10.3282 19 10.2328 18.9832 10.1413 18.9478C9.78824 18.8111 9.6278 18.4481 9.78304 18.137L12.2316 13.2304H9.69842C9.3127 13.2304 9 12.955 9 12.6152C9 12.2754 9.3127 12 9.69842 12H13.3016C13.5375 12 13.7574 12.1049 13.8864 12.2789C14.0154 12.4529 14.0359 12.6725 13.941 12.8628L11.0618 18.6322C10.9468 18.8627 10.6907 19 10.4221 19Z" fill="${fillColor}"/>
+  </svg>
+  `,
+
 
   // Footer Congratulation Modal
-  game: (fillColor) =>  `
+  game: (fillColor) => `
   <svg width="82" height="79" viewBox="0 0 82 79" fill="none"
     xmlns="http://www.w3.org/2000/svg">
     <path d="M6.99042 9.75854C6.99042 9.75854 6.26911 18.0442 0.197266 19.2645C0.197266 19.2645 5.51454 21.6209 6.99042 27.5724C6.99042 27.5724 7.68431 21.0306 12.8998 19.4894C12.8998 19.4894 7.0511 17.4015 6.99042 9.75854Z" fill="white"/>
@@ -173,7 +218,7 @@ const svgMarkup = {
   </svg>
     `,
 
-  refresh: (fillColor) =>  `
+  refresh: (fillColor) => `
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
     xmlns="http://www.w3.org/2000/svg">
     <path d="M14.8901 5.08002C14.0201 4.82002 13.0601 4.65002 12.0001 4.65002C7.21008 4.65002 3.33008 8.53002 3.33008 13.32C3.33008 18.12 7.21008 22 12.0001 22C16.7901 22 20.6701 18.12 20.6701 13.33C20.6701 11.55 20.1301 9.89002 19.2101 8.51002" stroke="${fillColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -182,7 +227,7 @@ const svgMarkup = {
   </svg>
     `,
 
-  dictionary: (fillColor) =>  `
+  dictionary: (fillColor) => `
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
     xmlns="http://www.w3.org/2000/svg">
     <path d="M22 16.7399V4.66994C22 3.46994 21.02 2.57994 19.83 2.67994H19.77C17.67 2.85994 14.48 3.92994 12.7 5.04994L12.53 5.15994C12.24 5.33994 11.76 5.33994 11.47 5.15994L11.22 5.00994C9.44 3.89994 6.26 2.83994 4.16 2.66994C2.97 2.56994 2 3.46994 2 4.65994V16.7399C2 17.6999 2.78 18.5999 3.74 18.7199L4.03 18.7599C6.2 19.0499 9.55 20.1499 11.47 21.1999L11.51 21.2199C11.78 21.3699 12.21 21.3699 12.47 21.2199C14.39 20.1599 17.75 19.0499 19.93 18.7599L20.26 18.7199C21.22 18.5999 22 17.6999 22 16.7399Z" fill="${fillColor}" stroke="${fillColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -193,7 +238,7 @@ const svgMarkup = {
     `,
 
 
-  default: (fillColor) =>  `
+  default: (fillColor) => `
   <svg width="41" height="40" viewBox="0 0 41 40" fill="none"
     xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_337_1819)">
