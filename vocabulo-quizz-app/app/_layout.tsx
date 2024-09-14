@@ -47,6 +47,11 @@ function RootLayoutNav() {
       <Stack.Screen name="index" options={{ headerShown: false, title: 'Index' }} />
       <Stack.Screen name="wordlist/[categorie_id]" initialParams={{ mainCategoryWords: [], subcategories: [] }}
         options={{ headerShown: false, title: 'Liste des mots' }} />
+
+      <Stack.Screen
+        name="iaquizpage/[iaquiz_id]"
+        options={{ headerShown: false, title: 'IA Quiz' }}
+      />
       <Stack.Screen name="subcat/[subcat_id]" options={{ headerShown: false, title: 'Basic Quiz' }} />
     </Stack>
   );

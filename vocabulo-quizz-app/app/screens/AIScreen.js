@@ -6,8 +6,9 @@ import { useNavigation } from '@react-navigation/native'; // Import navigation h
 import AsyncStorage from '@react-native-async-storage/async-storage'; // For storing quiz data
 import Header from '@/components/Header/Header';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
-import SvgIcon from '@/SVG/CategorySvgIcon';
+import AppSvgLogo from '@/SVG/AppSvgLogo';
 import { GradientBorderButton } from '@/components/Button';
+import Bubble from '@/components/Effect/Bubble';
 
 import useDarkMode from '@/components/useDarkMode';
 import SectionTitle from '@/components/SectionTitle';
@@ -100,13 +101,11 @@ export default function AIScreen() {
     setModalVisible(true); // Show modal with generated questions
   };
 
-  const getRadarColors = (filter) => {
-    switch (filter) {
-
-      default:
-        return [color.lightPlum, color.neutralPlum, color.darkPlum];
-    }
+  const getRadarColors = () => {
+    return [color.lightPlum, color.neutralPlum, color.darkPlum];
   };
+
+
 
   // Function to handle navigation to IAQuizPage with generated UUID4
   const navigateToQuiz = async () => {
@@ -234,6 +233,11 @@ export default function AIScreen() {
       <Modal visible={modalVisible} animationType="slide"
         transparent={true}
       >
+        <View style={styles.bubbleContainer}>
+        <Bubble size={30} color={color.lightPlum} duration={5000} delay={0} opacity={0.3} />
+        <Bubble size={50} color={color.neutralPlum} duration={7000} delay={1000} opacity={0.2} />
+        <Bubble size={40} color={color.darkPlum} duration={6000} delay={500} opacity={0.25} />
+      </View>
         <View style={styles.modalContainer}>
 
           <View style={styles.modalContent}>
@@ -241,19 +245,11 @@ export default function AIScreen() {
               <Feather name="x" size={24} color="black" />
             </TouchableOpacity>
             <View style={styles.recapContainer}>
-              <RadarEffect
-                colors={getRadarColors("hard")}
-                minRadius={30}
-                maxRadius={50}
-                svgIcon={SvgIcon({ icon: "default" }).props.xml}
-              />
               <BigTitle>Récapitulatif</BigTitle>
               <ContainerParagraph style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade }}>
                 Vous allez commencer avec ce thème:
               </ContainerParagraph>
-
             </View>
-
             <ScrollView>
               {generatedQuestions.map((item, index) => (
                 <View key={index} style={styles.questionCard}>
@@ -291,9 +287,6 @@ export default function AIScreen() {
               onPress={navigateToQuiz}
               text="Commencer"
             />
-
-
-
           </View>
         </View>
       </Modal>

@@ -9,6 +9,8 @@ import { color, lightTheme } from '@/constants/Colors';
 import { SvgXml } from 'react-native-svg'; // Import SVG rendering library
 import Feather from 'react-native-vector-icons/Feather'; // Import Feather icons
 import { Paragraph, Subtitle } from '@/constants/StyledText';
+import VideoModal from '@/components/Quizz/HintVideoModal'; // Import the VideoModal
+import InterfaceSvg from '@/SVG/InterfaceSvg';
 
 // Mock for CategoryWordSvg (you should replace this with actual import)
 const CategoryWordSvg = {
@@ -33,6 +35,10 @@ export default function IAQuizPage() {
   const [showSummaryModal, setShowSummaryModal] = useState(false); // Control summary modal
   const [definitionContent, setDefinitionContent] = useState(null); // Track definition content for modal
   const [showDefinitionModal, setShowDefinitionModal] = useState(false); // Show definition modal
+
+  // State for managing video modal
+  const [videoModalVisible, setVideoModalVisible] = useState(false);
+  const [videoUrl, setVideoUrl] = useState('');
 
   useEffect(() => {
     const fetchQuizData = async () => {
@@ -128,20 +134,18 @@ export default function IAQuizPage() {
         <View>
           {svgIconWord ? (
             <View style={{ width: '100%', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Paragraph style={{ fontSize: 15, color: color.neutral }}>
-              Quel mot cette image représente-t-elle ?
-            </Paragraph>
-          </View>
+              <Paragraph style={{ fontSize: 15, color: color.neutral }}>
+                Quel mot cette image représente-t-elle ?
+              </Paragraph>
+            </View>
           ) : (
             <>
-            <Paragraph style={{ fontSize: 15, color: lightTheme.light_darkShade }}>
-            Quelle est la réponse à cette définition ?{'\n\n'}
-          </Paragraph>
-          <Subtitle style={{ color: lightTheme.dark_lightShade }}>
-          {definitions[correctWord.mot_id]?.definition || 'No definition'}
-
-            </Subtitle>
-
+              <Paragraph style={{ fontSize: 15, color: lightTheme.light_darkShade }}>
+                Quelle est la réponse à cette définition ?{'\n\n'}
+              </Paragraph>
+              <Subtitle style={{ color: lightTheme.dark_lightShade }}>
+                {definitions[correctWord.mot_id]?.definition || 'No definition'}
+              </Subtitle>
             </>
           )}
         </View>
@@ -246,7 +250,7 @@ export default function IAQuizPage() {
           darkMode={false}
         />
       </View>
-      <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', marginVertical: 20,}}>
+      <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', marginVertical: 20, }}>
         {currentQuestion.questionText}
       </View>
 
@@ -263,6 +267,37 @@ export default function IAQuizPage() {
             highlightCorrect={highlightCorrect}
           />
         ))}
+      </View>
+      <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center' }}>
+
+      <View style={styles.videoButtonsContainer}>
+
+        <TouchableOpacity
+          style={[styles.hintButton, { borderColor: color.neutralBlue }]}
+          onPress={() => {
+            setVideoUrl(currentQuestion.correctWord.url_def);
+            setVideoModalVisible(true);
+          }}
+        >
+          <InterfaceSvg iconName="url_def" fillColor={color.neutralBlue} width={18} height={18} />
+          <Paragraph style={{ color: color.neutralBlue, fontSize: 12 }}>
+            Définition LSF
+          </Paragraph>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.hintButton, { borderColor: color.darkPlum }]}
+          onPress={() => {
+            setVideoUrl(currentQuestion.correctWord.url_sign);
+            setVideoModalVisible(true);
+          }}
+        >
+          <InterfaceSvg iconName="url_sign" fillColor={color.darkPlum} width={18} height={18} />
+          <Paragraph style={{ color: color.darkPlum, fontSize: 12 }}>
+            Sign
+          </Paragraph>
+        </TouchableOpacity>
+      </View>
       </View>
 
       <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center' }}>
@@ -299,6 +334,13 @@ export default function IAQuizPage() {
           </View>
         </View>
       </Modal>
+
+      {/* Video modal for url_def and url_sign */}
+      <VideoModal
+        visible={videoModalVisible}
+        onClose={() => setVideoModalVisible(false)}
+        videoUrl={videoUrl}
+      />
     </View>
   );
 }
@@ -375,5 +417,35 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 20,
     alignItems: 'center',
+  },
+  hintButton: {
+    padding: 10,
+    borderRadius: 8,
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 10,
+    alignSelf: 'center',
+    borderWidth: 1,
+    maxWidth: 230,
+    minHeight: 40,
+  },
+  videoButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    flexWrap: 'wrap',
+    marginTop: 20,
+    gap: 10,
+  },
+  videoButton: {
+    padding: 10,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+  },
+  videoButtonText: {
+    color: '#fff',
   },
 });
