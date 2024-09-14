@@ -29,7 +29,7 @@ const ParameterScreen = () => {
       try {
         const token = await AsyncStorage.getItem('access_token');
         if (token) {
-          const response = await axios.get('http://192.168.0.12:8000/user', {
+          const response = await axios.get('http://192.168.1.15:8000/user', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -71,7 +71,7 @@ const ParameterScreen = () => {
       setLoading(true);
       const token = await AsyncStorage.getItem('access_token');
       const response = await axios.post(
-        'http://192.168.0.12:8000/change-password', // Ensure this is the correct endpoint
+        'http://192.168.1.15:8000/change-password', // Ensure this is the correct endpoint
         { username, new_password: newPassword }, // Corrected payload format
         {
           headers: { Authorization: `Bearer ${token}` },

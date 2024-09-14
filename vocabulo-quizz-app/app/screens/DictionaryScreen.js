@@ -21,7 +21,7 @@ const signSVG = `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xli
 
 async function fetchWordsBySearchTerm(searchTerm) {
   try {
-    const response = await fetch(`http://192.168.0.12:3000/api/alphabet/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+    const response = await fetch(`http://192.168.1.15:3000/api/alphabet/search?searchTerm=${encodeURIComponent(searchTerm)}`);
 
     if (!response.ok) {
       const errorText = await response.text();

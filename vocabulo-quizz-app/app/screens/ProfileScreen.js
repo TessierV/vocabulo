@@ -30,7 +30,7 @@ const ProfileScreen = () => {
     const fetchUserDetails = async () => {
       try {
         const userId = '01952a09-d04c-47fe-879c-51f19e167541';
-        const response = await fetch(`http://192.168.0.12:3000/api/authentication/${userId}`);
+        const response = await fetch(`http://192.168.1.15:3000/api/authentication/${userId}`);
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -156,18 +156,17 @@ const ProfileScreen = () => {
     const views = word.times_seen;
     const correct = word.times_correct;
 
-    if (views === 1) return 'white';
+    if (views <= 2) return color.neutral;
 
     if (views > 2) {
       const correctRatio = (correct / views) * 100;
 
-      if (correctRatio == 100) return 'yellow';
-      if (correctRatio > 85) return 'green';
-      if (correctRatio >= 60 && correctRatio <= 85) return 'blue';
-      if (correctRatio >= 50 && correctRatio < 60) return 'purple';
-      return 'coral';
+      if (correctRatio == 100) return '#FAF2CB';
+      if (correctRatio > 85) return color.lightGreen;
+      if (correctRatio >= 60 && correctRatio <= 85) return color.lightBlue;
+      if (correctRatio >= 50 && correctRatio < 60) return color.lightPlum;
+      return color.lightCoral;
     }
-
     return 'transparent';
   };
 
@@ -229,6 +228,7 @@ const ProfileScreen = () => {
 
           {/* Connection Streak */}
           <ProfilConnexion maxStreak={maxStreak} currentStreak={currentStreak} totalDaysOnline={totalDaysOnline} />
+          </View>
 
           {/* Word History Component */}
           <WordHistory
@@ -246,7 +246,6 @@ const ProfileScreen = () => {
             filteredWords={filteredWords}
             getBorderColor={getBorderColor}
           />
-        </View>
       </ScrollView>
     </View>
   );

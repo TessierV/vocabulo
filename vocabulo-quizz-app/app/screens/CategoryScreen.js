@@ -61,7 +61,7 @@ const Page = () => {
 
       try {
         //const categoryResponse = await fetch('http://192.168.0.12:3000/api/categories/basique');
-        const categoryResponse = await fetch('http://192.168.0.12:3000/api/categories/basique');
+        const categoryResponse = await fetch('http://192.168.1.15:3000/api/categories/basique');
 
         const categoryData = await categoryResponse.json();
 
