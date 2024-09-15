@@ -40,7 +40,7 @@ const GridCardHome = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                // maison const response = await fetch('http://192.168.1.15:3000/api/categories');
+                // maison const response = await fetch('http://192.168.0.12:3000/api/categories');
                 // Ecole const response = await fetch('http://10.10.0.8:3000/api/categories');
 
                 const response = await fetch('http://192.168.0.12:3000/api/categories');
@@ -158,6 +158,7 @@ const GridCardHome = () => {
                                 {
                                     width: squareSize,
                                     height: squareSize,
+                                    backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.lightShade
                                 }
                             ]}
                             onPress={() => handleCategoryClick(category)}
@@ -167,7 +168,7 @@ const GridCardHome = () => {
                                 <Paragraph style={{ textAlign: 'center', textTransform: 'capitalize', fontSize: 12, paddingTop: 5, color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>
                                     {category.categorie_name}
                                 </Paragraph>
-                                <Paragraph style={{ textAlign: 'center', fontSize: 9, color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>
+                                <Paragraph style={{ textAlign: 'center', fontSize: 9, color: darkMode ? darkTheme.neutral : lightTheme.neutral }}>
                                     {category.totalWordCount} mots
                                 </Paragraph>
                             </View>
@@ -331,13 +332,7 @@ const GridCardHome = () => {
 };
 
 const styles = StyleSheet.create({
-    subcategoryContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 15,
-        borderRadius: 10,
-        overflow: 'hidden',
-    },
+
     closeButton: {
         position: 'absolute',
         top: 10,
@@ -382,6 +377,7 @@ const styles = StyleSheet.create({
         gap: 10,
         width: '100%',
         alignItems: 'flex-start',
+        marginBottom: 40,
     },
     subcategoryContainer: {
         justifyContent: 'center',
@@ -389,7 +385,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         overflow: 'hidden',
         position: 'relative',
-        backgroundColor: 'white',
+        marginBottom: 5,
     },
     // Modal
     modalContainer: {

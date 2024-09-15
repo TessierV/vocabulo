@@ -1,9 +1,64 @@
 // src/constants/texts.js
-import {interfaceIcons, themes} from '@/constants/svg';
+import { interfaceIcons, themes } from '@/constants/svg';
+import InterfaceSvg from '@/SVG/InterfaceSvg';
 
+// `home` export object
+export const home = {
+    header: {
+        title: 'Bienvenue',
+    },
+    slider: {
+        slider1: {
+            title: 'Bienvenue',
+            description: 'Explorez des quizz pour enrichir votre vocabulaire au quotidien.',
+        },
+        slider2: {
+            title: 'Bêta',
+            description: 'Application en Développement Notre aventure ne fait que commencer !',
+        },
+        slider3: {
+            title: 'Nouveauté',
+            description: 'Faites fleurir vos connaissances ! Testez-vous avec notre nouveau quizz sur le thème des fleurs',
+        },
+    },
+
+    section: {
+        title: 'Exercice',
+        row1: {
+            text: 'Basique',
+            route: '/category',
+
+        },
+        row2: {
+            text: 'Hybride',
+            route: '/game',
+        },
+        row3: {
+            text: 'Personalisé',
+            route: '/customize',
+        },
+        row4: {
+            text: 'Random',
+            route: '/random',
+        },
+
+    },
+    section2: {
+        title: 'Thèmatique',
+        subtitle: 'Information',
+        popup: {
+            title: 'Information',
+            text: 'Parcourez les thèmes, sélectionnez ceux qui vous intéressent, et plongez dans un monde d\'apprentissage adapté à vos besoins.',
+            button: 'Fermer',
+        },
+
+    },
+
+
+};
 
 export const texts = {
-    sectionTitle:{
+    sectionTitle: {
         icons: interfaceIcons.question,
     },
 
@@ -121,7 +176,7 @@ export const texts = {
 
         },
 
-        Category:{
+        Category: {
             title: 'Catégories',
             text: 'aide',
             popup: {

@@ -1,19 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions, ScrollView, ActivityIndicator } from 'react-native';
-import { BigTitle, Paragraph, Subtitle } from '@/constants/StyledText';
 import useDarkMode from '@/components/useDarkMode';
-import { darkTheme, lightTheme } from '@/constants/Colors';
-import WeeklyOverview from '@/components/Home/WeeklyOverview';
-import DailyGoals from '@/components/Home/DailyGoals';
-import SectionTitle from '@/components/SectionTitle';
-import { texts } from '@/constants/texts';
+import { darkTheme, lightTheme, color } from '@/constants/Colors';
+import SectionTitle from '@/components/General/SectionTitle';
+import { home } from '@/constants/texts';
 import CategoryGrid from '@/components/CategoryGrid';
-import Slider from '@/components/Slider/Slider';
-import CategoryCard from '@/components/CategoryCard';
 import { useNavigation } from '@react-navigation/native';
 import GridCardHome from '@/components/Home/Home/GridCard';
-import TitleSlider from '@/components/Slider/SliderTitleWithInfo';
 import Header from '@/components/Header/Header';
+import SliderHome from '@/components/Home/SliderHome'; // Importez le composant ici
 
 const HomeScreen = () => {
   const [darkMode] = useDarkMode();
@@ -26,45 +21,35 @@ const HomeScreen = () => {
     <ScrollView
       contentContainerStyle={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}
     >
-      <Header darkMode={darkMode} PageTitle="Bienvenue" title="Home" firstLink="none" secondLink="none" />
-      <Slider
-        data={[
-          { key: '1', component: <WeeklyOverview darkMode={darkMode} /> },
-          { key: '2', component: <DailyGoals darkMode={darkMode} /> },
-        ]}
-        darkMode={darkMode}
-      />
+      <Header darkMode={darkMode} PageTitle={home.header.title} title="Home" firstLink="none" secondLink="parameter" />
+      <SliderHome darkMode={darkMode} />
 
       <View style={styles.container}>
         <SectionTitle
-          title={texts.homeScreen.section?.title || 'Default Section Title'}
-          text={texts.homeScreen.section?.text || 'Default Section Text'}
-          iconName="help-circle"
-          popupTitle={texts.homeScreen.section?.popup?.title || 'Default Popup Title'}
-          popupText={texts.homeScreen.section?.popup?.text || 'Default Popup Text'}
-          popupButtonText={texts.homeScreen.section?.popup?.button || 'Default Button Text'}
+          title={home.section.title}
           darkMode={darkMode}
+          showTextAndIcon={false}
         />
-
         <CategoryGrid
           categories={[
-            { textLabel: texts.homeScreen.section.categoryGrid.column1?.title || 'Default Title', icon: 'category', route: texts.homeScreen.section.categoryGrid.column1?.route || '' },
-            { textLabel: texts.homeScreen.section.categoryGrid.column2?.title || 'Default Title', icon: 'custom', route: texts.homeScreen.section.categoryGrid.column2?.route || '' },
-            { textLabel: texts.homeScreen.section.categoryGrid.column3?.title || 'Default Title', icon: 'random', route: texts.homeScreen.section.categoryGrid.column3?.route || '' },
-            { textLabel: texts.homeScreen.section.categoryGrid.column4?.title || 'Default Title', icon: 'dictionary', route: texts.homeScreen.section.categoryGrid.column4?.route || '' },
+            { textLabel: home.section.row1.text, icon: 'category', route: home.section.row1.route },
+            { textLabel: home.section.row2.text, icon: 'hybrid', route: home.section.row2.route },
+            { textLabel: home.section.row3.text, icon: 'custom', route: home.section.row3.route },
+            { textLabel: home.section.row4.text, icon: 'random', route: home.section.row4.route },
           ]}
           darkMode={darkMode}
         />
+        <View style={[styles.container, { marginBottom: 15 }]} />
         <SectionTitle
-          title={texts.homeScreen.section_second?.title || 'Default Section Title'}
-          text={texts.homeScreen.section_second?.text || 'Default Section Text'}
-          iconName="help-circle"
-          popupTitle={texts.homeScreen.section_second?.popup?.title || 'Default Popup Title'}
-          popupText={texts.homeScreen.section_second?.popup?.text || 'Default Popup Text'}
-          popupButtonText={texts.homeScreen.section_second?.popup?.button || 'Default Button Text'}
+          title={home.section2.title}
+          text={home.section2.subtitle}
+          iconName="info"
+          popupTitle={home.section2.popup.title}
+          popupText={home.section2.popup.text}
+          popupButtonText={home.section2.popup.button}
           darkMode={darkMode}
         />
-        <GridCardHome darkMode={darkMode}  />
+        <GridCardHome darkMode={darkMode} />
       </View>
     </ScrollView>
   );

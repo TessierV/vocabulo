@@ -6,7 +6,6 @@ export const color = {
   white: '#FFF',
   neutral: "#DDD",
 
-
   darkCoral: "#E85B27",
   neutralCoral: '#FF7F50',
   lightCoral: "#FFA381",
@@ -27,7 +26,7 @@ export const color = {
 export const lightTheme = {
   darkShade: '#0D1320',
   light_darkShade: "#667BA1",
-
+  neutral: '#8399A5',
   lightShade: '#FFF',
   dark_lightShade: '#F6F6F6',
 };
@@ -35,6 +34,7 @@ export const lightTheme = {
 export const darkTheme = {
   darkShade: '#0D1320',
   light_darkShade: "#262D34",
+  neutral: '#8399A5',
 
   lightShade: '#FFF',
   dark_lightShade: '#DAE0E4',
