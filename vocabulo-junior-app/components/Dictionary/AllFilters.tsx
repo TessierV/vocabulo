@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image, ScrollView, GestureResponderEvent, Animated } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image, ScrollView, Animated } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import SwitchButton from './SwitchButton';
-import letterImages from './letterImages';
+import letterImages from './letterImages'; // Assurez-vous que ce module est correct
 import { ButtonText, InformationText } from '@/constants/StyledText';
 import LikedCardsList from '../ScannedText/LikedCardsList';
-import { getColorForPOS } from '../ScannedText/PosColors';
+import { getColorForPOS } from '../ScannedText/PosColors'; // Assurez-vous que cette fonction existe
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 enum POSCategory {
@@ -31,7 +31,6 @@ const AllFilters = () => {
     const [isSortByAlphabetSelected, setIsSortByAlphabetSelected] = useState<boolean>(true);
 
     const rotateAnim = useRef(new Animated.Value(0)).current;
-
     const flatListRef = useRef<FlatList<any> | null>(null);
 
     useEffect(() => {
@@ -44,17 +43,13 @@ const AllFilters = () => {
     const handleCategorySelect = (category: string) => {
         setSelectedCategory(category === selectedCategory ? null : category);
         setSearchTerm('');
-        if (flatListRef.current) {
-            flatListRef.current.scrollToOffset({ offset: 0, animated: true });
-        }
+        flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     };
 
     const handleLetterSelect = (letter: string) => {
         setSelectedLetter(letter === selectedLetter ? null : letter);
         setSearchTerm('');
-        if (flatListRef.current) {
-            flatListRef.current.scrollToOffset({ offset: 0, animated: true });
-        }
+        flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     };
 
     const handleSwitchPress = () => {
@@ -66,23 +61,19 @@ const AllFilters = () => {
         setSelectedCategory(null);
         setSelectedLetter(null);
         setRefreshKey(prevKey => prevKey + 1);
-        if (flatListRef.current) {
-            flatListRef.current.scrollToOffset({ offset: 0, animated: true });
-        }
+        flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     };
 
-    const sortByAphabet = (event: GestureResponderEvent): void => {
+    const sortByAphabet = () => {
         setSortDirection(prevDirection => (prevDirection === 'A-Z' ? 'Z-A' : 'A-Z'));
-        setIsSortByAlphabetSelected(true); // Always activate the alphabet sort
-        setIsSortByDateSelected(false); // Deselect date sort
+        setIsSortByAlphabetSelected(true);
+        setIsSortByDateSelected(false);
     };
 
-    const sortByDate = (event: GestureResponderEvent): void => {
-        // Handle date sorting logic
-        setIsSortByDateSelected(true); // Activate date sort
-        setIsSortByAlphabetSelected(false); // Deselect alphabet sort
+    const sortByDate = () => {
+        setIsSortByDateSelected(true);
+        setIsSortByAlphabetSelected(false);
 
-        // Rotate animation
         Animated.sequence([
             Animated.timing(rotateAnim, {
                 toValue: 1,
@@ -91,7 +82,7 @@ const AllFilters = () => {
             }),
             Animated.timing(rotateAnim, {
                 toValue: 0,
-                duration: 0, // No time to return to starting position
+                duration: 0,
                 useNativeDriver: true,
             })
         ]).start();
@@ -179,7 +170,6 @@ const AllFilters = () => {
                     );
                 })}
             </View>
-
             <View style={styles.alphabetContainer}>
                 <FlatList
                     data={[...alphabet, 'Switch']}
@@ -188,16 +178,17 @@ const AllFilters = () => {
                     numColumns={9}
                 />
             </View>
+
             <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
                 <EvilIcons name="retweet" style={styles.refreshIcon} />
             </TouchableOpacity>
-            <ScrollView style={styles.dictionnaryContainer}>
-                <LikedCardsList 
+            <ScrollView style={styles.dictionnaryContainer} >
+                <LikedCardsList
                     refreshKey={refreshKey} 
                     selectedCategory={selectedCategory} 
                     selectedLetter={selectedLetter} 
                     searchTerm={searchTerm} 
-                    sortDirection={sortDirection} // Pass sort direction
+                    sortDirection={sortDirection}
                 />
             </ScrollView>
 
@@ -316,9 +307,11 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     dictionnaryContainer: {
-        height: '100%',
-        marginTop: 0,
-        padding: 0,
+            width: '100%',
+            height: '100%',
+            marginTop: 10,
+            padding: 0
+    
     },
     footerContainer: {
         height: '56%',
