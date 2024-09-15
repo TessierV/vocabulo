@@ -28,9 +28,9 @@ const AllFilters = () => {
     const [refreshKey, setRefreshKey] = useState<number>(0);
     const [sortDirection, setSortDirection] = useState<'A-Z' | 'Z-A'>('A-Z');
     const [isSortByDateSelected, setIsSortByDateSelected] = useState<boolean>(false);
-    const [isSortByAlphabetSelected, setIsSortByAlphabetSelected] = useState<boolean>(true); // Default to true
+    const [isSortByAlphabetSelected, setIsSortByAlphabetSelected] = useState<boolean>(true);
 
-    const rotateAnim = useRef(new Animated.Value(0)).current; // Initialize rotation animation
+    const rotateAnim = useRef(new Animated.Value(0)).current;
 
     const flatListRef = useRef<FlatList<any> | null>(null);
 
@@ -118,17 +118,17 @@ const AllFilters = () => {
                 style={[styles.alphabetButton, isSelected && styles.selectedButton]}
             >
                 {isTextMode ? (
-                    <InformationText
-                        style={[styles.alphabetButtonText, isSelected && { color: Colors.white }]}
-                    >
-                        {item}
-                    </InformationText>
-                ) : (
                     <Image
                         source={letterImages[item]}
                         style={[styles.buttonImage, isSelected && styles.selectedImage]}
                         resizeMode="contain"
                     />
+                ) : (
+                    <InformationText
+                        style={[styles.alphabetButtonText, isSelected && { color: Colors.white }]}
+                    >
+                        {item}
+                    </InformationText>
                 )}
             </TouchableOpacity>
         );
@@ -146,14 +146,6 @@ const AllFilters = () => {
                         onChangeText={setSearchTerm}
                     />
                 </View>
-                <TouchableOpacity
-                    onPress={sortByDate}
-                    style={[styles.sortByDateButton, isSortByDateSelected && styles.selectedSortByDateButton]}
-                >
-                    <Animated.View style={{ transform: [{ rotate: rotation }] }}>
-                        <EvilIcons name="clock" style={styles.sortByDateIcon} />
-                    </Animated.View>
-                </TouchableOpacity>
                 <TouchableOpacity
                     onPress={sortByAphabet}
                     style={[styles.sortByAphabetButton, isSortByAlphabetSelected && styles.selectedSortByAphabetButton]}
@@ -226,7 +218,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.neutralGrey,
         borderRadius: 8,
         height: 40,
-        width: '68%',
+        width: '80%',
         paddingHorizontal: '5%',
         marginVertical: 15,
     },
@@ -247,47 +239,28 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center'
     },
-    sortByDateButton: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center',
-        borderWidth: 1,
-        borderColor: Colors.neutralGrey,
-        borderRadius: 8,
-        height: 40,
-        paddingHorizontal: '3%',
-        marginLeft: '1%',
-    },
-    sortByDateIcon: {
-        fontSize: 22,
-        color: Colors.black,
-    },
-    selectedSortByDateButton: {
-        backgroundColor: Colors.neutralGrey,
-    },
     sortByAphabetButton: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
-        borderWidth: 1,
-        borderColor: Colors.neutralGrey,
         borderRadius: 8,
         height: 40,
-        paddingHorizontal: '3%',
-        marginLeft: '1%',
+        paddingHorizontal: '2%',
+        marginLeft: '2%',
     },
     selectedSortByAphabetButton: {
-        backgroundColor: Colors.neutralGrey,
+        backgroundColor: Colors.grey,
     },
     sortByAphabetText: {
         justifyContent: 'center',
         alignItems: 'center',
+        color: Colors.white
     },
     sortByAphabetIcon: {
         fontSize: 16,
-        color: Colors.black,
-        marginRight: 3
+        color: Colors.white,
+        marginRight: '4%'
     },
     refreshButton: {
         paddingBottom: 5,
@@ -327,8 +300,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     alphabetButton: {
-        borderWidth: 0.6,
-        backgroundColor: Colors.whiteTransparent,
+        backgroundColor: Colors.white,
         borderColor: Colors.neutralGrey,
         padding: 7,
         borderRadius: 7,

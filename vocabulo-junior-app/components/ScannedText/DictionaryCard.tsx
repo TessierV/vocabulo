@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { getColorForPOS } from './PosColors';
 import { Colors } from '@/constants/Colors';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import Ionicons from '@expo/vector-icons/Ionicons'; 
 import { DefCard, VideoButtonCard, WordCard } from '@/constants/StyledText';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import VideoModal from './VideoModal'; // Import the new VideoModal component
 
 interface InformationData {
     word: string;
@@ -17,7 +18,7 @@ interface InformationData {
 }
 
 interface DictionaryCardProps extends InformationData {
-    onUnlike?: () => void; // Add onUnlike callback prop
+    onUnlike?: () => void;
 }
 
 const isValidUrl = (url: string) => {
@@ -30,19 +31,9 @@ const isValidUrl = (url: string) => {
     }
 };
 
-const handlePress = async (url: string) => {
-    try {
-        if (isValidUrl(url)) {
-            console.log(`Opening URL: ${url}`);
-            await Linking.openURL(url);
-        }
-    } catch (error) {
-        console.error('Failed to open URL:', error);
-    }
-};
-
 const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func, definition, url, onUnlike }) => {
     const [isLiked, setIsLiked] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         const fetchLikeState = async () => {
@@ -84,6 +75,10 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
         }
     };
 
+    const handleVideoButtonPress = () => {
+        setModalVisible(true);
+    };
+
     if (['.', '!', '?', ';', ':', '(', ')', '[', ']', '{', '}', '-', '—', '’', '“', '”', '|', '‘', '>', '<', '…', '»', '«'].includes(word)) {
         console.log(`Skipping special character card for: ${word}`);
         return null;
@@ -119,12 +114,19 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
             ) : null}
             {showButton ? (
                 <View style={styles.videosContainer}>
-                    <TouchableOpacity onPress={() => handlePress(url)} style={styles.signButton}>
+                    <TouchableOpacity onPress={handleVideoButtonPress} style={styles.signButton}>
                         <EvilIcons name="pointer" style={styles.iconButton} />
                         <VideoButtonCard style={styles.linkText}>Signe</VideoButtonCard>
                     </TouchableOpacity>
                 </View>
             ) : null}
+
+
+            <VideoModal
+                visible={modalVisible}
+                url={url}
+                onClose={() => setModalVisible(false)}
+            />
         </View>
     );
 };
