@@ -140,7 +140,7 @@ const GridCardHome = () => {
     if (loading) {
         return (
             <View style={styles.container}>
-                <ActivityIndicator size="large" color={darkMode ? color.neutralCoral : color.neutralCoral} />
+                <ActivityIndicator size="large" color={darkMode ? color.darkPlum : color.darkBlue} />
             </View>
         );
     }
