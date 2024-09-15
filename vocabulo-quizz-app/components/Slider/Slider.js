@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, FlatList, Dimensions } from 'react-native';
 import { color, darkTheme, lightTheme } from '@/constants/Colors';
 
 const Slider = ({ data, darkMode }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const flatListRef = useRef(null);
 
   const handleViewableItemsChanged = ({ viewableItems }) => {
     if (viewableItems.length > 0) {
@@ -12,8 +13,20 @@ const Slider = ({ data, darkMode }) => {
   };
 
   const viewabilityConfig = {
-    viewAreaCoveragePercentThreshold: 50,
+    viewAreaCoveragePercentThreshold: 70,
   };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentIndex(prevIndex => {
+        const nextIndex = (prevIndex + 1) % data.length;
+        flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
+        return nextIndex;
+      });
+    }, 8000);
+
+    return () => clearInterval(intervalId);
+  }, [data.length]);
 
   return (
     <>
@@ -27,6 +40,7 @@ const Slider = ({ data, darkMode }) => {
           )}
           horizontal
           pagingEnabled
+          ref={flatListRef}
           keyExtractor={item => item.key}
           showsHorizontalScrollIndicator={false}
           snapToAlignment="center"
@@ -42,8 +56,19 @@ const Slider = ({ data, darkMode }) => {
             style={[
               styles.paginationDot,
               {
-                backgroundColor: currentIndex === index ? lightTheme.darkShade : (darkMode ? darkTheme.dark_lightShade :  darkTheme.dark_lightShade)
-              }
+                backgroundColor:
+                  currentIndex === index
+                    ? darkMode
+                      ? darkTheme.neutral
+                      : lightTheme.darkShade
+                    : darkMode
+                    ? darkTheme.dark_lightShade
+                    : color.neutral,
+                    width:
+                  currentIndex === index
+                    ? 20
+                    : 8,
+              },
             ]}
           />
         ))}
@@ -60,7 +85,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width - 50,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 5,
+    marginLeft: 10,
     height: 150,
     borderRadius: 8,
   },
@@ -73,7 +98,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   paginationDot: {
-    width: 8,
     height: 8,
     borderRadius: 8,
     margin: 3,
