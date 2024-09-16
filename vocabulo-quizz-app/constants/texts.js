@@ -157,10 +157,38 @@ export const ai = {
         subtitle: "Expire à: ",
         errorsave: "Aucune progression enregistrée",
         errornosave: "Vous n'avez aucune progression enregistrée pour ce quiz.",
-
     },
 };
 
+// Basic export text
+export const dictionary = {
+    header: {
+        title: 'Dictionnaire',
+    },
+    slider: {
+        slider1: {
+            title: 'Dictionnaire :',
+            description: 'Plongez dans un monde de mots essentiels, accessibles à tous',
+            button: 'En savoir plus',
+        },
+        slider2: {
+            title: 'Palette',
+            description: 'Changement de palette pour des adaptée aux Daltoniens',
+            button: 'En savoir plus',
+        },
+    },
+    input: "Rechercher un mot...",
+    wordSuggestion: {
+        none: "Pas de suggestions trouvées",
+        suggestion: " Suggestions : ",
+        therme: "Therme : ",
+    },
+    card: {
+        def: "Définition:",
+        url_sign: "Signe",
+        url_def: "Définition LSF",
+    },
+};
 
 
 export const texts = {
