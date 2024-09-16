@@ -8,6 +8,7 @@ import { ButtonText, InformationText } from '@/constants/StyledText';
 import LikedCardsList from '../ScannedText/LikedCardsList';
 import { getColorForPOS } from '../ScannedText/PosColors'; // Assurez-vous que cette fonction existe
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useFocusEffect } from '@react-navigation/native'; // Importer useFocusEffect
 
 enum POSCategory {
     NOUN = 'Nom',
@@ -25,7 +26,7 @@ const AllFilters = () => {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
     const [isTextMode, setIsTextMode] = useState<boolean>(false);
-    const [refreshKey, setRefreshKey] = useState<number>(0);
+    const [cardsRefreshKey, setCardsRefreshKey] = useState<number>(0);
     const [sortDirection, setSortDirection] = useState<'A-Z' | 'Z-A'>('A-Z');
     const [isSortByDateSelected, setIsSortByDateSelected] = useState<boolean>(false);
     const [isSortByAlphabetSelected, setIsSortByAlphabetSelected] = useState<boolean>(true);
@@ -39,6 +40,12 @@ const AllFilters = () => {
             setSelectedLetter(null);
         }
     }, [searchTerm]);
+
+    useFocusEffect(
+        useCallback(() => {
+            setCardsRefreshKey(prevKey => prevKey + 1); // Rafraîchit les cartes chaque fois que l'écran devient actif
+        }, [])
+    );
 
     const handleCategorySelect = (category: string) => {
         setSelectedCategory(category === selectedCategory ? null : category);
@@ -57,11 +64,7 @@ const AllFilters = () => {
     };
 
     const handleRefresh = () => {
-        setSearchTerm('');
-        setSelectedCategory(null);
-        setSelectedLetter(null);
-        setRefreshKey(prevKey => prevKey + 1);
-        flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+        setCardsRefreshKey(prevKey => prevKey + 1);
     };
 
     const sortByAphabet = () => {
@@ -179,12 +182,10 @@ const AllFilters = () => {
                 />
             </View>
 
-            <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
-                <EvilIcons name="retweet" style={styles.refreshIcon} />
-            </TouchableOpacity>
-            <ScrollView style={styles.dictionnaryContainer} >
+
+            <ScrollView style={styles.dictionnaryContainer}>
                 <LikedCardsList
-                    refreshKey={refreshKey} 
+                    refreshKey={cardsRefreshKey} 
                     selectedCategory={selectedCategory} 
                     selectedLetter={selectedLetter} 
                     searchTerm={searchTerm} 
@@ -307,11 +308,10 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     dictionnaryContainer: {
-            width: '100%',
-            height: '100%',
-            marginTop: 10,
-            padding: 0
-    
+        width: '100%',
+        height: '100%',
+        marginTop: 10,
+        padding: 0
     },
     footerContainer: {
         height: '56%',

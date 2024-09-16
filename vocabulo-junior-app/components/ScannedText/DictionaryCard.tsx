@@ -19,6 +19,7 @@ interface InformationData {
 
 interface DictionaryCardProps extends InformationData {
     onUnlike?: () => void;
+    refreshKey?: number;  // New prop
 }
 
 const isValidUrl = (url: string) => {
@@ -31,7 +32,7 @@ const isValidUrl = (url: string) => {
     }
 };
 
-const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func, definition, url, onUnlike }) => {
+const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func, definition, url, onUnlike, refreshKey }) => {
     const [isLiked, setIsLiked] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -53,6 +54,11 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
 
         fetchLikeState();
     }, [word]);
+
+    useEffect(() => {
+        // Reset like state when refreshKey changes
+        setIsLiked(false);  // Reset like state on refresh
+    }, [refreshKey]);
 
     const handleIconPress = async () => {
         const newLikeState = !isLiked;
@@ -120,7 +126,6 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
                     </TouchableOpacity>
                 </View>
             ) : null}
-
 
             <VideoModal
                 visible={modalVisible}

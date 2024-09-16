@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "components/ScannedText", "data/scannedTextData.js", "data/compareWords.js"  ]
+, "components/ScannedText", "data/scannedTextData.js", "data/compareWords.js", "components/Scan/MyCamera.tsx", "components/ScannedText/OCRScannedTextScreen.js"  ]
 }

@@ -34,9 +34,9 @@ const GoToStart = () => {
             <View style={styles.middleContainer}>
                 <View style={styles.contents}>
                     <View>
-                        <ButtonText style={styles.bigText}>Apprends du vocabulaire</ButtonText>
+                        <ButtonText style={styles.bigText}>Découvre de nouveaux mots !</ButtonText>
                         <InformationText style={styles.littleText}>
-                            Scann un texte pour en découvrir le contenu
+                        Prends une photo du texte dans ton livre !
                         </InformationText>
                     </View>
                     <TouchableOpacity
@@ -54,7 +54,7 @@ const GoToStart = () => {
 const styles = StyleSheet.create({
     container: {
         width: '90%',
-        height: '28%',
+        height: 160,
         backgroundColor: Colors.lightBlue,
         justifyContent: 'flex-end',
         padding: 15,
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     },
     middleContainer: {
         width: '100%',
-        height: '55%',
+        height: 70,
         paddingHorizontal: 15,
         backgroundColor: Colors.white,
         borderRadius: 15,

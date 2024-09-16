@@ -30,8 +30,8 @@ const createThemedStyles = () => StyleSheet.create({
   },
   Scannedtext: {
     fontFamily: 'MontserratRegular',
-    fontSize: 18,
-    lineHeight: 35
+    fontSize: 20,
+    lineHeight: 35,
   },
   Title: {
     fontFamily: 'MontserratSemiBold',
@@ -39,7 +39,7 @@ const createThemedStyles = () => StyleSheet.create({
   },
   InformationText: {
     fontFamily: 'MontserratRegular',
-    fontSize: 12,
+    fontSize: 14,
   },
   UserNameText: {
     fontFamily: 'Chewy',
@@ -56,14 +56,9 @@ const createThemedStyles = () => StyleSheet.create({
     fontSize: 18,
     color: Colors.white
   },
-  SourceCard: {
-    fontFamily: 'MontserratSemiBold',
-    fontSize: 12,
-    color: Colors.lightGrey
-  },
   VideoButtonCard: {
     fontFamily: 'MontserratSemiBold',
-    fontSize: 14,
+    fontSize: 15,
     color: Colors.white
   },
   WordCard: {
@@ -73,7 +68,7 @@ const createThemedStyles = () => StyleSheet.create({
   },
   DefCard: {
     fontFamily: 'MontserratRegular',
-    fontSize: 16,
+    fontSize: 18,
     color: Colors.black
   },
   CategoryCard: {
@@ -143,10 +138,6 @@ const OnboardingText = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
   return <Text style={[styles.OnboardingText, style]} {...props}>{children}</Text>;
 };
-const SourceCard = ({ children, style, ...props }: TextComponentProps) => {
-  const styles = createThemedStyles();
-  return <Text style={[styles.SourceCard, style]} {...props}>{children}</Text>;
-};
 const VideoButtonCard = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
   return <Text style={[styles.VideoButtonCard, style]} {...props}>{children}</Text>;
@@ -183,7 +174,6 @@ export {
   UserNameText,
   OnboardingTitle,
   OnboardingText,
-  SourceCard,
   VideoButtonCard,
   WordCard,
   DefCard,

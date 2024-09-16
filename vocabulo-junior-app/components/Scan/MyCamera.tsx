@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Image, Animated, Alert } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Image, Animated, Alert, ImageStyle } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Colors } from '@/constants/Colors';
 import { ButtonText, InformationText } from '@/constants/StyledText';
 import { router } from 'expo-router';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import * as MediaLibrary from 'expo-media-library';
-import LinearGradient from 'react-native-linear-gradient'; // Import the LinearGradient component
+import LinearGradient from 'react-native-linear-gradient';
 
 const IPvillagebyca = '10.10.1.126';
 const IPmyHome = '192.168.1.12';
@@ -17,10 +17,9 @@ export default function MyCamera() {
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [mediaPermission, requestMediaPermission] = MediaLibrary.usePermissions();
   const [photoUri, setPhotoUri] = useState<string | null>(null);
-  const [photoB64, setPhotoB64] = useState<string | null>(null);
+  const [photoHeight, setPhotoHeight] = useState<number>(0); // New state to store photo height
   const [isScanning, setIsScanning] = useState(false);
   const cameraRef = useRef<CameraView>(null);
-
 
   const [animationValue] = useState(new Animated.Value(0));
 
@@ -112,8 +111,11 @@ export default function MyCamera() {
       try {
         const photo = await cameraRef.current.takePictureAsync();
         console.log('Picture taken:', photo);
+
         if (photo?.uri) {
           setPhotoUri(photo.uri);
+          setPhotoHeight(photo.height); // Set the height of the photo
+          console.log('Photo height:', photo.height);
         } else {
           console.error('Échec de la prise de photo');
         }
@@ -126,6 +128,7 @@ export default function MyCamera() {
   const closePhoto = () => {
     console.log('Closing photo');
     setPhotoUri(null);
+    setPhotoHeight(0); // Reset the photo height when closing the photo
   };
 
   const savePhotoToGallery = async (uri: string) => {
@@ -162,14 +165,9 @@ export default function MyCamera() {
       console.log(formData);
       console.log(savedUri);
       try {
-
         console.log('Sending image to server');
-        response = await fetch(`http://${IPmyHome}:3000/send-img/`, {
+        response = await fetch(`http://${IPvillagebyca}:3000/send-img/`, {
           method: 'POST',
-          // headers: {
-          //   Accept: 'application/json',
-          //   'Content-Type': 'multipart/form-data',
-          // },
           body: formData,
         });
 
@@ -184,7 +182,7 @@ export default function MyCamera() {
         console.log('Data received from server:', data);
 
         router.push({
-          pathname: './../../screens/ScannedTextScreen',
+          pathname: './../../(tabs)/ScannedText',
           params: { ocrData: JSON.stringify(data) }
         });
 
@@ -206,12 +204,28 @@ export default function MyCamera() {
       }
     }
   };
+
+  // Determine the minHeight based on the photoHeight
+  const photoStyle: ImageStyle = {
+    minWidth: '90%',
+    minHeight: photoHeight > 3000 ? 470 : 265,
+    marginTop: photoHeight > 3000 ? 0 : 120,
+    resizeMode: 'contain',
+    borderRadius: 20
+  };
+
+  // Adjust the marginTop for closeButtonContainer based on photoHeight
+  const closeButtonContainerStyle = {
+    ...styles.closeButtonContainer,
+    marginTop: photoHeight >= 4000 ? styles.closeButtonContainer.marginTop : (photoHeight > 3000 ? 100 : 130),
+  };
+
   return (
     <View style={styles.container}>
       {photoUri ? (
         <View style={styles.photoContainer}>
-          <Image source={{ uri: photoUri }} style={styles.photo} />
-          <TouchableOpacity onPress={closePhoto} style={styles.closeButtonContainer}>
+          <Image source={{ uri: photoUri }} style={photoStyle} />
+          <TouchableOpacity onPress={closePhoto} style={closeButtonContainerStyle}>
             <AntDesign name="close" style={styles.closeButton} />
           </TouchableOpacity>
           <TouchableOpacity
@@ -262,10 +276,10 @@ const styles = StyleSheet.create({
   permissionsButton: {
     paddingVertical: 15,
     width: '90%',
-    borderRadius: 100,
+    borderRadius: 50,
     alignSelf: "center",
     justifyContent: "center",
-    backgroundColor: Colors.darkCoral,
+    backgroundColor: Colors.darkGreen,
     alignItems: 'center',
   },
   permissionsButtontext: {
@@ -299,17 +313,11 @@ const styles = StyleSheet.create({
     top: '13%',
     alignItems: 'center',
   },
-  photo: {
-    minWidth: '90%',
-    minHeight: 470,
-    resizeMode: 'contain',
-    borderRadius: 15
-  },
   scanButton: {
     paddingVertical: 15,
     marginTop: -25,
     width: 200,
-    borderRadius: 100,
+    borderRadius: 50,
     backgroundColor: Colors.darkGreen,
     alignItems: 'center',
     zIndex: 10
@@ -325,7 +333,8 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 50,
     backgroundColor: Colors.whiteTransparent,
-    margin: 10
+    margin: 10,
+    marginTop: 10, // Initial marginTop value
   },
   closeButton: {
     color: Colors.white,

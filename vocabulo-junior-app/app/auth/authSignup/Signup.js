@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
@@ -7,11 +7,8 @@ import { Colors } from '@/constants/Colors';
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { HeaderTitle, Title } from '@/constants/StyledText';
 
-
-
 const PHONE_NUMBER_LENGTH = 10;
 const CODE_LENGTH = 6;
-
 
 const Signup = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -36,11 +33,38 @@ const Signup = () => {
       const userDocument = await firestore().collection("users").doc(user.uid).get();
 
       if (userDocument.exists) {
-        navigation.navigate("Login");
+        Alert.alert(
+          "Compte existant",
+          "Votre compte existe déjà. Que souhaitez-vous faire ?",
+          [
+            {
+              text: "Me connecter",
+              onPress: () => navigation.navigate("Login"),
+            },
+            {
+              text: "Réessayer",
+              onPress: () => setConfirm(null),
+            },
+          ]
+        );
       } else {
         navigation.navigate("Detail", { uid: user.uid });
       }
     } catch (error) {
+      Alert.alert(
+        "Erreur de code",
+        "Le code saisi est incorrect. Que souhaitez-vous faire ?",
+        [
+          {
+            text: "Réessayer",
+            onPress: () => setCode(""),
+          },
+          {
+            text: "Créer un compte",
+            onPress: () => navigation.navigate("Signup"),
+          },
+        ]
+      );
       console.error("Invalid code.", error);
     }
   };
@@ -164,7 +188,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     width: '100%',
     height: 50,
-        marginBottom: '6%'
+    marginBottom: '6%'
   },
   inputText: {
     fontFamily: 'MontserratRegular',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DictionaryCard from './DictionaryCard'; 
 import { Colors } from '@/constants/Colors';
@@ -98,11 +98,10 @@ const LikedCardsList: React.FC<LikedCardsListProps> = ({ refreshKey, selectedCat
     return (
         <View style={styles.container}>
             {likedCards.length > 0 ? (
-                <FlatList
-                    data={likedCards}
-                    keyExtractor={(item) => item.word}
-                    renderItem={({ item }) => (
+                <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                    {likedCards.map((item) => (
                         <DictionaryCard
+                            key={item.word}
                             word={item.word}
                             lemma={item.lemma}
                             pos={item.pos}
@@ -111,8 +110,8 @@ const LikedCardsList: React.FC<LikedCardsListProps> = ({ refreshKey, selectedCat
                             url={item.url}
                             onUnlike={() => handleUnlike(item.word)}
                         />
-                    )}
-                />
+                    ))}
+                </ScrollView>
             ) : (
                 <View style={styles.emptyContainer}>
                     <InformationText style={styles.emptyText}>Aucun mot enregistré.</InformationText>
@@ -127,6 +126,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    scrollViewContent: {
+        paddingBottom: 10,
+    },
     emptyContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -135,7 +137,7 @@ const styles = StyleSheet.create({
     emptyText: {
         color: Colors.grey,
         fontSize: 18,
-        marginTop: 20
+        marginTop: 20,
     },
 });
 

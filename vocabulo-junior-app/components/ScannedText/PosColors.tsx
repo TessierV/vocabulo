@@ -9,3 +9,18 @@ const PosColors: { [key: string]: { color: string, identifier: string } } = {
 };
 
 export const getColorForPOS = (pos: string) => PosColors[pos] || { color: Colors.white, identifier: '' };
+
+export function getPOSFromCategory(selectedCategory: string | null): string | null {
+    switch (selectedCategory) {
+        case 'Nouns':
+            return 'NOUN';
+        case 'Verbs':
+            return 'VERB';
+        case 'Adjectives':
+            return 'ADJ';
+        case 'Adverbs':
+            return 'ADV';
+        default:
+            return null; // or 'OTHERS' if you want to group unknown categories
+    }
+}

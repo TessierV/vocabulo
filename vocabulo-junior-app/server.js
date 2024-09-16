@@ -424,7 +424,7 @@ app.post('/send-img', upload.single('file'), async (req, res) => {
     f.append('file', new Blob([req.file.buffer], { type: req.file.mimetype }), {filename: req.file.originalname, contentType: req.file.mimetype});
 
     console.log(await req.file, req.headers);
-    const response = await fetch(`http://${IPmyHome}:8000/process-image/`, {
+    const response = await fetch(`http://${IPvillagebyca}:8000/process-image/`, {
       method: 'POST',
       body: f,
     });

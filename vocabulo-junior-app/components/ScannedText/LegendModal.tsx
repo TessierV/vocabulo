@@ -12,7 +12,7 @@ interface LegendModalProps {
 const LegendModal: React.FC<LegendModalProps> = ({ visible, onClose }) => {
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={visible}
       onRequestClose={onClose}

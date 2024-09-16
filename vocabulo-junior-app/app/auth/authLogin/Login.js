@@ -7,11 +7,8 @@ import { Colors } from '@/constants/Colors';
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { HeaderTitle, Title } from '@/constants/StyledText';
 
-
-
 const PHONE_NUMBER_LENGTH = 10;
 const CODE_LENGTH = 6;
-
 
 const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -36,11 +33,41 @@ const Login = () => {
       const userDocument = await firestore().collection("users").doc(user.uid).get();
 
       if (userDocument.exists) {
+        // Initialize liked cards collection for new users
+        await firestore().collection('likedCards').doc(user.uid).set({});
+
         navigation.navigate("HomeScreen");
       } else {
-        navigation.navigate("Signup", { uid: user.uid });
+        Alert.alert(
+          "Compte non trouvé",
+          "Votre compte n'existe pas. Que souhaitez-vous faire ?",
+          [
+            {
+              text: "Créer un compte",
+              onPress: () => navigation.navigate("Signup", { uid: user.uid }),
+            },
+            {
+              text: "Réessayer",
+              onPress: () => navigation.navigate("Login"),
+            },
+          ]
+        );
       }
     } catch (error) {
+      Alert.alert(
+        "Erreur de code",
+        "Le code saisi est incorrect. Que souhaitez-vous faire ?",
+        [
+          {
+            text: "Réessayer",
+            onPress: () => setCode(""),
+          },
+          {
+            text: "Créer un compte",
+            onPress: () => navigation.navigate("Signup"),
+          },
+        ]
+      );
       console.error("Invalid code.", error);
     }
   };
@@ -164,7 +191,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     width: '100%',
     height: 50,
-        marginBottom: '6%'
+    marginBottom: '6%'
   },
   inputText: {
     fontFamily: 'MontserratRegular',

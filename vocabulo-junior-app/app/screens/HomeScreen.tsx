@@ -4,6 +4,7 @@ import TopNavBar from '@/components/Navigation/TopNavBar';
 import GoToStart from '@/components/Home/GoToStart';
 import { Colors } from '@/constants/Colors';
 import DisplaySettings from '@/components/Home/DisplaySettings';
+import HelpToScannText from '@/components/Home/HelpToScannText';
 
 export default function HomeScreen() {
   return (
@@ -14,6 +15,9 @@ export default function HomeScreen() {
       </View>
       <View style={styles.GoToStartComponent}>
         <GoToStart />
+      </View>
+      <View style={styles.HelpToScanTextComponent}>
+        <HelpToScannText />
       </View>
     </SafeAreaView>
   );
@@ -30,5 +34,9 @@ const styles = StyleSheet.create({
   GoToStartComponent: {
     flex: 1,
     marginTop: 100
+  },
+  HelpToScanTextComponent: {
+    flex: 1,
+    marginTop: -100
   },
 });

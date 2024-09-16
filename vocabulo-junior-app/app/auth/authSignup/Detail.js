@@ -16,7 +16,7 @@ const Detail = ({ route, navigation }) => {
   const saveDetails = useCallback(async () => {
     try {
       await firestore().collection('users').doc(uid).set({ name, dob }, { merge: true });
-      navigation.navigate('Login');
+      navigation.navigate('HomeScreen');
     } catch (error) {
       console.error('Error saving details: ', error);
     }

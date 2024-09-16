@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import DictionaryCard from './DictionaryCard';
 import LegendModal from './LegendModal';
@@ -10,7 +10,6 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { Scannedtext } from '@/constants/StyledText';
 import { FontAwesome } from '@expo/vector-icons';
 import { getColorForPOS } from './PosColors';
-import AntDesign from '@expo/vector-icons/AntDesign';
 
 interface Word {
   word: string;
@@ -58,7 +57,7 @@ export default function OCRScannedTextScreen() {
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const [showOriginalText, setShowOriginalText] = useState(false);
   const [selectedWord, setSelectedWord] = useState<Word | null>(null);
-  const [refreshKey, setRefreshKey] = useState<number>(0); // Ajouter un état pour gérer le rafraîchissement
+  const [refreshKey, setRefreshKey] = useState<number>(0);
 
   const dataString = Array.isArray(ocrData) ? ocrData.join(' ') : ocrData;
 
@@ -97,13 +96,14 @@ export default function OCRScannedTextScreen() {
       <>
         {Array.from(uniqueWords.values()).map((wordObj, index) => (
           <DictionaryCard
-            key={index}
+            key={`${wordObj.word}-${index}`} // Use a unique key
             word={wordObj.word}
             lemma={wordObj.lemma}
             pos={wordObj.pos}
             func={wordObj.function}
             definition={cleanDefinition(wordObj.definition)}
             url={wordObj.url}
+            refreshKey={refreshKey}  // Pass the refreshKey to DictionaryCard
           />
         ))}
       </>
@@ -174,9 +174,14 @@ export default function OCRScannedTextScreen() {
     );
   };
 
-  const handleRefresh = () => {
-    setRefreshKey(prevKey => prevKey + 1); // Change la clé pour rafraîchir les données
-  };
+  // Refresh automatically every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshKey(prevKey => prevKey + 1);
+    }, 10000); // Adjust the interval time as needed (in milliseconds)
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -201,23 +206,15 @@ export default function OCRScannedTextScreen() {
         ) : (
           <NoScannedText />
         )}
-
       </ScrollView>
       {parsedData.processed_results && parsedData.processed_results.length > 0 && (
-        <>
-          <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
-            <EvilIcons name="retweet" style={styles.refreshIcon} />
+          <TouchableOpacity
+            style={styles.legendButton}
+            onPress={() => setModalVisible(true)}
+          >
+            <InformationText>À quoi correspondent les couleurs</InformationText>
+          <EvilIcons name="question" style={styles.legendIcon} />
           </TouchableOpacity>
-          <View style={styles.legendContainer}>
-            <TouchableOpacity
-              style={styles.legendButton}
-              onPress={() => setModalVisible(true)}
-            >
-              <InformationText>À quoi correspondent les couleurs</InformationText>
-            </TouchableOpacity>
-            <EvilIcons name="question" style={styles.legendIcon} />
-          </View>
-        </>
       )}
       <LegendModal visible={modalVisible} onClose={() => setModalVisible(false)} />
     </View>
@@ -236,7 +233,6 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
   },
-
   refreshButton: {
     padding: 10,
     alignSelf: 'center'
@@ -289,6 +285,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
+    padding: 10
   },
   originalTextButtonText: {
     color: Colors.black,
@@ -313,7 +310,8 @@ const styles = StyleSheet.create({
   originalText: {
     color: Colors.black,
   },
-  legendContainer: {
+
+  legendButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -321,8 +319,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderTopWidth: 0.5,
     borderTopColor: Colors.grey,
-  },
-  legendButton: {
     marginRight: 3,
   },
   legendIcon: {

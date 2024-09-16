@@ -15,5 +15,5 @@ export function TabBarMaterialIcon({ style, ...rest }: IconProps<ComponentProps<
 }
 
 export function TabBarMaterialCommunityIcon({ style, ...rest }: IconProps<ComponentProps<typeof MaterialCommunityIcons>['name']>) {
-  return <MaterialCommunityIcons size={30} style={[{marginBottom: -11}, style]} {...rest} />;
+  return <MaterialCommunityIcons size={28} style={[{marginBottom: -11}, style]} {...rest} />;
 }

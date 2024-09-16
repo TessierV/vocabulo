@@ -1,26 +1,56 @@
-import React from 'react';
-import { router, useNavigation } from 'expo-router';
-import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useRef } from 'react';
+import { Animated, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { HeaderTitle } from '@/constants/StyledText';
+import { router, useNavigation } from 'expo-router';
 
 export default function TopNavBar({ title = "Accueil", tintColor = Colors.black, color = Colors.black }) {
     const navigation = useNavigation();
+
+
+    const animatedValue = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(animatedValue, {
+                    toValue: 1,
+                    duration: 2300,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(animatedValue, {
+                    toValue: 0,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }),
+            ])
+        ).start();
+    }, [animatedValue]);
+
+    const translateY = animatedValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [10, 0],
+    });
+
     return (
         <View style={styles.container}>
             <View style={[styles.topContainer, { backgroundColor: color }]}></View>
-            <Image 
+
+
+            <Animated.Image 
                 source={require('./../../assets/images/Header-background.png')}
-                style={[styles.headerBackground, { tintColor: tintColor }]}
+                style={[styles.headerBackground, { tintColor: tintColor, transform: [{ translateY }] }]}
             />
+
             <View style={styles.iconTextContainer}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back-outline" style={styles.iconLeft} />
                 </TouchableOpacity>
                 <HeaderTitle style={[styles.text, { color: Colors.white }]}>{title}</HeaderTitle>
                 <TouchableOpacity onPress={() => router.push('./../screens/HomeScreen')}>
-                    <Ionicons name="home" style={styles.iconRight} />
+                    <MaterialCommunityIcons name="home" style={styles.iconRight} />
                 </TouchableOpacity>
             </View>
         </View>
@@ -47,7 +77,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     iconTextContainer: {
-        marginTop: '7%',
+        marginTop: '9%',
         flexDirection: 'row',
         position: 'absolute',
         width: '100%',
@@ -67,6 +97,7 @@ const styles = StyleSheet.create({
     },
     iconRight: {
         color: Colors.white,
-        fontSize: 22,
+        marginLeft: -6,
+        fontSize: 26,
     },
 });
