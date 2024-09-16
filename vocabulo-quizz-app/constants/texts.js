@@ -124,7 +124,7 @@ export const ai = {
         title: "Explication",
         row1: {
             title: "Apprentissage personnalisé :",
-            descrsiption: "Analyse ton historique et ajuste ton niveau.",
+            description: "Analyse ton historique et ajuste ton niveau.",
         },
         row2: {
             title: "Adaptation au contexte :",
@@ -187,6 +187,47 @@ export const dictionary = {
         def: "Définition:",
         url_sign: "Signe",
         url_def: "Définition LSF",
+    },
+};
+
+// Basic export text
+export const parameters = {
+    header: {
+        title: 'Paramètre',
+    },
+    slider: {
+        slider1: {
+            title: 'Mise à Jour',
+            description: 'Corrections de définitions et ajout de nouveaux mots pour enrichir votre vocabulaire.',
+            button: 'en savoir plus',
+
+        },
+        slider2: {
+            title: 'Remerciements',
+            description: 'Dico Elix, dictionnaire bilingue français / Langue des Signes Française (LSF), permet d\'accéder facilement aux signes et définitions en LSF via un moteur de recherche. Leur contribution a été essentielle à ce projet.',
+            button: 'voir leur site',
+        },
+        slider3: {
+            title: 'Remerciements',
+            description: 'L’IRSA, experte en accompagnement des personnes en situation de handicap visuel, auditif et rares, nous a apporté son soutien précieux pour la réalisation de ce projet.',
+            button: 'voir leur site',
+        },
+    },
+    explanation: {
+        title: "Suivi des Mises à Jour",
+        row1: {
+            title: "Ajout de nouvelle catégorie :",
+            description: "Nouvelles catégories intégrées.",
+        },
+        row2: {
+            title: "Correction :",
+            description: "Résolution des mots mal classés.",
+        },
+        row3: {
+            title: "Ajout d'images supplémentaires :",
+            description: "Plus d’images dans les thèmes.",
+        },
+        button: "Fermer",
     },
 };
 
