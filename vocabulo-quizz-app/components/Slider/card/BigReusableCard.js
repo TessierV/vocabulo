@@ -9,7 +9,7 @@ import bgCoverImage from '@/assets/images/fond.png'; // Import the background im
 
 const { height } = Dimensions.get('window');
 
-const ReusableCard = ({
+const BigReusableCard = ({
   title = "Titre",
   description = "Description",
   onPressButton = () => { },
@@ -108,4 +108,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReusableCard;
+export default BigReusableCard;

@@ -42,8 +42,19 @@ const BigSlider = ({ data, darkMode }) => {
             style={[
               styles.paginationDot,
               {
-                backgroundColor: currentIndex === index ? lightTheme.darkShade : (darkMode ? darkTheme.dark_lightShade : darkTheme.dark_lightShade)
-              }
+                backgroundColor:
+                  currentIndex === index
+                    ? darkMode
+                      ? darkTheme.neutral
+                      : lightTheme.darkShade
+                    : darkMode
+                    ? darkTheme.dark_lightShade
+                    : color.neutral,
+                    width:
+                  currentIndex === index
+                    ? 20
+                    : 8,
+              },
             ]}
           />
         ))}
