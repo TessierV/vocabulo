@@ -4,10 +4,10 @@ import { useRouter } from 'expo-router';
 import logoImage from '@/assets/images/Logo_vocabuloText.png';
 import logoImage_white from '@/assets/images/Logo_vocabuloText_white.png';
 import { darkTheme, lightTheme } from '@/constants/Colors';
-import HeaderSvg from './SvgIcon';
-import { Paragraph, Title } from '@/constants/StyledText';
+import { Paragraph } from '@/constants/StyledText';
+import InterfaceSvg from '@/SVG/InterfaceSvg';
 
-const Header = ({ darkMode, PageTitle, firstLink, secondLink, customSvg }) => {
+const Header = ({ darkMode, PageTitle, firstLink, secondLink, iconName }) => {
   const router = useRouter();
 
   const navigateTo = (path) => {
@@ -21,18 +21,21 @@ const Header = ({ darkMode, PageTitle, firstLink, secondLink, customSvg }) => {
       <View style={styles.leftContainer}>
         {firstLink !== "none" && (
           <TouchableOpacity onPress={() => navigateTo(firstLink)}>
-            <HeaderSvg icon="arrowLeft" fillColor={darkMode ? darkTheme.lightShade : lightTheme.darkShade} />
+            <InterfaceSvg iconName="arrowLeft" fillColor={darkMode ? darkTheme.lightShade : lightTheme.darkShade} width={26} height={26} />
           </TouchableOpacity>
         )}
       </View>
-      <View style={styles.logoContainer}>
+
+      <TouchableOpacity style={styles.logoContainer} onPress={() => navigateTo("/home")}>
         <Image source={darkMode ? logoImage_white : logoImage} style={styles.logo} />
-        <Paragraph style={{marginTop: 2, fontSize: 10}}>{PageTitle}</Paragraph>
-      </View>
+        <Paragraph style={{ marginTop: 2, fontSize: 10, color: darkMode ? darkTheme.neutral : lightTheme.neutral }}>{PageTitle}</Paragraph>
+      </TouchableOpacity>
+
       <View style={styles.rightContainer}>
         {secondLink !== "none" && (
           <TouchableOpacity onPress={() => navigateTo(secondLink)}>
-            {customSvg ? customSvg : <HeaderSvg icon="settings" fillColor={darkMode ? darkTheme.lightShade : lightTheme.darkShade} />}
+            {/* Use iconName prop to dynamically choose the icon */}
+            <InterfaceSvg iconName={iconName || "settings"} fillColor={darkMode ? darkTheme.lightShade : lightTheme.darkShade} width={26} height={26} />
           </TouchableOpacity>
         )}
       </View>
@@ -63,6 +66,7 @@ const styles = StyleSheet.create({
     flex: 2,
     alignItems: 'center',
     justifyContent: 'center',
+    textAlign: 'center',
   },
   logo: {
     width: 105,
