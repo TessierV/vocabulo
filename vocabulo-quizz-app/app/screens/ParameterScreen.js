@@ -12,6 +12,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons'; // For password visibility toggle
+import SliderParameters from '@/components/Parameters/SliderParameters';
+import ExplanationModal from '@/components/Parameters/ExplanationModal';
 
 const ParameterScreen = () => {
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -23,13 +25,14 @@ const ParameterScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [randomDigits, setRandomDigits] = useState(shuffleArray(Array.from({ length: 10 }, (_, i) => i.toString()))); // Shuffle digits for numeric keyboard
   const navigation = useNavigation();
+  const [sliderModalVisible, setSliderModalVisible] = useState(false); // Control the visibility of the slider modal
 
   useEffect(() => {
     const fetchUsername = async () => {
       try {
         const token = await AsyncStorage.getItem('access_token');
         if (token) {
-          const response = await axios.get('http://192.168.1.15:8000/user', {
+          const response = await axios.get('http://192.168.0.12:8000/user', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -71,7 +74,7 @@ const ParameterScreen = () => {
       setLoading(true);
       const token = await AsyncStorage.getItem('access_token');
       const response = await axios.post(
-        'http://192.168.1.15:8000/change-password', // Ensure this is the correct endpoint
+        'http://192.168.0.12:8000/change-password', // Ensure this is the correct endpoint
         { username, new_password: newPassword }, // Corrected payload format
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -106,37 +109,9 @@ const ParameterScreen = () => {
     <View style={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
       <Header darkMode={darkMode} PageTitle="Paramètre" title="Parametres" firstLink="/profil" secondLink="none" />
       <ScrollView style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
-      <Slider
-          data={[
-            {
-              key: '1', component:
-              <ReusableCard
-              title={username}
-              description="Explorez de nouveaux défis chaque jour pour améliorer vos compétences."
-              buttonText="Découvrir"
-              onPressButton={() => console.log('Nouveaux Défis Découvrir')}
-              containerBgColor={darkMode ? darkTheme.light_darkShade : lightTheme.darkShade}
-              iconBgColor={darkMode ? darkTheme.darkShade : color.darkBlue}
-              darkMode={darkMode}
-            />
+      <SliderParameters darkMode={darkMode} setSliderModalVisible={setSliderModalVisible} />
 
-            },
-            {
-              key: '2', component:
-              <ReusableCard
-                title="Nouveaux Défis"
-                description="Explorez de nouveaux défis chaque jour pour améliorer vos compétences."
-                buttonText="Découvrir"
-                onPressButton={() => console.log('Nouveaux Défis Découvrir')}
-                containerBgColor={darkMode ? darkTheme.light_darkShade : lightTheme.darkShade}
-                iconBgColor={darkMode ? darkTheme.darkShade : color.darkBlue}
-                darkMode={darkMode}
-              />
-            },
 
-          ]}
-          darkMode={darkMode}
-        />
         <View style={styles.Section}>
           <Section title={texts.parameterScreen.section.title} iconName="user" darkMode={darkMode}>
             <Setting
@@ -272,6 +247,8 @@ const ParameterScreen = () => {
           </View>
         </View>
       </Modal>
+      <ExplanationModal visible={sliderModalVisible} onClose={() => setSliderModalVisible(false)} darkMode={darkMode} />
+
     </View>
   );
 };
