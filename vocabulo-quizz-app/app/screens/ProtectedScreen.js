@@ -9,7 +9,7 @@ const ProtectedScreen = ({ route }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://192.168.1.15:8000/protected', {
+        const response = await axios.get('http://192.168.0.12:8000/protected', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setData(response.data.msg);

@@ -8,7 +8,7 @@ import CategoryGrid from '@/components/CategoryGrid';
 import { useNavigation } from '@react-navigation/native';
 import GridCardHome from '@/components/Home/Home/GridCard';
 import Header from '@/components/Header/Header';
-import SliderHome from '@/components/Home/SliderHome'; // Importez le composant ici
+import SliderHome from '@/components/Home/SliderHome';
 
 const HomeScreen = () => {
   const [darkMode] = useDarkMode();
@@ -19,7 +19,7 @@ const HomeScreen = () => {
 
   return (
     <ScrollView
-      contentContainerStyle={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}
+      contentContainerStyle={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}
     >
       <Header darkMode={darkMode} PageTitle={home.header.title} title="Home" firstLink="none" secondLink="parameter" />
       <SliderHome darkMode={darkMode} />

@@ -7,6 +7,7 @@ import ProfilConnexion from '@/components/Profil/ProfilConnexion';
 import WordHistory from '@/components/Profil/ProfilHistory';
 import Slider from '@/components/Slider/Slider';
 import ReusableCard from '@/components/Game/ReusableCard';
+import WeeklyOverview from '@/components/Home/WeeklyOverview';
 
 const ProfileScreen = () => {
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -30,7 +31,7 @@ const ProfileScreen = () => {
     const fetchUserDetails = async () => {
       try {
         const userId = '01952a09-d04c-47fe-879c-51f19e167541';
-        const response = await fetch(`http://192.168.1.15:3000/api/authentication/${userId}`);
+        const response = await fetch(`http://192.168.0.12:3000/api/authentication/${userId}`);
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -205,6 +206,8 @@ const ProfileScreen = () => {
                 darkMode={darkMode}
               />
             },
+            { key: '3', component: <WeeklyOverview darkMode={darkMode} /> },
+
 
           ]}
           darkMode={darkMode}

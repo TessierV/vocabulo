@@ -57,7 +57,7 @@ const HomeListQuizz = () => {
             setError(null);
 
             try {
-                const response = await fetch(`http://192.168.1.15:3000/api/words/${categorie_id}`);
+                const response = await fetch(`http://192.168.0.12:3000/api/words/${categorie_id}`);
                 const textResponse = await response.text();
                 const data = JSON.parse(textResponse);
 
