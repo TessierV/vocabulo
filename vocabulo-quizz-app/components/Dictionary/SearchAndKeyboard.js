@@ -4,7 +4,8 @@ import { Paragraph } from '@/constants/StyledText';
 import { color, lightTheme, darkTheme } from '@/constants/Colors';
 import { imageDictionary } from '@/SVG/imageDictionary';
 import Icon from 'react-native-vector-icons/Feather';
-import { Feather } from '@expo/vector-icons'; // Import Feather icons
+import { Feather } from '@expo/vector-icons';
+import { dictionary } from '@/constants/texts';
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -40,9 +41,12 @@ const SearchAndKeyboard = ({ searchTerm, setSearchTerm, handleLetterPress, darkM
         <TouchableOpacity
           key={letter}
           onPress={() => handleLetterPress(letter)}
-          style={styles.button}
+          style={[styles.button, {
+            borderWidth: 1,
+            borderColor: darkMode ? darkTheme.light_darkShade : color.neutral,
+          }]}
         >
-          <Paragraph style={styles.buttonText}>{letter}</Paragraph>
+          <Paragraph style={[styles.buttonText, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.darkShade }]}>{letter}</Paragraph>
         </TouchableOpacity>
       ))}
       <TouchableOpacity
@@ -60,17 +64,21 @@ const SearchAndKeyboard = ({ searchTerm, setSearchTerm, handleLetterPress, darkM
         <TouchableOpacity
           key={letter}
           onPress={() => handleLetterPress(letter)}
-          style={styles.button}
+          style={[styles.button, {
+            borderWidth: 1,
+            borderColor: darkMode ? darkTheme.light_darkShade : color.neutral,
+          }]}
         >
           <Image
             source={imageDictionary[letter]}
             style={styles.image}
+            tintColor={darkMode ? darkTheme.neutral : lightTheme.darkShade}
           />
         </TouchableOpacity>
       ))}
       <TouchableOpacity
         onPress={() => setShowImageKeyboard(!showImageKeyboard)}
-        style={styles.toggleButton}
+        style={[styles.toggleButton ]}
       >
         <Icon name={showImageKeyboard ? 'refresh-cw' : 'refresh-ccw'} size={18} color="#fff" />
       </TouchableOpacity>
@@ -78,7 +86,7 @@ const SearchAndKeyboard = ({ searchTerm, setSearchTerm, handleLetterPress, darkM
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
       <View style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -88,16 +96,18 @@ const SearchAndKeyboard = ({ searchTerm, setSearchTerm, handleLetterPress, darkM
         paddingHorizontal: 10,
         marginBottom: 10,
         gap: 10,
-        backgroundColor: darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade, borderColor: color.neutral, borderWidth: 1,
+        backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade, borderColor: darkMode ? darkTheme.light_darkShade : color.neutral, borderWidth: 1,
       }}>
         <Feather name="search" size={20} color={darkMode ? darkTheme.dark_lightShade : lightTheme.darkShade} />
         <TextInput
           value={searchTerm}
           onChangeText={handleSearchChange}
-          placeholder="Rechercher un mot..."
+          placeholder={dictionary.input}
           autoCorrect={false}
           autoCapitalize="none"
+          placeholderTextColor={darkMode ? darkTheme.dark_lightShade : lightTheme.darkShade} // Placeholder color
           keyboardType="default"
+          style={{ color: darkMode ? darkTheme.dark_lightShade : lightTheme.darkShade }}
         />
       </View>
       {showImageKeyboard ? renderImageKeyboard() : renderLetterKeyboard()}
@@ -109,7 +119,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: lightTheme.dark_lightShade,
   },
   input: {
     backgroundColor: lightTheme.lightShade,
@@ -127,8 +136,6 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: 'transparent',
-    borderColor: color.neutral,
-    borderWidth: 1,
     width: 40,
     height: 40,
     borderRadius: 8,
@@ -137,7 +144,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 14,
-    fontWeight: 'bold',
   },
   image: {
     width: 28,
@@ -148,10 +154,10 @@ const styles = StyleSheet.create({
     width: 80,
     height: 40,
     padding: 10,
-    backgroundColor: lightTheme.darkShade,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: lightTheme.darkShade,
   },
   validateButton: {
     marginTop: 20,
