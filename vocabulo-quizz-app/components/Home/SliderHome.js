@@ -50,9 +50,9 @@ const SliderHome = ({ darkMode }) => {
               title={home.slider.slider3.title} // Title for the third slide
               description={home.slider.slider3.description} // Description for the third slide
               darkMode={darkMode} // Passing dark mode prop
-              containerBgColor={darkMode ? darkTheme.light_darkShade : "#38b47f"} // Setting background color
+              containerBgColor={darkMode ? darkTheme.light_darkShade : color.darkGreen} // Setting background color
               iconBgColor={darkMode ? darkTheme.darkShade : lightTheme.darkShade} // Setting icon background color
-              iconName="annonce" // Icon name for the third slide
+              iconName="new" // Icon name for the third slide
               bannerSvgName="fleurs" // SVG banner for the third slide
               useSvg={true} // Enable using an SVG banner
               showButton={false} // Hide button for this card
