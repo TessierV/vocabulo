@@ -38,8 +38,6 @@ const SectionTitle = ({ title, text, iconName = 'info', popupTitle, popupText, p
             <TouchableOpacity onPress={() => setModalVisible(false)}>
               <Text style={[styles.closeButton, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>{popupButtonText}</Text>
             </TouchableOpacity>
-
-
           </View>
         </View>
       </Modal>
