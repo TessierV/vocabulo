@@ -2,7 +2,7 @@
 import { interfaceIcons, themes } from '@/constants/svg';
 import InterfaceSvg from '@/SVG/InterfaceSvg';
 
-// `home` export object
+// home export text
 export const home = {
     header: {
         title: 'Bienvenue',
@@ -21,13 +21,11 @@ export const home = {
             description: 'Faites fleurir vos connaissances ! Testez-vous avec notre nouveau quizz sur le thème des fleurs',
         },
     },
-
     section: {
         title: 'Exercice',
         row1: {
             text: 'Basique',
             route: '/category',
-
         },
         row2: {
             text: 'Hybride',
@@ -41,7 +39,6 @@ export const home = {
             text: 'Random',
             route: '/random',
         },
-
     },
     section2: {
         title: 'Thèmatique',
@@ -51,11 +48,120 @@ export const home = {
             text: 'Parcourez les thèmes, sélectionnez ceux qui vous intéressent, et plongez dans un monde d\'apprentissage adapté à vos besoins.',
             button: 'Fermer',
         },
+    },
+};
+
+// Basic export text
+export const basic = {
+    header: {
+        title: 'Basique',
+    },
+    slider: {
+        slider1: {
+            title: 'Basique',
+            description: 'Plongez dans un monde de mots essentiels, accessible à tous',
+        },
+        slider2: {
+            title: 'Annonce',
+            description: 'Profitez des thèmes illustrés, variés comme Fleurs, Musique, et bien d\'autres à venir prochainement !',
+        },
+        slider3: {
+            title: 'Nouveauté',
+            description: 'Faites fleurir vos connaissances ! Testez-vous avec notre nouveau quizz sur le thème des fleurs',
+        },
+    },
+    section: {
+        textinput: 'Recherche un thème...',
+        row1: 'Tout',
+        row2: "Facile",
+        row3: "Moyen",
+        row4: "Difficile",
+    },
+    section2: {
+        title: 'Thèmatique',
+        title2: 'Bientôt',
+        subtitle2: 'Information',
+        popup2: {
+            title: 'Information',
+            text: 'Il n\'y a actuellement pas assez de mots dans cette catégorie.\n\nCependant, de nouveaux contenus sont en cours de préparation et devraient être disponibles prochainement.\n\nMerci de votre patience !',
+            button: 'Fermer',
+        },
+        row: 'mots',
 
     },
-
-
+    error: "Erreur : Aucune thématique trouvée",
+    modal: {
+        title: "Récapitulatif",
+        subtitle: "Vous allez commencer avec ce thème :",
+        descriptif: "",
+        button: "Commencer",
+    },
 };
+
+// Basic export text
+export const ai = {
+    header: {
+        title: 'HybridRec',
+    },
+    slider: {
+        slider1: {
+            title: 'HybridRec',
+            description: 'Bienvenue sur la page du Quiz IA personnalisé. Grâce à l\'intelligence artificielle, chaque quiz est adapté à ton niveau et à tes préférences d\'apprentissage.',
+            button: 'En savoir plus',
+        },
+    },
+    section: {
+        title: 'n°',
+    },
+
+    modal: {
+        title: "Récapitulatif",
+        subtitle: "Vous allez commencer avec ce thème :",
+        descriptif: "",
+        button: "Commencer",
+    },
+    explanation: {
+        title: "Explication",
+        row1: {
+            title: "Apprentissage personnalisé :",
+            descrsiption: "Analyse ton historique et ajuste ton niveau.",
+        },
+        row2: {
+            title: "Adaptation au contexte :",
+            description: "Propose des mots selon l’heure et la saison.",
+        },
+        row3: {
+            title: "Équilibre de difficulté :",
+            description: "Ajuste la difficulté selon ton niveau.",
+        },
+        row4: {
+            title: "Facteur de nouveauté :",
+            description: "Introduit des mots nouveaux tout en révisant les anciens.",
+        },
+        row5: {
+            title: "Feedback intégré :",
+            description: "S’ajuste selon tes retours sur la difficulté.",
+        },
+        button: "Fermer",
+    },
+
+    saveButton: {
+        title: "Reprendre le quiz",
+        subtitle: "Expire à:",
+    },
+
+    renderQuestion: "Question",
+
+    container: {
+        title: "Reprendre le quizz",
+        subtitle: "Expire à: ",
+        errorsave: "Aucune progression enregistrée",
+        errornosave: "Vous n'avez aucune progression enregistrée pour ce quiz.",
+
+    },
+};
+
+
 
 export const texts = {
     sectionTitle: {
