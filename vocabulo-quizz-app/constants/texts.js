@@ -231,6 +231,61 @@ export const parameters = {
     },
 };
 
+// Basic export text
+export const profil = {
+    header: {
+        title: 'Profile',
+    },
+    slider: {
+        slider1: {
+            title: 'Carte d\'identité',
+            description: `Pseudo : `,
+        },
+        slider2: {
+            title: 'Performances',
+            description: 'Suivez votre progression et découvrez vos statistiques sur le quizz HybridRec.',
+        },
+    },
+    section: {
+        title: "Progrès",
+        content: {
+            title: "Maîtrise des Mots",
+            description: "Suivez votre progression",
+            suboption: "Non répertoriés",
+            subword: " mots",
+            button: "Voir la légende",
+            row1: "Maîtrisé",
+            row2: "Correct",
+            row3: "Acceptable",
+            row4: "Insuffisant",
+            row5: "À revoir",
+        },
+    },
+    section2: {
+        title: "Connexion",
+        col1: "Record de connexions",
+        col2: "Connexions consécutives actuelles",
+        col3: "Total de jours",
+    },
+    section3: {
+        title: "Historique",
+        subheader: "Information",
+        popup: {
+            title: "Historique des mots rencontrés",
+            description: "Retrouvez ici l’ensemble des mots que vous avez rencontrés uniquement dans l’univers de HybridRec. Suivez votre progression et revenez sur les mots que vous avez appris au fil du temps.",
+            button: "fermer",
+        },
+        section: {
+            col1: "Semaine",
+            col2: "Mois",
+            error: "Aucun historique des mots",
+            definition: "Définition :",
+            urldef: "Définition LSF",
+            urlsign: "Sign",
+        }
+    },
+};
+
 
 export const texts = {
     sectionTitle: {
