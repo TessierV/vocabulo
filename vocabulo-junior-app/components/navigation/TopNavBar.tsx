@@ -1,4 +1,4 @@
-// This file defines the `TopNavBar` component, which renders a customizable top navigation bar with animated header background,
+// This file defines the 'TopNavBar' component, which renders a customizable top navigation bar with animated header background,
 // back navigation, and home navigation icons.
 
 import React, { useEffect, useRef } from 'react';
