@@ -11,6 +11,7 @@ import { ModalText } from '@/constants/StyledText';
 
 import { getColorForPOS } from './PosColors';
 
+
 interface ColorsLegendItem {
     pos: 'NOUN' | 'VERB' | 'ADJ' | 'ADV' | 'OTHERS';
     description: string;
