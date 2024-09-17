@@ -27,7 +27,6 @@ export default function LogoSplash() {
         }),
       ]),
     );
-
     // Define the move animation sequence
     const moveAnimation = Animated.loop(
       Animated.sequence([
