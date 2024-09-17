@@ -9,10 +9,6 @@ export {
   ErrorBoundary,
 } from 'expo-router';
 
-// Define unstable settings for navigation, specifying the initial route
-export const unstable_settings = {
-  initialRouteName: 'screens',
-};
 
 SplashScreen.preventAutoHideAsync();
 
