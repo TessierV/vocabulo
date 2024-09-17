@@ -1,3 +1,7 @@
+// This file exports an object called `letterImages` which maps each letter of the alphabet
+// to a corresponding image file. These images are used to visually represent each letter
+// in the application, particularly when displaying the alphabet in different modes.
+
 const letterImages: { [key: string]: any } = {
     A: require('./../../assets/images/pictoLSF/A.png'),
     B: require('./../../assets/images/pictoLSF/B.png'),
