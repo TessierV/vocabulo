@@ -10,6 +10,7 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
+
 type RootStackParamList = {
   LoginScreen: undefined;
 };
