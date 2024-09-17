@@ -1,5 +1,5 @@
 // TakePhotoScreen.js
-// This file defines the photo-taking screen in the application, 
+// This file defines the photo-taking screen in the application,
 // displaying a navigation bar at the top and the camera component.
 
 import { View, StyleSheet, SafeAreaView } from 'react-native';
