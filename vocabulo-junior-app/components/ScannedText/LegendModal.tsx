@@ -37,6 +37,7 @@ const LegendModal: React.FC<LegendModalProps> = ({ visible, onClose }) => {
   );
 };
 
+
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
