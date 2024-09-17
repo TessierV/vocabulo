@@ -22,7 +22,6 @@ const SIZEwidth = Dimensions.get('window').width;
 
 // Create an animated component for the SVG Path
 const AnimatedPath = Animated.createAnimatedComponent(Path);
-
 const WaveSplash = () => {
   // Shared value to control the animation progress
   const progress = useSharedValue(0);
