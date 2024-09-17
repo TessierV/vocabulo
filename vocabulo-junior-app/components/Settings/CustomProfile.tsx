@@ -13,6 +13,7 @@ import { Colors } from '@/constants/Colors';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { ButtonText } from '@/constants/StyledText';
 
+
 export default function CustomProfile() {
   // State for storing the user's name and handling editing mode
   const [userName, setUserName] = useState<string>('User');
