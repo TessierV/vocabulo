@@ -34,7 +34,8 @@ const NoScannedText: React.FC = () => {
       ])
     );
     moveAnimation.start(); // Start the animation
-    
+
+
     // Cleanup animation on component unmount
     return () => moveAnimation.stop();
   }, [moveAnim]);
