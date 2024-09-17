@@ -10,8 +10,8 @@ export const color = {
   neutralCoral: '#FF7F50',
   lightCoral: "#FFA381",
 
-  darkGreen: "#99CDBD",
-  neutralGreen: "#BFDFD2",
+  darkGreen: "#69B59E",
+  neutralGreen: "#A0CFBC",
   lightGreen: "#DCE6E2",
 
   darkBlue: "#7DAED6",
