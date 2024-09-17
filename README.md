@@ -2,13 +2,14 @@
 
 Soon
 
+
+
+<hr>
+
+![Product Mockups](https://github.com/user-attachments/assets/60b544c2-00be-46ee-9fee-1c96fd4ec456)
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=800&size=28&pause=1000&width=800&lines=Vocabulo-quizz-app+and+Vocabulo+Quizz+ml" alt="Typing SVG" /></a>
 
 ## Pitch 
-
-![Product Mockups](https://github.com/user-attachments/assets/60b544c2-00be-46ee-9fee-1c96fd4ec456)
-
-
 Vocabulo Adulte is a mobile application designed to help deaf and hard-of-hearing adults master and enrich their French vocabulary. Through engaging and interactive quizzes, users can enhance their vocabulary skills with the support of French Sign Language (LSF) descriptions.
 
 `/!\ Note: Please be aware that all texts and videos are in French. The French Sign Language (LSF) is specific to the French language.`
