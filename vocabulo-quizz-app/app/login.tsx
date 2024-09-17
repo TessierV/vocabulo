@@ -1,39 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import qs from 'qs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BigTitle, ContainerTitle, Paragraph, Subtitle } from '@/constants/StyledText';
-import { color, lightTheme } from '@/constants/Colors';
 import { GradientBackgroundButton } from '@/components/Button';
 import InterfaceSvg from '@/SVG/InterfaceSvg';
+import { color, lightTheme } from '@/constants/Colors';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [randomDigits, setRandomDigits] = useState(shuffleArray(Array.from({ length: 10 }, (_, i) => i.toString()))); // Randomized digits
   const navigation = useNavigation();
 
   useEffect(() => {
-    // Check if user is already logged in
     const checkLoggedIn = async () => {
       const token = await AsyncStorage.getItem('access_token');
       if (token) {
-        // If token exists, navigate to home
         navigation.navigate('home');
       }
     };
     checkLoggedIn();
-  }, []);
-
-  // Shuffle the digits for randomized keyboard
-  function shuffleArray(array) {
-    return array.sort(() => Math.random() - 0.5);
-  }
+  }, [navigation]);
 
   const handleKeyPress = (digit) => {
     if (password.length < 5) {
@@ -51,15 +42,12 @@ export default function Login() {
       return;
     }
 
-    console.log('Login password:', password); // Log the password for verification
-
     setLoading(true);
 
     try {
-      // Send form data as x-www-form-urlencoded
       const data = qs.stringify({
         username,
-        password,
+        password: parseInt(password),
       });
 
       const response = await axios.post('http://192.168.0.12:8000/token', data, {
@@ -67,19 +55,22 @@ export default function Login() {
       });
 
       if (response.data && response.data.access_token) {
-        console.log('Login successful:', response.data.access_token);
-
-        // Save the username and token in AsyncStorage
         await AsyncStorage.setItem('username', username);
         await AsyncStorage.setItem('access_token', response.data.access_token);
 
-        // Navigate to the home screen
+        // Vérifie si user_id est présent dans la réponse
+        if (response.data.user_id) {
+          await AsyncStorage.setItem('user_id', String(response.data.user_id)); // Stocker user_id sous forme de chaîne
+          console.log(`Stored user_id: ${response.data.user_id}`);
+        } else {
+          console.error('user_id is not provided in the response');
+        }
+
         navigation.navigate('home');
       } else {
         Alert.alert('Login Failed', 'Invalid credentials');
       }
     } catch (error) {
-      console.error('Login error:', error);
       Alert.alert('Login Failed', 'An error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -112,21 +103,21 @@ export default function Login() {
 
       <ContainerTitle>Clavier :</ContainerTitle>
       <View style={styles.numericKeyboard}>
-        {randomDigits.map((digit) => (
+        {Array.from({ length: 10 }, (_, i) => (
           <TouchableOpacity
-            key={digit}
+            key={i}
             style={styles.numericKey}
-            onPress={() => handleKeyPress(digit)}
+            onPress={() => handleKeyPress(i.toString())}
           >
-            <Subtitle style={styles.keyText}>{digit}</Subtitle>
+            <Subtitle style={styles.keyText}>{i}</Subtitle>
           </TouchableOpacity>
         ))}
 
         <TouchableOpacity style={styles.toggleButton} onPress={handleDelete}>
-        <InterfaceSvg iconName="key_delete" height={21} width={21} fillColor={lightTheme.dark_lightShade} />
+          <InterfaceSvg iconName="key_delete" height={21} width={21} fillColor={lightTheme.dark_lightShade} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.toggleButton}>
-        <InterfaceSvg iconName={showPassword ? 'eye-off' : 'eye'} height={20} width={20} fillColor={lightTheme.dark_lightShade} />
+          <InterfaceSvg iconName={showPassword ? 'eye-off' : 'eye'} height={20} width={20} fillColor={lightTheme.dark_lightShade} />
         </TouchableOpacity>
       </View>
 
@@ -138,7 +129,7 @@ export default function Login() {
         />
 
         <TouchableOpacity style={{ textAlign: 'center', alignItems: 'center', marginTop: 10 }} onPress={() => navigation.navigate('signup')}>
-          <Paragraph style={{ textDecorationLine: 'underline', fontSize: 12, borderColor: lightTheme.darkShade }}>Pas de compte ? Cliquez ici</Paragraph>
+          <Paragraph style={{ textDecorationLine: 'underline', fontSize: 12 }}>No account? Sign Up</Paragraph>
         </TouchableOpacity>
       </View>
     </View>

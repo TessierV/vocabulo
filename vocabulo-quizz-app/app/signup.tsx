@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import { BigTitle, ContainerTitle, Paragraph, Subtitle } from '@/constants/StyledText';
 import { GradientBackgroundButton } from '@/components/Button';
@@ -10,8 +9,8 @@ import InterfaceSvg from '@/SVG/InterfaceSvg';
 
 export default function Signup() {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState(''); // Password is limited to 5 digits
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
 
   const handleKeyPress = (digit) => {
@@ -29,8 +28,6 @@ export default function Signup() {
       Alert.alert('Error', 'Please enter a username and a 5-digit password.');
       return;
     }
-
-    console.log('Signup password:', password);
 
     try {
       const response = await axios.post('http://192.168.0.12:8000/register', { username, password }, {
@@ -80,27 +77,26 @@ export default function Signup() {
           ))}
         </View>
       </View>
-      <>
-        <ContainerTitle>Clavier :</ContainerTitle>
-        <View style={styles.numericKeyboard}>
-          {Array.from({ length: 10 }, (_, i) => (
-            <TouchableOpacity
-              key={i}
-              style={styles.numericKey}
-              onPress={() => handleKeyPress(i.toString())}
-            >
-              <Subtitle style={styles.keyText}>{i}</Subtitle>
-            </TouchableOpacity>
-          ))}
 
-          <TouchableOpacity style={styles.toggleButton} onPress={handleDelete}>
-            <InterfaceSvg iconName="key_delete" height={21} width={21} fillColor={lightTheme.dark_lightShade} />
+      <ContainerTitle>Clavier :</ContainerTitle>
+      <View style={styles.numericKeyboard}>
+        {Array.from({ length: 10 }, (_, i) => (
+          <TouchableOpacity
+            key={i}
+            style={styles.numericKey}
+            onPress={() => handleKeyPress(i.toString())}
+          >
+            <Subtitle style={styles.keyText}>{i}</Subtitle>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.toggleButton}>
+        ))}
+
+        <TouchableOpacity style={styles.toggleButton} onPress={handleDelete}>
+          <InterfaceSvg iconName="key_delete" height={21} width={21} fillColor={lightTheme.dark_lightShade} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.toggleButton}>
           <InterfaceSvg iconName={showPassword ? 'eye-off' : 'eye'} height={20} width={20} fillColor={lightTheme.dark_lightShade} />
-          </TouchableOpacity>
-        </View>
-      </>
+        </TouchableOpacity>
+      </View>
 
       <View style={{ alignSelf: 'center', marginTop: '8%' }}>
         <GradientBackgroundButton
@@ -108,7 +104,7 @@ export default function Signup() {
           textColor="light"
           onPress={handleSignup}
         />
-        <TouchableOpacity style={{ textAlign: 'center', alignItems: 'center',}} onPress={() => navigation.navigate('login')}>
+        <TouchableOpacity style={{ textAlign: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('login')}>
           <Paragraph style={{ textDecorationLine: 'underline', fontSize: 12, borderColor: lightTheme.darkShade }}>Already have an account? Log in</Paragraph>
         </TouchableOpacity>
       </View>

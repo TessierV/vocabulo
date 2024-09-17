@@ -3,6 +3,7 @@ import { View, Text, ScrollView, StyleSheet, ActivityIndicator, Alert, Touchable
 import { useRoute, useNavigation, useIsFocused, RouteProp } from '@react-navigation/native';
 import { SvgXml } from 'react-native-svg';
 import { Feather } from '@expo/vector-icons';
+import useDarkMode from '@/components/useDarkMode';
 import { lightTheme, color } from '@/constants/Colors';
 import HeaderQuiz from '@/components/Quizz/HeaderQuiz';
 import AnswerButton from '@/components/Quizz/AnswerButton';
@@ -36,6 +37,8 @@ type RootStackParamList = {
 type NewPageRouteProp = RouteProp<RootStackParamList, 'subcat/[subcat_id]'>;
 
 const NewPage = () => {
+  const [darkMode] = useDarkMode();
+
   const route = useRoute<NewPageRouteProp>();
   const { subcat_id, difficulty, words } = route.params || {};
   const isFocused = useIsFocused();
@@ -116,7 +119,14 @@ const NewPage = () => {
   };
 
   const generateQuestions = (words) => {
-    if (words.length < 6) {
+    const wordCount = words.length;
+    let numberOfQuestions;
+
+    if (wordCount > 7) {
+      numberOfQuestions = 5;
+    } else if (wordCount >= 5 && wordCount <= 7) {
+      numberOfQuestions = 3;
+    } else {
       Alert.alert('Erreur', 'Pas assez de mots pour générer des questions.');
       return;
     }
@@ -133,7 +143,7 @@ const NewPage = () => {
       return randomWord;
     };
 
-    while (questions.length < 5) {
+    while (questions.length < numberOfQuestions) {
       const correctWord = getRandomWord();
       const correctWordIndex = words.indexOf(correctWord);
 
@@ -173,7 +183,8 @@ const NewPage = () => {
             Quelle est la réponse à cette définition ?{'\n\n'}
           </Paragraph>
           <Subtitle style={{ color: lightTheme.dark_lightShade }}>
-            {correctWord.definition}          </Subtitle>
+            {correctWord.definition}
+          </Subtitle>
         </>
       );
 
@@ -353,7 +364,7 @@ const NewPage = () => {
             isDisabled={disabledAnswers.includes(answer)}
             isCorrect={answer.correct}
             index={index}
-            highlightCorrect={highlightCorrect} // Pass the highlight prop
+            highlightCorrect={highlightCorrect}
           />
         ))}
       </View>

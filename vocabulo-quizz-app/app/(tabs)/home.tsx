@@ -12,7 +12,7 @@ const Page = () => {
       styles.container,
       { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }
     ]}>
-      <HomeScreen />
+      <HomeScreen darkMode={darkMode} />
     </View>
   );
 }
