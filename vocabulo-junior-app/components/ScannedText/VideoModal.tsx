@@ -14,6 +14,7 @@ interface VideoModalProps {
   onClose: () => void;
 }
 
+
 const VideoModal: React.FC<VideoModalProps> = ({ visible, url, onClose }) => {
   return (
     <Modal
