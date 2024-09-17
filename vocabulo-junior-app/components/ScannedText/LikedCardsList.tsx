@@ -40,7 +40,6 @@ const LikedCardsList: React.FC<LikedCardsListProps> = ({ refreshKey, selectedCat
         };
         return category ? categoryMap[category] || null : null;
     };
-
     // Fetch liked cards from AsyncStorage when dependencies change
     useEffect(() => {
         const fetchLikedCards = async () => {
