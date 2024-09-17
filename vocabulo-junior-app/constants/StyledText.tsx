@@ -1,10 +1,13 @@
+// This file defines multiple reusable styled text components for a React Native application, using custom styles for different text elements.
+
+
 import * as React from "react";
 import { ReactNode } from 'react';
 import { Text, StyleSheet, TextProps } from 'react-native';
+
 import { Colors } from '@/constants/Colors';
 
 
-// Fonction pour créer des styles thématisés
 const createThemedStyles = () => StyleSheet.create({
   bigTitle: {
     fontFamily: 'Chewy',
