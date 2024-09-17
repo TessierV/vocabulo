@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+// This file defines the ScreensLayout component to manage the navigation for secondary-related screens.
+
+import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
+
+// Import the screen components used in the navigator
 import SplashScreen from "./SplashScreen";
 import LoginScreen from "./LoginScreen";
 import HomeScreen from "./HomeScreen";
 import SettingsScreen from "./SettingsScreen";
-import useCustomFonts from '@/constants/useCustomFonts';
 
-
+// Define the types for the parameters of the stack navigator's screens
 type RootStackParamList = {
   SplashScreen: undefined;
   LoginScreen: undefined;
@@ -14,25 +17,10 @@ type RootStackParamList = {
   SettingsScreen: undefined;
 };
 
+// Create a Stack Navigator instance
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function ScreensLayout() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
-
-  useEffect(() => {
-    async function loadFonts() {
-      const fontsSuccessfullyLoaded = await useCustomFonts();
-      if (fontsSuccessfullyLoaded) {
-        setFontsLoaded(true);
-      }
-    }
-    loadFonts();
-  }, []);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
     <Stack.Navigator initialRouteName="SplashScreen">
       <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
