@@ -57,7 +57,7 @@ const Onboarding = () => {
       setCurrentSlideIndex(nextSlideIndex);
     } else {
       // Navigate to login screen after onboarding
-      navigation.navigate('login');
+      navigation.navigate('home');
     }
   };
 

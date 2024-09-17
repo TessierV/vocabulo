@@ -32,6 +32,7 @@ const ReusableCard = ({
   useSvg = false,
   customImage = null, // Prop pour passer une image personnalisée
   customSvg = null, // Prop pour passer un SVG personnalisé
+  showButton = true, // New prop to control button visibility
 }) => {
   return (
     <View style={[styles.mainContainer, { backgroundColor: containerBgColor }]}>
@@ -41,13 +42,18 @@ const ReusableCard = ({
             {title}
           </AnnonceTitle>
           <ContainerParagraph style={styles.description}>{description}</ContainerParagraph>
-          <GradientBorderButtonMini
-            text={buttonText}
-            background={darkMode ? 'light' : 'dark'}
-            textColor={darkMode ? 'dark' : 'light'}
-            onPress={onPressButton}
-          />
+
+          {/* Conditionally render the button */}
+          {showButton && (
+            <GradientBorderButtonMini
+              text={buttonText}
+              background={darkMode ? 'light' : 'dark'}
+              textColor={darkMode ? 'dark' : 'light'}
+              onPress={onPressButton}
+            />
+          )}
         </View>
+
         <View style={styles.imageSection}>
           <View style={[styles.iconContainer, { backgroundColor: iconBgColor }]}>
             <SvgIcon icon={iconName} fillColor='white' />

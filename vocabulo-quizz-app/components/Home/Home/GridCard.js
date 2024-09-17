@@ -185,7 +185,7 @@ const GridCardHome = () => {
                     onRequestClose={closeModal}
                 >
                     <View style={styles.modalContainer}>
-                        <View style={styles.modalContent}>
+                        <View style={[styles.modalContent, {backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.dark_lightShade}]}>
                             <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
                                 <Feather name="x" size={24} color="black" />
                             </TouchableOpacity>
@@ -197,7 +197,7 @@ const GridCardHome = () => {
                                     maxRadius={50}
                                     svgIcon={SvgIcon({ icon: selectedCategory.categorie_name }).props.xml}
                                 />
-                                <BigTitle>Récapitulatif</BigTitle>
+                                <BigTitle style={{color: darkMode ? darkTheme.dark_lightShade : lightTheme.darkShade}}>Récapitulatif</BigTitle>
                                 <ContainerParagraph style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade }}>
                                     Vous allez commencer avec ce thème:
                                 </ContainerParagraph>
@@ -206,7 +206,7 @@ const GridCardHome = () => {
                                         <SvgIcon icon={selectedCategory.categorie_name} width="25" height="25" />
                                         <Text style={styles.recapTitle}>{selectedCategory.categorie_name}</Text>
                                     </View>
-                                    <Text style={styles.recapCount}>
+                                    <Text style={[styles.recapCount, { color: darkMode ? darkTheme.neutral : lightTheme.dark_lightShade }]}>
                                         {getTotalFilteredWordCount(selectedCategory)} / {selectedCategory.totalWordCount} mots
                                     </Text>
                                 </View>
@@ -214,8 +214,6 @@ const GridCardHome = () => {
                             </View>
 
                             <>
-
-
                                 <ScrollView
                                     horizontal
                                     style={styles.filterScrollView}
@@ -317,12 +315,11 @@ const GridCardHome = () => {
                                 />
                             ) : (
                                 <View style={styles.warningContainer}>
-                                    <Paragraph style={styles.warningText}>
+                                    <Paragraph style={[styles.warningText, {fontSize: 12, color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade}]}>
                                         Attention, la catégorie doit avoir au moins 7 mots pour lancer une série
                                     </Paragraph>
                                 </View>
                             )}
-
                         </View>
                     </View>
                 </Modal>
@@ -405,7 +402,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         height: '90%',
-        backgroundColor: lightTheme.dark_lightShade,
     },
     closeButton: {
         alignSelf: 'flex-end',
@@ -435,7 +431,6 @@ const styles = StyleSheet.create({
     // Filter
     recapCount: {
         fontSize: 12,
-        color: lightTheme.dark_lightShade,
     },
     filterScrollView: {
         width: '100%',
@@ -501,7 +496,6 @@ const styles = StyleSheet.create({
         backgroundColor: color.warningBackground, // couleur pour le fond d'avertissement
     },
     warningText: {
-        color: color.warningText, // couleur du texte d'avertissement
         textAlign: 'center',
     },
 });

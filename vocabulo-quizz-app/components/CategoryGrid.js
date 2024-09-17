@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import { SvgXml } from 'react-native-svg';
 import { useRouter } from 'expo-router';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import { GridText } from '@/constants/StyledText';
-import SvgIcon from './Category/SvgIcon';
+import InterfaceSvg from '@/SVG/InterfaceSvg';
 
 const CategoryGrid = ({ categories, darkMode }) => {
   const router = useRouter();
@@ -30,20 +29,25 @@ const CategoryGrid = ({ categories, darkMode }) => {
                 backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.lightShade,
                 width: squareSize,
                 height: squareSize,
-              }
+              },
             ]}
           >
-            <SvgIcon icon={category.icon} fillColor={darkMode ? darkTheme.lightShade : lightTheme.darkShade} />
+            <InterfaceSvg
+              width={36}
+              height={36}
+              iconName={category.icon}
+              fillColor={darkMode ? darkTheme.dark_lightShade : lightTheme.darkShade}
+            />
           </View>
           <View
             style={[
               styles.labelContainer,
               {
                 width: squareSize,
-              }
+              },
             ]}
           >
-            <GridText style={{ color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>
+            <GridText style={{ color: darkMode ? darkTheme.dark_lightShade : lightTheme.neutral }}>
               {category.textLabel || 'Unknown'}
             </GridText>
           </View>
@@ -70,12 +74,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
     overflow: 'hidden',
+    flexWrap: 'wrap',
+    alignContent: 'center',
+
   },
   labelContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
-    marginVertical: 10,
+    textAlign: 'center',
+    marginTop: 5,
   },
 });
 

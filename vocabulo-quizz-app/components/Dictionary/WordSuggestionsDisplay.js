@@ -19,7 +19,7 @@ const WordSuggestionsDisplay = ({ wordSuggestions, openVideoModal, loading, dark
   if (wordSuggestions.length === 0) {
     return (
       <View style={styles.noSuggestionsContainer}>
-        <Paragraph style={{ color: darkMode ? darkTheme.neutral : lightTheme.neutral }}>{dictionary.wordSuggestion.none}</Paragraph>
+        <Paragraph style={{ fontSize: 12, color: darkMode ? darkTheme.neutral : lightTheme.neutral }}>{dictionary.wordSuggestion.none}</Paragraph>
       </View>
     );
   }

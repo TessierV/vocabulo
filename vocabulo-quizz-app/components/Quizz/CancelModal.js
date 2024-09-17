@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import Bubble from '@/components/Effect/Bubble';
-import { lightTheme } from '@/constants/Colors';
+import { darkTheme, lightTheme } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
 import GradientBorderButton from '@/components/Button';
 import { Feather } from '@expo/vector-icons';
