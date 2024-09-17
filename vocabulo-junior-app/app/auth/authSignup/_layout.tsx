@@ -1,29 +1,17 @@
-import React, { useEffect, useState } from "react";
-import useCustomFonts from '@/constants/useCustomFonts';
+// This file defines the SignupLayout component to manage the navigation for signup-related screens.
+
+import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+
+// Import the screen components used in the navigator
 import Detail from "./Detail";
 import Signup from "./Signup";
 import Login from "../authLogin/Login";
 
+// Create a Stack Navigator instance
 const Stack = createStackNavigator();
 
 export default function SignupLayout() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
-
-  useEffect(() => {
-    async function loadFonts() {
-      const fontsSuccessfullyLoaded = await useCustomFonts();
-      if (fontsSuccessfullyLoaded) {
-        setFontsLoaded(true);
-      }
-    }
-    loadFonts();
-  }, []);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
     <Stack.Navigator initialRouteName="Signup">
       <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
