@@ -130,7 +130,7 @@ const RandomScreen = () => {
       styles.container,
       { backgroundColor: darkMode ? 'black' : lightTheme.dark_lightShade }
     ]}>
-      <Header darkMode={darkMode} title="Random Category" firstLink="/home" secondLink="none" />
+      <Header darkMode={darkMode} PageTitle="Random" title="Random Category" firstLink="/home" secondLink="none" />
       <View style={styles.iconContainer}>
         <SvgXml xml={randomCategory.icon} width={100} height={100} />
         <Subtitle style={[styles.iconText, { color: darkMode ? 'white' : 'black' }]}>

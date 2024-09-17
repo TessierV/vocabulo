@@ -11,6 +11,8 @@ npm-debug.*
 package-lock.json
 ../.idea/
 web-build/
+**/__pycache__/
+
 
 # macOS
 .DS_Store

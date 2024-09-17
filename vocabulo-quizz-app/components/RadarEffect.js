@@ -67,7 +67,7 @@ const RadarEffect = ({ colors, minRadius = 10, maxRadius = 30, svgIcon }) => {
                 />
             </Svg>
             {svgIcon && (
-                <SvgXml xml={svgIcon} style={styles.backgroundLogo} width="100" height="100" />
+                <SvgXml xml={svgIcon} style={styles.backgroundLogo} width="80" height="80" />
             )}
         </View>
     );

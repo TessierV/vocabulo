@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import { ContainerParagraph } from '@/constants/StyledText';
 import ParameterSvg from './SvgIcon';
+import InterfaceSvg from '@/SVG/InterfaceSvg';
 
 const Setting = ({ iconName, text, buttonText, onPress, darkMode, isLast }) => {
   const fillColor = darkMode ? darkTheme.lightShade : lightTheme.light_darkShade;
@@ -13,7 +14,7 @@ const Setting = ({ iconName, text, buttonText, onPress, darkMode, isLast }) => {
     } else {
       return (
         <TouchableOpacity onPress={onPress}>
-          <ParameterSvg icon="arrowRight" fillColor={fillColor} style={styles.arrowImage} />
+          <InterfaceSvg iconName="arrowRight" width="18" height="18" fillColor={fillColor} style={styles.arrowImage} />
         </TouchableOpacity>
       );
     }
@@ -21,7 +22,7 @@ const Setting = ({ iconName, text, buttonText, onPress, darkMode, isLast }) => {
 
   return (
     <View style={[styles.setting, isLast && styles.lastSetting, { borderColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
-      <ParameterSvg icon={iconName} fillColor={fillColor} />
+      <InterfaceSvg iconName={iconName}  width="15" height="15" fillColor={fillColor} />
       <ContainerParagraph style={[styles.settingText, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }]}>{text}</ContainerParagraph>
       {renderButtonOrImage()}
     </View>

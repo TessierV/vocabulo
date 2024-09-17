@@ -1,12 +1,7 @@
-import { FontAwesome } from "@expo/vector-icons";
-import { SplashScreen, Stack } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import { SplashScreen, Stack } from 'expo-router';
 import useCustomFonts from '@/constants/useCustomFonts';
 import useDarkMode from '@/components/useDarkMode';
-
-export {
-  ErrorBoundary,
-} from 'expo-router';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -25,6 +20,7 @@ export default function RootLayout() {
         setFontsLoaded(true);
         SplashScreen.hideAsync();
       } else {
+        console.error('Échec du chargement des polices.');
       }
     }
     loadFonts();
@@ -45,8 +41,18 @@ function RootLayoutNav() {
       <Stack.Screen name="random" options={{ headerShown: false, title: 'Random' }} />
       <Stack.Screen name="customize" options={{ headerShown: false, title: 'Customize' }} />
       <Stack.Screen name="quiz" options={{ headerShown: false, title: 'Quizz' }} />
+      <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="signup" options={{ headerShown: false }} />
 
       <Stack.Screen name="index" options={{ headerShown: false, title: 'Index' }} />
+      <Stack.Screen name="wordlist/[categorie_id]" initialParams={{ mainCategoryWords: [], subcategories: [] }}
+        options={{ headerShown: false, title: 'Liste des mots' }} />
+
+      <Stack.Screen
+        name="iaquizpage/[iaquiz_id]"
+        options={{ headerShown: false, title: 'IA Quiz' }}
+      />
+      <Stack.Screen name="subcat/[subcat_id]" options={{ headerShown: false, title: 'Basic Quiz' }} />
     </Stack>
   );
 }

@@ -1,419 +1,160 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
-import Papa from 'papaparse';
-import Section from '@/components/Dictionary/Section';
-import { darkTheme, lightTheme } from '@/constants/Colors';
-import csvData from '@/constants/data';
-import FilterBar from '@/components/FilterBar';
-import BannerContainer from '@/components/Banner';
-import { texts } from '@/constants/texts';
+import { View, ScrollView } from 'react-native';
+import SearchAndKeyboard from '@/components/Dictionary/SearchAndKeyboard';
+import WordSuggestionsDisplay from '@/components/Dictionary/WordSuggestionsDisplay';
+import VideoModal from '@/components/Dictionary/VideoModal';
 import Header from '@/components/Header/Header';
-import { BigTitle } from '@/constants/StyledText';
+import useDarkMode from '@/components/useDarkMode';
+import SliderDictionary from '@/components/Dictionary/SliderDictionary';
+import { lightTheme, darkTheme, grammaticalCategoryColors, grammaticalCategoryColorsDaltonian } from '@/constants/Colors'; // Import both color sets
+import { dictionary } from '@/constants/texts';
 
-const ITEMS_PER_PAGE = 10;
+// Fetch function to get words by search term
+async function fetchWordsBySearchTerm(searchTerm) {
+  try {
+    const response = await fetch(`http://192.168.0.12:3000/api/alphabet/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Erreur lors de la récupération des mots: ${errorText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Erreur lors du fetch des mots:', error);
+    throw error;
+  }
+}
 
 const DictionaryScreen = () => {
-  const [data, setData] = useState([]);
-  const [darkMode, setDarkMode] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [sortOption, setSortOption] = useState('A-Z');
-  const [selectedLetter, setSelectedLetter] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [showAlphabeticalFilter, setShowAlphabeticalFilter] = useState(false);
-  const [showCategoryFilter, setShowCategoryFilter] = useState(false);
-  const [visibleData, setVisibleData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [wordSuggestions, setWordSuggestions] = useState([]);
+  const [finalResults, setFinalResults] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [videoUrl, setVideoUrl] = useState('');
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [allDataLoaded, setAllDataLoaded] = useState(false);
+  const [totalWordCount, setTotalWordCount] = useState(0);
+  const [darkMode, toggleDarkMode] = useDarkMode();
+  const [isDaltonianMode, setIsDaltonianMode] = useState(false);
 
+  // Debounce effect to delay search requests
   useEffect(() => {
-    setLoading(true);
-    Papa.parse(csvData, {
-      delimiter: ',',
-      header: true,
-      skipEmptyLines: true,
-      complete: (results) => {
-        const groupedData = results.data.reduce((acc, item) => {
-          const key = `${item.mot}-${item.categorie_grammaticale}`;
-          if (!acc[key]) {
-            acc[key] = {
-              mot: item.mot,
-              categorie_grammaticale: item.categorie_grammaticale,
-              items: []
-            };
-          }
-          acc[key].items.push(item);
-          return acc;
-        }, {});
+    if (searchTerm.length > 1) {
+      const delayDebounceFn = setTimeout(() => {
+        fetchSuggestionsByLetter(searchTerm); // Call the correct function for fetching suggestions
+      }, 300); // 300ms debounce
 
-        const groupedArray = Object.values(groupedData);
-        setData(groupedArray);
-        setVisibleData(groupedArray.slice(0, ITEMS_PER_PAGE));
-        setLoading(false);
-        if (groupedArray.length <= ITEMS_PER_PAGE) {
-          setAllDataLoaded(true);
-        }
-      },
-      error: (error) => {
-        console.error('Parse error:', error);
-        setLoading(false);
-      },
-    });
-  }, []);
-
-  const handleSearchChange = (text) => {
-    setSearchText(text);
-    setAllDataLoaded(false);
-    filterAndSetVisibleData(text, selectedLetter, selectedCategory, sortOption);
-  };
-
-  const handleSortChange = (option) => {
-    setSortOption(option);
-    filterAndSetVisibleData(searchText, selectedLetter, selectedCategory, option);
-  };
-
-  const handleLetterClick = (letter) => {
-    const newSelectedLetter = selectedLetter === letter ? null : letter;
-    setSelectedLetter(newSelectedLetter);
-    setAllDataLoaded(false);
-    filterAndSetVisibleData(searchText, newSelectedLetter, selectedCategory, sortOption);
-  };
-
-  const handleCategoryClick = (category) => {
-    const newSelectedCategory = selectedCategory === category ? null : category;
-    setSelectedCategory(newSelectedCategory);
-    setAllDataLoaded(false);
-    filterAndSetVisibleData(searchText, selectedLetter, newSelectedCategory, sortOption);
-  };
-
-  const toggleAlphabeticalFilter = () => {
-    setShowAlphabeticalFilter(!showAlphabeticalFilter);
-  };
-
-  const toggleCategoryFilter = () => {
-    setShowCategoryFilter(!showCategoryFilter);
-  };
-
-  const filterAndSetVisibleData = (searchText, selectedLetter, selectedCategory, sortOption) => {
-    setLoading(true);
-    const filteredData = data
-      .filter(group =>
-        (selectedLetter ? group.mot[0].toUpperCase() === selectedLetter : true) &&
-        (selectedCategory ? group.categorie_grammaticale === selectedCategory : true) &&
-        (group.mot.toLowerCase().includes(searchText.toLowerCase()) ||
-          group.categorie_grammaticale.toLowerCase().includes(searchText.toLowerCase()))
-      )
-      .sort((a, b) => {
-        switch (sortOption) {
-          case 'A-Z':
-            return a.mot.localeCompare(b.mot);
-          case 'Z-A':
-            return b.mot.localeCompare(a.mot);
-          case 'OLD':
-            return a.mot.localeCompare(b.mot);
-          case 'NEW':
-            return b.mot.localeCompare(a.mot);
-          default:
-            return 0;
-        }
-      });
-
-    setVisibleData(filteredData.slice(0, ITEMS_PER_PAGE));
-    setLoading(false);
-    if (filteredData.length <= ITEMS_PER_PAGE) {
-      setAllDataLoaded(true);
+      return () => clearTimeout(delayDebounceFn); // Cleanup debounce
     }
-  };
+  }, [searchTerm]);
 
-  const loadMoreData = () => {
-    if (loading || allDataLoaded) return;
+  // Function to fetch suggestions based on the search term
+  const fetchSuggestionsByLetter = async (term) => {
+    try {
+      const data = await fetchWordsBySearchTerm(term);
 
-    setLoading(true);
-    setTimeout(() => {
-      const currentLength = visibleData.length;
-      const moreData = data
-        .filter(group =>
-          (selectedLetter ? group.mot[0].toUpperCase() === selectedLetter : true) &&
-          (selectedCategory ? group.categorie_grammaticale === selectedCategory : true) &&
-          (group.mot.toLowerCase().includes(searchText.toLowerCase()) ||
-            group.categorie_grammaticale.toLowerCase().includes(searchText.toLowerCase()))
-        )
-        .sort((a, b) => {
-          switch (sortOption) {
-            case 'A-Z':
-              return a.mot.localeCompare(b.mot);
-            case 'Z-A':
-              return b.mot.localeCompare(a.mot);
-            case 'OLD':
-              return a.mot.localeCompare(b.mot);
-            case 'NEW':
-              return b.mot.localeCompare(a.mot);
-            default:
-              return 0;
-          }
-        })
-        .slice(currentLength, currentLength + ITEMS_PER_PAGE);
-      setVisibleData(prevData => [...prevData, ...moreData]);
-      setLoading(false);
-      if (currentLength + moreData.length >= data.length) {
-        setAllDataLoaded(true);
+      if (!data || !Array.isArray(data.words)) {
+        setError('Données inattendues reçues.');
+        return;
       }
-    }, 500);
-  };
 
-  const getCategoryDescription = (category) => {
-    switch (category) {
-      case 'n.m.':
-        return 'Nom masculin';
-      case 'n.f.':
-        return 'Nom féminin';
-      case 'n.':
-        return 'Nom';
-      case 'n.prop.':
-        return 'Nom propre';
-      case 'adj.':
-        return 'Adjectif';
-      case 'adv.':
-        return 'Adverbe';
-      case 'int.':
-        return 'Interjection';
-      case 'cnj.':
-        return 'Conjonction';
-      case 'n.m.p.':
-        return 'Noms masculins pluriels';
-      case 'v.':
-        return 'Verbe';
-      case 'n.f.p.':
-        return 'Nom féminin pluriel';
-      case 'pro.':
-        return 'Pronom';
-      case 'prp.':
-        return 'Pronominal';
-      case 'suff.':
-        return 'Suffixe';
-      case 'aff.':
-        return 'Affixe';
-      case 'Phrase':
-        return 'Phrase';
-      case 'adj. et n.':
-        return 'Adjectif et nom';
-      case 'nominal':
-        return 'Nominal';
-      case 'symb.':
-        return 'Symbolique';
-      case 'Faute Ortho':
-        return 'Erreurs orthographiques';
-      default:
-        return 'Autre';
-    }
-  };
+      // Set total word count only on the first search
+      if (totalWordCount === 0) {
+        setTotalWordCount(data.totalCount);
+      }
 
-  const renderItem = ({ item, index }) => {
-    const currentLetter = item.mot[0].toUpperCase();
-    const previousLetter = index > 0 ? visibleData[index - 1].mot[0].toUpperCase() : null;
-
-    return (
-      <View>
-        {currentLetter !== previousLetter && (
-          <BigTitle style={[styles.letterTitle, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }]}>
-            {currentLetter}.
-          </BigTitle>
-        )}
-        <Section
-          mot={item.mot}
-          categorie_grammaticale={item.categorie_grammaticale}
-          items={item.items}
-          iconName="book"
-          darkMode={darkMode}
-        />
-      </View>
-    );
-  };
-
-  const renderFooter = () => {
-    if (loading) {
-      return <ActivityIndicator size="large" color={darkMode ? darkTheme.text : lightTheme.text} />;
-    }
-    if (!loading && !allDataLoaded) {
-      return (
-        <TouchableOpacity onPress={loadMoreData} style={styles.loadMoreButton}>
-          <Text style={styles.loadMoreText}>Load More</Text>
-        </TouchableOpacity>
+      const filteredWords = data.words.filter((word) =>
+        word.mot.toLowerCase().startsWith(term.toLowerCase())
       );
+
+      setWordSuggestions(filteredWords.slice(0, 50)); // Limit to first 50 suggestions
+      setError(null);
+    } catch (error) {
+      setError(error.message);
     }
-    if (allDataLoaded) {
-      return <Text style={styles.noMoreText}>No more data</Text>;
-    }
-    return null;
   };
+
+  // Handles when a letter from the keyboard is pressed
+  const handleLetterPress = (letter) => {
+    setSearchTerm((prevSearchTerm) => `${prevSearchTerm}${letter}`); // Add the letter to the search term
+    setWordSuggestions([]);
+    setFinalResults([]);
+  };
+
+  // Validate the search term and trigger a fetch
+  const handleSearchValidation = () => {
+    setLoading(true);
+    fetchWordsBySearchTerm(searchTerm)
+      .then(data => {
+        if (!data || !Array.isArray(data.words)) {
+          throw new Error('Données inattendues reçues.');
+        }
+
+        setFinalResults(data.words);
+        setTotalWordCount(data.totalCount);
+        setError(null);
+      })
+      .catch(err => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  // Opens the modal for playing a video
+  const openVideoModal = (url) => {
+    setVideoUrl(url);
+    setModalVisible(true);
+  };
+
+  // Closes the video modal
+  const closeModal = () => {
+    setModalVisible(false);
+    setVideoUrl('');
+  };
+
+  // Toggle between daltonian and standard color mode
+  const toggleDaltonianMode = () => {
+    setIsDaltonianMode(!isDaltonianMode);
+  };
+
+  // Determine the correct color set based on daltonian mode
+  const currentColorSet = isDaltonianMode ? grammaticalCategoryColorsDaltonian : grammaticalCategoryColors;
 
   return (
-    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.background : lightTheme.background }]}>
-      <Header darkMode={darkMode} firstLink="/home" secondLink="none" />
-
-      <View style={styles.section}>
-        <FilterBar
-          onSearchChange={handleSearchChange}
-          onSortChange={handleSortChange}
+    <View style={{ flex: 1, position: 'relative', backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }}>
+      <Header darkMode={darkMode} PageTitle={dictionary.header.title} title="Dictionary" firstLink="/home" secondLink="none" />
+      <ScrollView>
+        <SliderDictionary
           darkMode={darkMode}
-          sortOption={sortOption}
+          isDaltonianMode={isDaltonianMode}
+          toggleDaltonianMode={toggleDaltonianMode}
         />
-        <View style={styles.filtersContainer}>
-          <TouchableOpacity
-            onPress={toggleAlphabeticalFilter}
-            style={[
-              styles.filterToggleButton,
-              showAlphabeticalFilter && styles.selectedFilterToggleButton
-            ]}
-          >
-            <Text style={styles.filterToggleText}>
-              {showAlphabeticalFilter ? 'Hide Letters' : 'Filter by Letters'}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={toggleCategoryFilter}
-            style={[
-              styles.filterToggleButton,
-              showCategoryFilter && styles.selectedFilterToggleButton
-            ]}
-          >
-            <Text style={styles.filterToggleText}>
-              {showCategoryFilter ? 'Hide Categories' : 'Filter by Categories'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        {showAlphabeticalFilter && (
-          <ScrollView contentContainerStyle={styles.alphabeticalFilterContainer} horizontal>
-            {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((letter) => (
-              <TouchableOpacity
-                key={letter}
-                onPress={() => handleLetterClick(letter)}
-                style={[
-                  styles.filterButton,
-                  selectedLetter === letter && styles.selectedFilterButton
-                ]}
-              >
-                <Text style={styles.filterText}>{letter}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        )}
-        {showCategoryFilter && (
-          <ScrollView contentContainerStyle={styles.categoryFilterContentContainer} horizontal>
-            {Array.from(new Set(data.map(item => item.categorie_grammaticale))).map((category, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleCategoryClick(category)}
-                style={[
-                  styles.filterButton,
-                  selectedCategory === category && styles.selectedFilterButton
-                ]}
-              >
-                <Text style={[styles.filterText, { color: darkMode ? darkTheme.text : lightTheme.text }]}>
-                {getCategoryDescription(category)}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        )}
-        <FlatList
-          data={visibleData}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-          ListFooterComponent={renderFooter}
-          contentContainerStyle={styles.sectionList}
+        <SearchAndKeyboard
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          handleLetterPress={handleLetterPress}
+          handleSearchValidation={handleSearchValidation}
+          darkMode={darkMode}
         />
-      </View>
+        <WordSuggestionsDisplay
+          wordSuggestions={wordSuggestions}
+          openVideoModal={openVideoModal}
+          darkMode={darkMode}
+          colorSet={currentColorSet}
+        />
+        <VideoModal
+          videoUrl={videoUrl}
+          modalVisible={modalVisible}
+          closeModal={closeModal}
+          darkMode={darkMode}
+        />
+      </ScrollView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  section: {
-    width: '90%',
-    alignSelf: 'center',
-  },
-  filtersContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  filterToggleButton: {
-    paddingHorizontal: 20,
-    minHeight: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: lightTheme.light_darkShade,
-    borderRadius: 100,
-    marginHorizontal: 5,
-
-  },
-  selectedFilterToggleButton: {
-    backgroundColor: lightTheme.darkShade,
-    color: 'white',
-  },
-  filterToggleText: {
-    fontSize: 12,
-    color: lightTheme.light_darkShade,
-
-  },
-  alphabeticalFilterContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: 5,
-    paddingHorizontal: 5,
-  },
-  categoryFilterContentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: 5,
-    paddingHorizontal: 5,
-  },
-
-  filterButton: {
-    padding: 8,
-    marginHorizontal: 2,
-    marginVertical: 10,
-    borderRadius: 5,
-    backgroundColor: 'white',
-    minWidth: 40,
-    minHeight: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  selectedFilterButton: {
-    backgroundColor: 'pink',
-  },
-  filterText: {
-    fontSize: 12,
-    textAlign: 'center',
-  },
-  sectionList: {
-    flexGrow: 1,
-    paddingBottom: 600,
-  },
-  loadMoreButton: {
-    padding: 10,
-    marginVertical: 20,
-    backgroundColor: lightTheme.light_darkShade,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  loadMoreText: {
-    fontSize: 16,
-    color: 'white',
-  },
-  noMoreText: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: lightTheme.light_darkShade,
-    padding: 20,
-  },
-});
 
 export default DictionaryScreen;
