@@ -13,8 +13,10 @@ const PosColors: { [key: string]: { color: string, identifier: string } } = {
     'OTHERS': { color: Colors.white, identifier: 'OTHERS' }, // Default color for other or unknown POS categories
 };
 
+
 // Function to get the color and identifier for a given POS identifier
 export const getColorForPOS = (pos: string) => PosColors[pos] || { color: Colors.white, identifier: '' };
+
 
 // Function to convert a selected category name to its corresponding POS identifier
 export function getPOSFromCategory(selectedCategory: string | null): string | null {
