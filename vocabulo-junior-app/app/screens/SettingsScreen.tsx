@@ -1,21 +1,31 @@
+// SettingsScreen.js
+// This file defines the settings screen in the application,
+// displaying a top navigation bar and components for CustomProfile, sign out, and DeleteProfile.
+
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 import React from 'react';
-import TopNavBar from '@/components/Navigation/TopNavBar';
-import { Colors } from '@/constants/Colors';
-import CustomProfile from '@/components/Settings/CustomProfile';
-import DeleteProfile from '@/components/Settings/DeleteProfile';
-import SignoutProfile from '@/components/Settings/SignoutProfile';
+
+import { Colors } from '@/constants/Colors'; // Importing colors defined in constants
+
+import TopNavBar from '@/components/Navigation/TopNavBar'; // Importing the top navigation bar component
+import CustomProfile from '@/components/Settings/CustomProfile'; // Importing the CustomProfile component
+import DeleteProfile from '@/components/Settings/DeleteProfile'; // Importing the DeleteProfile component
+import SignoutProfile from '@/components/Settings/SignoutProfile'; // Importing the SignoutProfile component
 
 export default function SettingsScreen() {
   return (
     <SafeAreaView style={styles.container}>
+      {/* Displaying the navigation bar with the title and specified colors */}
       <TopNavBar title="Paramètres" tintColor={Colors.darkBlue} color={Colors.darkBlue} />
+      {/* Displaying the CustomProfile component */}
       <View style={styles.CustomProfileComponent}>
         <CustomProfile />
       </View>
+      {/* Displaying the SignoutProfile component */}
       <View style={styles.SignoutProfileComponent}>
         <SignoutProfile />
       </View>
+      {/* Displaying the DeleteProfile component */}
       <View style={styles.DeleteProfileComponent}>
         <DeleteProfile />
       </View>
