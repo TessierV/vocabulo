@@ -11,6 +11,7 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { Colors } from '@/constants/Colors';
 import { ButtonText } from '@/constants/StyledText';
 
+
 // Define the type for navigation parameters
 type RootStackParamList = {
   LoginScreen: undefined;
