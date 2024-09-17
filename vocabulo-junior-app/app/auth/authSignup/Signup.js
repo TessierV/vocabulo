@@ -1,38 +1,50 @@
+// This file defines the Signup component which handles user registration via phone number.
+// It uses Firebase authentication and Firestore for user data management.
+
 import React, { useState } from "react";
 import { View, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
-import { useNavigation } from "@react-navigation/native";
-import { Colors } from '@/constants/Colors';
+
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { Colors } from '@/constants/Colors';
 import { HeaderTitle, Title } from '@/constants/StyledText';
 
+
+// Constants for phone number and code lengths
 const PHONE_NUMBER_LENGTH = 10;
 const CODE_LENGTH = 6;
 
 const Signup = () => {
+  // State variables for phone number, code, and confirmation
   const [phoneNumber, setPhoneNumber] = useState("");
   const [code, setCode] = useState("");
   const [confirm, setConfirm] = useState(null);
   const navigation = useNavigation();
 
+  // Function to send a verification code to the provided phone number
   const signInWithPhoneNumber = async () => {
     try {
       const confirmation = await auth().signInWithPhoneNumber(`+33${phoneNumber}`);
-      setConfirm(confirmation);
+      setConfirm(confirmation); // Store confirmation object for later use
     } catch (error) {
       console.error("Error sending code", error);
     }
   };
 
+  // Function to verify the code and handle user sign-up or navigation
   const confirmCode = async () => {
     try {
-      const userCredential = await confirm.confirm(code);
-      const user = userCredential.user;
+      const userCredential = await confirm.confirm(code); // Confirm the code
+      const user = userCredential.user; // Get user information
 
+      // Check if the user document exists in Firestore
       const userDocument = await firestore().collection("users").doc(user.uid).get();
 
       if (userDocument.exists) {
+        // Alert user if account already exists and provide navigation options
         Alert.alert(
           "Compte existant",
           "Votre compte existe déjà. Que souhaitez-vous faire ?",
@@ -48,7 +60,7 @@ const Signup = () => {
           ]
         );
       } else {
-        // Initialize liked cards collection for new users
+        // Initialize user document and likedCards collection for new users
         await firestore().collection('users').doc(user.uid).set({
           phoneNumber: phoneNumber,
           createdAt: firestore.FieldValue.serverTimestamp(),
@@ -56,10 +68,12 @@ const Signup = () => {
         await firestore().collection('users').doc(user.uid).collection('likedCards').doc('placeholder').set({
           placeholder: true
         });
-        
+
+        // Navigate to Detail screen after successful sign-up
         navigation.navigate("Detail", { uid: user.uid });
       }
     } catch (error) {
+      // Handle case where code is invalid
       Alert.alert(
         "Erreur de code",
         "Le code saisi est incorrect. Que souhaitez-vous faire ?",
@@ -78,6 +92,7 @@ const Signup = () => {
     }
   };
 
+  // Validation for phone number and code lengths
   const isPhoneNumberValid = phoneNumber.length === PHONE_NUMBER_LENGTH;
   const isCodeValid = code.length === CODE_LENGTH;
 
