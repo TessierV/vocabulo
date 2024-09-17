@@ -1,4 +1,4 @@
-// This file sets up an Express server that connects to a PostgreSQL database,
+// This file sets up an Express server that connects to the PostgreSQL database,
 // handles image uploads, and forwards the images to a remote service for processing.
 // It also includes a test route to check the PostgreSQL connection.
 
