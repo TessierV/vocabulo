@@ -21,6 +21,10 @@ export const color = {
   darkPlum: "#AA8AC9",
   neutralPlum: "#BA94D0",
   lightPlum: "#E9D3F5",
+
+  darkYellow: "#F3DF7C",
+  neutralYellow: "#F5E48F",
+  lightYellow: "#FAF2CB",
 };
 
 export const lightTheme = {
