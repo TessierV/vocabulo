@@ -1,5 +1,5 @@
 // DictionaryCard.tsx
-// This file defines a React Native component that represents a card displaying information about a word. 
+// This file defines a React Native component that represents a card displaying information about a word.
 // It includes features such as liking the card, showing definitions, and displaying video content.
 
 import React, { useState, useEffect } from 'react';
@@ -29,7 +29,6 @@ interface DictionaryCardProps extends InformationData {
     onUnlike?: () => void;  // Optional callback function for when the card is unliked
     refreshKey?: number;  // Optional prop to trigger a refresh
 }
-
 // Utility function to check if a URL is valid
 const isValidUrl = (url: string) => {
     try {
