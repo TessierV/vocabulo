@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import Header from '../../components/Header/Header';
+import Header from '@/components/Header/Header';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
 import ProfilConnexion from '@/components/Profil/ProfilConnexion';
 import WordHistory from '@/components/Profil/ProfilHistory';
-import Slider from '@/components/Slider/Slider';
-import ReusableCard from '@/components/Game/ReusableCard';
-import WeeklyOverview from '@/components/Home/WeeklyOverview';
+import SliderProfil from '@/components/Profil/SliderProfil';
+import HorizontalProgressBar from '@/components/Profil/HorizontalProgressBar';
+import TotalWordsProgressBar from '@/components/Profil/TotalWordsProgressBar';
+import SectionTitle from '@/components/General/SectionTitle';
+import { profil } from '@/constants/texts';
+
 
 const ProfileScreen = () => {
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -175,46 +178,62 @@ const ProfileScreen = () => {
   if (errorMessage) return <Text>{errorMessage}</Text>;
 
   return (
-    <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
-      <Header darkMode={darkMode} PageTitle="Profile" firstLink="/home" secondLink="/parameter" />
+    <View style={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade, }]}>
+      <Header darkMode={darkMode} PageTitle={profil.header.title} firstLink="/home" secondLink="/parameter" />
+      <ScrollView style={{ width: '100%',}}>
+      <SliderProfil filterType={filterType} darkMode={darkMode} userInfo={userInfo} />
 
-      <ScrollView style={{ width: '100%' }}>
-      <Slider
-          data={[
-            {
-              key: '1', component:
-              <ReusableCard
-              title="Profil"
-              description="Explorez de nouveaux défis chaque jour pour améliorer vos compétences."
-              buttonText="Découvrir"
-              onPressButton={() => console.log('Nouveaux Défis Découvrir')}
-              containerBgColor={darkMode ? darkTheme.light_darkShade : lightTheme.darkShade}
-              iconBgColor={darkMode ? darkTheme.darkShade : color.darkBlue}
-              darkMode={darkMode}
-            />
+        <View style={styles.container}>
+          <SectionTitle
+            title={profil.section.title}
+            darkMode={darkMode}
+            showTextAndIcon={false}
+          />
+          <TotalWordsProgressBar filteredWords={wordHistory} darkMode={darkMode} />
+        </View>
 
-            },
-            {
-              key: '2', component:
-              <ReusableCard
-                title="Nouveaux Défis"
-                description="Explorez de nouveaux défis chaque jour pour améliorer vos compétences."
-                buttonText="Découvrir"
-                onPressButton={() => console.log('Nouveaux Défis Découvrir')}
-                containerBgColor={darkMode ? darkTheme.light_darkShade : lightTheme.darkShade}
-                iconBgColor={darkMode ? darkTheme.darkShade : color.darkBlue}
-                darkMode={darkMode}
-              />
-            },
-            { key: '3', component: <WeeklyOverview darkMode={darkMode} /> },
+        <View style={styles.container}>
+          <SectionTitle
+            title={profil.section2.title}
+            darkMode={darkMode}
+            showTextAndIcon={false}
+          />
+          <ProfilConnexion maxStreak={maxStreak} currentStreak={currentStreak} totalDaysOnline={totalDaysOnline} darkMode={darkMode} />
+        </View>
 
-
-          ]}
+        <View style={[styles.container, { marginTop: 5 }]}>
+          <SectionTitle
+            title={profil.section3.title}
+            text={profil.section3.subheader}
+            iconName="info"
+            popupTitle={profil.section3.popup.title}
+            popupText={profil.section3.popup.description}
+            popupButtonText={profil.section3.popup.button}
+            darkMode={darkMode}
+          />
+          <HorizontalProgressBar filteredWords={filteredWords} darkMode={darkMode} />
+        </View>
+        <WordHistory
+          filterType={filterType}
+          setFilterType={setFilterType}
+          currentWeek={currentWeek}
+          currentMonth={currentMonth}
+          today={today}
+          previousWeek={previousWeek}
+          nextWeek={nextWeek}
+          previousMonth={previousMonth}
+          nextMonth={nextMonth}
+          oldestDate={oldestDate}
+          formatWeek={formatWeek}
+          filteredWords={filteredWords}
+          getBorderColor={getBorderColor}
           darkMode={darkMode}
         />
+        <View style={{marginBottom: 200}}></View>
 
-        <View style={styles.section}>
-          {/* User Info Section */}
+        {/* User Info Section */}
+        {/*
+          <View style={styles.section}>
           <Text style={styles.title}>Informations utilisateur</Text>
           {userInfo ? (
             <View style={styles.userInfoContainer}>
@@ -227,28 +246,8 @@ const ProfileScreen = () => {
             </View>
           ) : (
             <Text>Aucune information utilisateur trouvée</Text>
-          )}
-
-          {/* Connection Streak */}
-          <ProfilConnexion maxStreak={maxStreak} currentStreak={currentStreak} totalDaysOnline={totalDaysOnline} />
-          </View>
-
-          {/* Word History Component */}
-          <WordHistory
-            filterType={filterType}
-            setFilterType={setFilterType}
-            currentWeek={currentWeek}
-            currentMonth={currentMonth}
-            today={today}
-            previousWeek={previousWeek}
-            nextWeek={nextWeek}
-            previousMonth={previousMonth}
-            nextMonth={nextMonth}
-            oldestDate={oldestDate}
-            formatWeek={formatWeek}
-            filteredWords={filteredWords}
-            getBorderColor={getBorderColor}
-          />
+            </View>
+          )}*/}
       </ScrollView>
     </View>
   );
@@ -256,11 +255,15 @@ const ProfileScreen = () => {
 
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+  },
+  container: {
+    width: '90%',
+    alignSelf: 'center',
   },
   section: {
     width: '90%',
