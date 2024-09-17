@@ -35,7 +35,6 @@ interface ParsedData {
   original_text?: string;
   processed_results?: Sentence[];
 }
-
 // Function to clean up the definition text
 const cleanDefinition = (definition: string) => {
   let cleanedDefinition = definition.replace(/["]/g, ''); // Remove double quotes
