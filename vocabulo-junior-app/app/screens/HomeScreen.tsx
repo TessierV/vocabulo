@@ -10,7 +10,7 @@ import { Colors } from '@/constants/Colors'; // Importing colors defined in cons
 import TopNavBar from '@/components/Navigation/TopNavBar'; // Importing the top navigation bar component
 import GoToStart from '@/components/Home/GoToStart'; // Importing the GotoStart component
 import DisplaySettings from '@/components/Home/DisplaySettings'; // Importing the displaySettings component
-import HelpToScannText from '@/components/Home/HelpToScannText'; // Importing the helpToScanText component
+import HelpToScannText from '@/components/Home/WarningToScannText'; // Importing the helpToScanText component
 
 
 export default function HomeScreen() {

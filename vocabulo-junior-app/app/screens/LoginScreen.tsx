@@ -9,7 +9,7 @@ import { useRouter } from 'expo-router'; // Importing the router for navigation
 import { ButtonText, BigTitle } from '@/constants/StyledText'; // Importing styled text defined in constants
 import { Colors } from '@/constants/Colors'; // Importing colors defined in constants
 
-import BackgroundLogin from '../../components/auth/backgroundLogin'; // Importing the BackgroundLogin component
+import BackgroundLogin from '../../components/Authentication/backgroundLogin'; // Importing the BackgroundLogin component
 
 
 export default function LoginScreen() {

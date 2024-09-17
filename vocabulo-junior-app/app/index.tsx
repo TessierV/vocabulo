@@ -4,7 +4,6 @@
 import { View } from 'react-native';
 
 import ScreensLayout from './screens/_layout';
-import HomeScreen from './screens/HomeScreen';
 
 
 export default function Index() {
@@ -15,7 +14,7 @@ export default function Index() {
       }}
     >
       {/* Display the ScreensLayout navigation first when the app opens */}
-      <HomeScreen />
+      <ScreensLayout />
     </View>
   );
 }
