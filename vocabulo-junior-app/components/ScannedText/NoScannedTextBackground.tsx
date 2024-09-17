@@ -46,6 +46,7 @@ export default function NoScannedTextBackground({ style }: NoScannedTextBackgrou
         ).start();
     }, [move2Anim]);
 
+
     // Animate move3Anim to create a vertical movement effect
     useEffect(() => {
         Animated.loop(
