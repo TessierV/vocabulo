@@ -6,6 +6,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { type IconProps } from '@expo/vector-icons/build/createIconSet';
 import { type ComponentProps } from 'react';
 
+
 // Component for rendering Ionicons with a fixed size and adjusted margin
 export function TabBarIonicons({ style, ...rest }: IconProps<ComponentProps<typeof Ionicons>['name']>) {
   return <Ionicons size={25} style={[{ marginBottom: -11 }, style]} {...rest} />;
