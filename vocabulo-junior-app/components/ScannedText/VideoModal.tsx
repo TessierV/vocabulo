@@ -1,8 +1,12 @@
+// This file defines a React component for displaying a video in a modal dialog.
+// It uses Expo's Video component for video and provides a close button to dismiss the modal.
+
 import React from 'react';
 import { Modal, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
-import { Colors } from '@/constants/Colors';
+
 import EvilIcons from '@expo/vector-icons/EvilIcons';
+import { Colors } from '@/constants/Colors';
 
 interface VideoModalProps {
   visible: boolean;

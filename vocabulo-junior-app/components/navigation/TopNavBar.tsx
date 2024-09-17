@@ -1,18 +1,23 @@
+// This file defines the `TopNavBar` component, which renders a customizable top navigation bar with animated header background,
+// back navigation, and home navigation icons.
+
 import React, { useEffect, useRef } from 'react';
 import { Animated, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { router, useNavigation } from 'expo-router';
+
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { HeaderTitle } from '@/constants/StyledText';
-import { router, useNavigation } from 'expo-router';
+
 
 export default function TopNavBar({ title = "Accueil", tintColor = Colors.black, color = Colors.black }) {
     const navigation = useNavigation();
 
-
+    // Create an animated value reference
     const animatedValue = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-
+        // Define and start the looping animation sequence
         Animated.loop(
             Animated.sequence([
                 Animated.timing(animatedValue, {
@@ -29,6 +34,7 @@ export default function TopNavBar({ title = "Accueil", tintColor = Colors.black,
         ).start();
     }, [animatedValue]);
 
+    // Interpolate the animated value to create a vertical translation effect
     const translateY = animatedValue.interpolate({
         inputRange: [0, 1],
         outputRange: [10, 0],
@@ -36,19 +42,25 @@ export default function TopNavBar({ title = "Accueil", tintColor = Colors.black,
 
     return (
         <View style={styles.container}>
+            {/* Top container with background color */}
             <View style={[styles.topContainer, { backgroundColor: color }]}></View>
 
-
+            {/* Animated header background image */}
             <Animated.Image 
-                source={require('./../../assets/images/Header-background.png')}
+                source={require('./../../assets/images/graphicElements/Header-background.png')}
                 style={[styles.headerBackground, { tintColor: tintColor, transform: [{ translateY }] }]}
             />
 
             <View style={styles.iconTextContainer}>
+                {/* Back navigation button */}
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back-outline" style={styles.iconLeft} />
                 </TouchableOpacity>
+
+                {/* Title in the center */}
                 <HeaderTitle style={[styles.text, { color: Colors.white }]}>{title}</HeaderTitle>
+
+                {/* Home navigation button */}
                 <TouchableOpacity onPress={() => router.push('./../screens/HomeScreen')}>
                     <MaterialCommunityIcons name="home" style={styles.iconRight} />
                 </TouchableOpacity>

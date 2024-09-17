@@ -1,5 +1,8 @@
-import { View, Animated, StyleSheet, ViewStyle, ImageStyle } from 'react-native';
+// This file defines the NoScannedTextBackground component, which includes animated background elements.
+
+import { View, Animated, StyleSheet, ViewStyle } from 'react-native';
 import React, { useEffect, useRef } from 'react';
+
 import { Colors } from '@/constants/Colors';
 
 interface NoScannedTextBackgroundProps {
@@ -7,12 +10,14 @@ interface NoScannedTextBackgroundProps {
 }
 
 export default function NoScannedTextBackground({ style }: NoScannedTextBackgroundProps) {
+    // Create animated values for each animated element
     const moveAnim = useRef(new Animated.Value(0)).current;
     const move2Anim = useRef(new Animated.Value(0)).current;
     const move3Anim = useRef(new Animated.Value(0)).current;
     const move4Anim = useRef(new Animated.Value(0)).current;
     const move5Anim = useRef(new Animated.Value(0)).current;
 
+    // Animate moveAnim to create a vertical bounce effect
     useEffect(() => {
         Animated.loop(
             Animated.sequence([
@@ -30,6 +35,7 @@ export default function NoScannedTextBackground({ style }: NoScannedTextBackgrou
         ).start();
     }, [moveAnim]);
 
+    // Animate move2Anim to create a horizontal movement effect
     useEffect(() => {
         Animated.loop(
             Animated.timing(move2Anim, {
@@ -40,6 +46,7 @@ export default function NoScannedTextBackground({ style }: NoScannedTextBackgrou
         ).start();
     }, [move2Anim]);
 
+    // Animate move3Anim to create a vertical movement effect
     useEffect(() => {
         Animated.loop(
             Animated.timing(move3Anim, {
@@ -50,6 +57,7 @@ export default function NoScannedTextBackground({ style }: NoScannedTextBackgrou
         ).start();
     }, [move3Anim]);
 
+    // Animate move4Anim to create a delayed horizontal movement effect
     useEffect(() => {
         Animated.loop(
             Animated.timing(move4Anim, {
@@ -61,6 +69,7 @@ export default function NoScannedTextBackground({ style }: NoScannedTextBackgrou
         ).start();
     }, [move4Anim]);
 
+    // Animate move5Anim to create a delayed vertical movement effect
     useEffect(() => {
         Animated.loop(
             Animated.timing(move5Anim, {
@@ -74,12 +83,15 @@ export default function NoScannedTextBackground({ style }: NoScannedTextBackgrou
 
     return (
         <View style={[styles.container, style]}>
+            {/* Background view */}
             <View style={styles.headerBackground} />
+            {/* Animated element2 */}
             <Animated.Image
                 source={require('./../../assets/images/graphicElements/element2.png')}
                 style={[styles.element2, { transform: [{ translateX: move2Anim }, { translateY: move3Anim }] }]}
             />
 
+            {/* Animated element1 */}
             <Animated.Image
                 source={require('./../../assets/images/graphicElements/element1.png')}
                 style={[styles.element1, { transform: [{ translateX: move4Anim }, { translateY: move5Anim }] }]}
@@ -90,7 +102,7 @@ export default function NoScannedTextBackground({ style }: NoScannedTextBackgrou
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, // Ensures the container takes up the full space available
+        flex: 1,
     } as ViewStyle,
     headerBackground: {
         width: '100%',

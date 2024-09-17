@@ -1,56 +1,67 @@
+// This file defines the LogoSplash component, which displays animated logo elements for a splash screen.
+
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, StyleSheet, Image } from 'react-native';
+
 import { Colors } from '@/constants/Colors';
 
+
 export default function LogoSplash() {
+  // Create refs for animated values
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const moveAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    // Define the scale animation sequence
     const scaleAnimation = Animated.loop(
       Animated.sequence([
         Animated.timing(scaleAnim, {
-          toValue: 1.1,
+          toValue: 1.1, // Scale up
           duration: 800,
           useNativeDriver: true,
         }),
         Animated.timing(scaleAnim, {
-          toValue: 1,
+          toValue: 1, // Scale back to original
           duration: 800,
           useNativeDriver: true,
         }),
       ]),
     );
 
+    // Define the move animation sequence
     const moveAnimation = Animated.loop(
       Animated.sequence([
         Animated.timing(moveAnim, {
-          toValue: -15,
+          toValue: -15, // Move up
           duration: 800,
           useNativeDriver: true,
         }),
         Animated.timing(moveAnim, {
-          toValue: 0,
+          toValue: 0, // Move back to original position
           duration: 800,
           useNativeDriver: true,
         }),
       ]),
     );
 
+    // Start the animations
     scaleAnimation.start();
     moveAnimation.start();
   }, [scaleAnim, moveAnim]);
 
   return (
     <View>
+      {/* Animated logo image with vertical movement */}
       <Animated.Image
-        source={require('./../../assets/images/Logo-plum.png')}
+        source={require('./../../assets/images/graphicElements/Logo-plum.png')}
         style={[styles.logo, { transform: [{ translateY: moveAnim }] }]}
       />
+      {/* Animated text logo with scaling effect */}
       <Animated.Image
-        source={require('./../../assets/images/Logo-typo.png')}
+        source={require('./../../assets/images/graphicElements/Logo-typo.png')}
         style={[styles.logoTypo, { transform: [{ scale: scaleAnim }] }]}
       />
+      {/* Static algae images */}
       <Image
         source={require('./../../assets/images/graphicElements/Algea3.png')}
         style={styles.algea3}
@@ -59,6 +70,7 @@ export default function LogoSplash() {
         source={require('./../../assets/images/graphicElements/Algea2.png')}
         style={styles.algea2}
       />
+      {/* Animated shadow logo and bubbles with scaling effect */}
       <Animated.Image
         source={require('./../../assets/images/graphicElements/Shadow-logo.png')}
         style={[styles.shadowLogo, { transform: [{ scale: scaleAnim }] }]}

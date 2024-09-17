@@ -1,3 +1,5 @@
+// This file defines the DeleteProfile component, to delete the user account
+
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -15,55 +17,62 @@ type RootStackParamList = {
 type NavigationProp = StackNavigationProp<RootStackParamList, 'LoginScreen'>;
 
 export default function DeleteProfile() {
-  // Use correct type for confirmation result
-  const [confirm, setConfirm] = useState<FirebaseAuthTypes.ConfirmationResult | null>(null); 
-  const [code, setCode] = useState(''); 
+  // State to hold the confirmation result for phone number re-authentication
+  const [confirm, setConfirm] = useState<FirebaseAuthTypes.ConfirmationResult | null>(null);
+  // State to hold the verification code input by the user
+  const [code, setCode] = useState('');
+  // Navigation hook to navigate between screens
   const navigation = useNavigation<NavigationProp>();
 
+  // Function to handle re-authentication by sending a verification code to the user's phone number
   const handleReauthenticate = async () => {
     const user = auth().currentUser;
     if (!user || !user.phoneNumber) {
-      Alert.alert('Erreur', 'Aucun utilisateur connecté ou le numéro de téléphone est manquant.');
+      Alert.alert('Error', 'No user is logged in or phone number is missing.');
       return;
     }
 
     try {
-      // Send a new verification code to the user's phone number
+      // Send a verification code to the user's phone number
       const confirmation = await auth().signInWithPhoneNumber(user.phoneNumber);
-      setConfirm(confirmation); // Save confirmation object to verify code later
-      Alert.alert('Code envoyé', 'Un code de vérification a été envoyé à votre numéro de téléphone.');
+      setConfirm(confirmation); // Save the confirmation object to verify the code later
+      Alert.alert('Code Sent', 'A verification code has been sent to your phone number.');
     } catch (error) {
-      console.error('Erreur lors de l\'envoi du code de vérification:', error);
-      Alert.alert('Erreur', 'Échec de l\'envoi du code de vérification. Veuillez réessayer.');
+      console.error('Error sending verification code:', error);
+      Alert.alert('Error', 'Failed to send verification code. Please try again.');
     }
   };
 
+  // Function to confirm the verification code entered by the user
   const confirmCode = async () => {
     try {
       if (confirm) {
-        await confirm.confirm(code); // Re-authenticate the user by confirming the code
-        await handleDeleteProfile(); // Proceed to delete the account
+        await confirm.confirm(code); // Confirm the verification code
+        await handleDeleteProfile(); // Proceed to delete the profile
       } else {
-        Alert.alert('Erreur', 'Veuillez d\'abord envoyer un code de vérification.');
+        Alert.alert('Error', 'Please send a verification code first.');
       }
     } catch (error) {
-      console.error('Erreur lors de la confirmation du code:', error);
-      Alert.alert('Erreur', 'Le code de vérification est incorrect.');
+      console.error('Error confirming code:', error);
+      Alert.alert('Error', 'The verification code is incorrect.');
     }
   };
 
+  // Function to handle the deletion of the user profile
   const handleDeleteProfile = async () => {
     try {
       const user = auth().currentUser;
       if (!user) {
-        Alert.alert('Erreur', 'Aucun utilisateur connecté');
+        Alert.alert('Error', 'No user is logged in.');
         return;
       }
 
-      await firestore().collection('users').doc(user.uid).delete(); // Delete user data from Firestore
-      await user.delete(); // Delete Firebase Authentication user
+      // Delete user data from Firestore
+      await firestore().collection('users').doc(user.uid).delete();
+      // Delete the user account from Firebase Authentication
+      await user.delete();
 
-      Alert.alert('Succès', 'Votre compte a été supprimé avec succès', [
+      Alert.alert('Success', 'Your account has been successfully deleted', [
         {
           text: 'OK',
           onPress: () => {
@@ -72,22 +81,23 @@ export default function DeleteProfile() {
         },
       ]);
     } catch (error) {
-      console.error('Erreur lors de la suppression du compte:', error);
-      Alert.alert('Erreur', 'Échec de la suppression du compte. Veuillez réessayer.');
+      console.error('Error deleting account:', error);
+      Alert.alert('Error', 'Failed to delete the account. Please try again.');
     }
   };
 
+  // Function to show a confirmation dialog before deleting the profile
   const confirmDelete = () => {
     Alert.alert(
-      'Confirmation de Suppression',
-      'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.',
+      'Delete Confirmation',
+      'Are you sure you want to delete your account? This action is irreversible.',
       [
         {
-          text: 'Annuler',
+          text: 'Cancel',
           style: 'cancel',
         },
         {
-          text: 'Supprimer',
+          text: 'Delete',
           onPress: handleReauthenticate,
           style: 'destructive',
         },
@@ -98,24 +108,24 @@ export default function DeleteProfile() {
   return (
     <View style={styles.container}>
       <View style={styles.button}>
-        <ButtonText style={styles.textButton}>Supprimer le compte</ButtonText>
+        <ButtonText style={styles.textButton}>Delete Account</ButtonText>
         <TouchableOpacity onPress={confirmDelete}>
           <EvilIcons name="trash" style={styles.iconButton} />
         </TouchableOpacity>
       </View>
 
-      {/* Input for verification code */}
+      {/* Input for the verification code */}
       {confirm && (
         <View>
           <TextInput
             style={styles.input}
-            placeholder="Entrez le code de vérification"
+            placeholder="Enter verification code"
             value={code}
             onChangeText={setCode}
             keyboardType="number-pad"
           />
           <TouchableOpacity onPress={confirmCode} style={styles.confirmButton}>
-            <ButtonText>Confirmer le code</ButtonText>
+            <ButtonText style={styles.confirmButtonText}>Confirm Code</ButtonText>
           </TouchableOpacity>
         </View>
       )}
@@ -152,16 +162,19 @@ const styles = StyleSheet.create({
   },
   input: {
     padding: 15,
-    borderColor: Colors.darkGreen,
+    borderColor: Colors.darkBlue,
     borderWidth: 1,
     borderRadius: 10,
     marginVertical: 20,
     fontSize: 18,
   },
   confirmButton: {
-    backgroundColor: Colors.darkGreen,
+    backgroundColor: Colors.darkBlue,
     padding: 15,
     borderRadius: 100,
     alignItems: 'center',
+  },
+  confirmButtonText: {
+    color: Colors.white
   },
 });

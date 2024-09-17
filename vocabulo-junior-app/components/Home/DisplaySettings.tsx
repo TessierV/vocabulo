@@ -1,4 +1,4 @@
-// This file defines the `DisplaySettings` component which displays user-specific settings and a greeting message.
+// This file defines the `DisplaySettings` component which displays user-specific settings.
 // It fetches the user's name from Firebase Auth or Firestore and provides navigation to the settings screen.
 
 import React, { useEffect, useState } from 'react';

@@ -1,7 +1,13 @@
+// ColorsLegend.tsx
+// This file defines a React Native component that renders a legend displaying different colors
+// associated with various parts of speech (POS) categories. Each category is displayed with a
+// colored square and a descriptive label.
+
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+
 import { Colors } from '@/constants/Colors';
-import { ModalText } from '@/constants/StyledText'; // Assurez-vous que ModalText est bien exporté
+import { ModalText } from '@/constants/StyledText'; 
 
 import { getColorForPOS } from './PosColors';
 

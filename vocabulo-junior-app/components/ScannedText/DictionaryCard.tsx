@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { getColorForPOS } from './PosColors';
-import { Colors } from '@/constants/Colors';
-import EvilIcons from '@expo/vector-icons/EvilIcons';
-import Ionicons from '@expo/vector-icons/Ionicons'; 
-import { DefCard, VideoButtonCard, WordCard } from '@/constants/StyledText';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import VideoModal from './VideoModal'; // Import the new VideoModal component
+// DictionaryCard.tsx
+// This file defines a React Native component that represents a card displaying information about a word. 
+// It includes features such as liking the card, showing definitions, and displaying video content.
 
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+
+import EvilIcons from '@expo/vector-icons/EvilIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Colors } from '@/constants/Colors';
+import { DefCard, VideoButtonCard, WordCard } from '@/constants/StyledText';
+import { getColorForPOS } from './PosColors';
+import VideoModal from './VideoModal';
+
+
+// Interface for the information data used in the card
 interface InformationData {
     word: string;
     lemma: string;
@@ -17,25 +24,29 @@ interface InformationData {
     url: string;
 }
 
+// Props for the DictionaryCard component
 interface DictionaryCardProps extends InformationData {
-    onUnlike?: () => void;
-    refreshKey?: number;  // New prop
+    onUnlike?: () => void;  // Optional callback function for when the card is unliked
+    refreshKey?: number;  // Optional prop to trigger a refresh
 }
 
+// Utility function to check if a URL is valid
 const isValidUrl = (url: string) => {
     try {
-        new URL(url);
-        return true;
+        new URL(url); // Attempt to create a URL object
+        return true; // URL is valid
     } catch {
-        console.log(`Invalid URL: ${url}`);
-        return false;
+        console.log(`Invalid URL: ${url}`); // Log invalid URL
+        return false; // URL is not valid
     }
 };
 
+// Main component for the dictionary card
 const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func, definition, url, onUnlike, refreshKey }) => {
-    const [isLiked, setIsLiked] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
+    const [isLiked, setIsLiked] = useState(false); // State to track if the card is liked
+    const [modalVisible, setModalVisible] = useState(false); // State to control the visibility of the VideoModal
 
+    // Fetch the like state from AsyncStorage when the component mounts
     useEffect(() => {
         const fetchLikeState = async () => {
             try {
@@ -55,25 +66,26 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
         fetchLikeState();
     }, [word]);
 
+    // Reset like state when refreshKey changes
     useEffect(() => {
-        // Reset like state when refreshKey changes
-        setIsLiked(false);  // Reset like state on refresh
+        setIsLiked(false);
     }, [refreshKey]);
 
+    // Handle icon press to toggle like state and update AsyncStorage
     const handleIconPress = async () => {
-        const newLikeState = !isLiked;
-        setIsLiked(newLikeState);
+        const newLikeState = !isLiked; // Toggle the like state
+        setIsLiked(newLikeState); // Update the local state
         try {
-            await AsyncStorage.setItem(`like-${word}`, JSON.stringify(newLikeState));
+            await AsyncStorage.setItem(`like-${word}`, JSON.stringify(newLikeState)); // Save the new like state
             if (newLikeState) {
                 console.log(`Saving card data for ${word}`);
-                const cardData = { word, lemma, pos, func, definition, url, addedDate: Date.now() };
-                await AsyncStorage.setItem(`card-${word}`, JSON.stringify(cardData));
+                const cardData = { word, lemma, pos, func, definition, url }; // Card data
+                await AsyncStorage.setItem(`card-${word}`, JSON.stringify(cardData)); // Save the card data
             } else {
                 console.log(`Removing card data for ${word}`);
-                await AsyncStorage.removeItem(`card-${word}`);
+                await AsyncStorage.removeItem(`card-${word}`); // Remove the card data
                 if (onUnlike) {
-                    onUnlike();
+                    onUnlike(); // Call the onUnlike callback if provided
                 }
             }
         } catch (error) {
@@ -81,20 +93,22 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
         }
     };
 
+    // Handle the press of the video button to show the VideoModal
     const handleVideoButtonPress = () => {
-        setModalVisible(true);
+        setModalVisible(true); // Set modalVisible to true to show the VideoModal
     };
 
+    // Skip rendering for special characters
     if (['.', '!', '?', ';', ':', '(', ')', '[', ']', '{', '}', '-', '—', '’', '“', '”', '|', '‘', '>', '<', '…', '»', '«'].includes(word)) {
         console.log(`Skipping special character card for: ${word}`);
-        return null;
+        return null; // Return null to skip rendering for special characters
     }
 
-    const { color: cardColor, identifier } = getColorForPOS(pos);
-    const showButton = url && isValidUrl(url);
-    const showDefinition = definition !== 'Non trouvé dans la BDD';
-    const shouldShowLemma = lemma !== word;
-    const showIcon = ['NOUN', 'VERB', 'ADJ'].includes(identifier);
+    const { color: cardColor, identifier } = getColorForPOS(pos); // Get color and identifier based on part of speech
+    const showButton = url && isValidUrl(url); // Determine if the button should be shown
+    const showDefinition = definition !== 'Non trouvé dans la BDD'; // Determine if the definition should be shown
+    const shouldShowLemma = lemma !== word; // Determine if the lemma should be shown
+    const showIcon = ['NOUN', 'VERB', 'ADJ'].includes(identifier); // Determine if the like icon should be shown
 
     return (
         <View style={[styles.card, { backgroundColor: cardColor }]} >
@@ -111,7 +125,7 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
                         <Ionicons name={isLiked ? "heart" : "heart-outline"} style={styles.likeIcon} />
                     </TouchableOpacity>
                 ) : (
-                    <View style={styles.emptyContainer} /> 
+                    <View style={styles.emptyContainer} />
                 )}
             </View>
             <View style={styles.underline} />
@@ -136,6 +150,7 @@ const DictionaryCard: React.FC<DictionaryCardProps> = ({ word, lemma, pos, func,
     );
 };
 
+// Styles for the DictionaryCard component
 const styles = StyleSheet.create({
     card: {
         padding: 15,

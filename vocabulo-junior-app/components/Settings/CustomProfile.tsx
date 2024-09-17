@@ -1,18 +1,30 @@
+// CustomProfile.tsx
+// This file defines a React Native component for displaying and editing a user's profile name.
+// It uses Firebase for user authentication and Firestore for storing user data.
+// The component includes an animated logo and allows the user to edit their name.
+
 import { View, Animated, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import React, { useRef, useEffect, useState } from 'react';
-import { Colors } from '@/constants/Colors';
-import { ButtonText } from '@/constants/StyledText';
-import EvilIcons from '@expo/vector-icons/EvilIcons';
+
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
+import { Colors } from '@/constants/Colors';
+import EvilIcons from '@expo/vector-icons/EvilIcons';
+import { ButtonText } from '@/constants/StyledText';
+
 export default function CustomProfile() {
-  const [userName, setUserName] = useState<string>('Utilisateur');
+  // State for storing the user's name and handling editing mode
+  const [userName, setUserName] = useState<string>('User');
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [newUserName, setNewUserName] = useState<string>(userName);
+
+  // Reference for animation value
   const moveAnim = useRef(new Animated.Value(0)).current;
 
+  // Effect to fetch user data and start the animation loop
   useEffect(() => {
+    // Function to fetch user data from Firestore
     const fetchUserData = async () => {
       try {
         const user = auth().currentUser;
@@ -37,6 +49,7 @@ export default function CustomProfile() {
 
     fetchUserData();
 
+    // Start the animation loop for the logo
     const moveAnimation = Animated.loop(
       Animated.sequence([
         Animated.timing(moveAnim, {
@@ -54,7 +67,7 @@ export default function CustomProfile() {
     moveAnimation.start();
   }, [moveAnim]);
 
-  // Function to update user name in Firestore
+  // Function to update the user's name in Firestore
   const updateUserName = async () => {
     try {
       const user = auth().currentUser;
@@ -76,7 +89,7 @@ export default function CustomProfile() {
   return (
     <View style={styles.container}>
       <Animated.Image
-        source={require('./../../assets/images/Logo-blue.png')}
+        source={require('./../../assets/images/graphicElements/Logo-blue.png')}
         style={[styles.logo, { transform: [{ translateY: moveAnim }] }]}
       />
       <View style={styles.UserNameContainer}>

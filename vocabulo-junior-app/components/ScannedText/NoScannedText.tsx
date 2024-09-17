@@ -1,59 +1,77 @@
-// components/NoScannedText.tsx
+// NoScannedText.tsx
+// This component displays a message and a button prompting the user to take a photo if no text has been scanned.
+// It also includes a simple animation for the logo and background elements.
+
 import React, { useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Image } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Animated, Image } from 'react-native';
+import { router } from 'expo-router';
+
 import { Colors } from '@/constants/Colors';
 import { ButtonText, InformationText } from '@/constants/StyledText';
-import { router } from 'expo-router';
 import NoScannedTextBackground from './NoScannedTextBackground';
 
+
+// Functional component for displaying no scanned text message and prompt
 const NoScannedText: React.FC = () => {
+  // Ref to store animated value for the logo's vertical movement
   const moveAnim = useRef(new Animated.Value(0)).current;
 
+  // Effect to start the animation on component mount
   useEffect(() => {
+    // Create a looping animation sequence for the logo
     const moveAnimation = Animated.loop(
       Animated.sequence([
         Animated.timing(moveAnim, {
-          toValue: -15,
-          duration: 800,
-          useNativeDriver: true,
+          toValue: -15, // Move logo up
+          duration: 800, // Duration of the upward move
+          useNativeDriver: true, // Use native driver for better performance
         }),
         Animated.timing(moveAnim, {
-          toValue: 0,
-          duration: 800,
-          useNativeDriver: true,
+          toValue: 0, // Move logo back to original position
+          duration: 800, // Duration of the downward move
+          useNativeDriver: true, // Use native driver for better performance
         }),
       ])
     );
-    moveAnimation.start();
+    moveAnimation.start(); // Start the animation
     
-    return () => moveAnimation.stop(); // Cleanup animation on unmount
+    // Cleanup animation on component unmount
+    return () => moveAnimation.stop();
   }, [moveAnim]);
 
   return (
     <View style={styles.container}>
       <View style={styles.informationsContainer}>
+        {/* Animated logo with vertical movement */}
         <Animated.Image
-          source={require('./../../assets/images/Logo-green.png')}
+          source={require('./../../assets/images/graphicElements/Logo-green.png')}
           style={[styles.logo, { transform: [{ translateY: moveAnim }] }]}
         />
+        {/* Text indicating no scanned text is available */}
         <InformationText style={styles.text}>Aucun texte scanné n'est disponible.</InformationText>
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => router.push('./../../(tabs)/TakePhoto')}>
-  <View style={styles.button}>
-    <ButtonText style={styles.buttonText}>Prends un texte en photo</ButtonText>
-  </View>
-  <Image
-    source={require('./../../assets/images/stars.png')}
-    style={styles.stars}
-  />
-</TouchableOpacity>
-
+        {/* Button prompting user to take a photo */}
+        <TouchableOpacity 
+          style={styles.buttonContainer} 
+          onPress={() => router.push('./../../(tabs)/TakePhoto')}
+        >
+          <View style={styles.button}>
+            <ButtonText style={styles.buttonText}>Prends un texte en photo</ButtonText>
+          </View>
+          {/* Stars image decoration */}
+          <Image
+            source={require('./../../assets/images/graphicElements/stars.png')}
+            style={styles.stars}
+          />
+        </TouchableOpacity>
       </View>
+      {/* Background component */}
       <View style={styles.NoScannedTextBackgroundComponent}>
         <NoScannedTextBackground />
       </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -75,7 +93,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignSelf: 'center',
   },
-  buttonContainer: { 
+  buttonContainer: {
     padding: 15,
     borderRadius: 100,
     marginTop: 15,

@@ -1,8 +1,13 @@
+// LegendModal.tsx
+// This file defines a React Native component for a modal that displays a legend with color codes.
+// It includes a close button to dismiss the modal and uses the ColorsLegend component to show the legend details.
+
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
-import ColorsLegend from './ColorsLegend';
+
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { Colors } from '@/constants/Colors';
+import ColorsLegend from './ColorsLegend';
 
 interface LegendModalProps {
   visible: boolean;

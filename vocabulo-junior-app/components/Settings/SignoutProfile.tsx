@@ -1,24 +1,34 @@
+// This file defines the SignoutProfile component which allows users to log out from their account.
+
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Colors } from '@/constants/Colors';
-import { ButtonText } from '@/constants/StyledText';
-import EvilIcons from '@expo/vector-icons/EvilIcons';
+
 import auth from '@react-native-firebase/auth';
 
+import EvilIcons from '@expo/vector-icons/EvilIcons';
+import { Colors } from '@/constants/Colors';
+import { ButtonText } from '@/constants/StyledText';
+
+// Define the type for navigation parameters
 type RootStackParamList = {
   LoginScreen: undefined;
 };
 
+// Define the type for navigation prop
 type NavigationProp = StackNavigationProp<RootStackParamList, 'LoginScreen'>;
 
 export default function SignoutProfile() {
+  // Use the navigation hook to access navigation functions
   const navigation = useNavigation<NavigationProp>();
 
+  // Function to handle user sign out
   const handleSignOut = async () => {
     try {
+      // Attempt to sign out the user
       await auth().signOut();
+      // Show success alert and navigate to LoginScreen on confirmation
       Alert.alert('Succès', 'Vous avez été déconnecté avec succès', [
         {
           text: 'OK',
@@ -28,11 +38,13 @@ export default function SignoutProfile() {
         },
       ]);
     } catch (error) {
+      // Log error and show error alert if sign out fails
       console.error('Erreur lors de la déconnexion:', error);
       Alert.alert('Erreur', 'Une erreur est survenue lors de la déconnexion');
     }
   };
 
+  // Function to confirm sign out action with a confirmation dialog
   const confirmSignOut = () => {
     Alert.alert(
       'Confirmation de Déconnexion',

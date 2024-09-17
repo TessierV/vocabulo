@@ -1,30 +1,42 @@
+// This file defines a React Native component that provides a camera interface
+// for taking pictures, scanning text from the captured image, and handling permissions.
+
 import React, { useState, useRef, useEffect } from 'react';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Image, Animated, Alert, ImageStyle } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Image, Animated, Alert, ImageStyle } from 'react-native';
+import { router } from 'expo-router';
+import * as MediaLibrary from 'expo-media-library';
+
 import AntDesign from '@expo/vector-icons/AntDesign';
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
+import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '@/constants/Colors';
 import { ButtonText, InformationText } from '@/constants/StyledText';
-import { router } from 'expo-router';
-import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
-import * as MediaLibrary from 'expo-media-library';
-import LinearGradient from 'react-native-linear-gradient';
+
 
 const IPvillagebyca = '10.10.1.126';
 const IPmyHome = '192.168.1.12';
+// add your IP adress here
+
 
 export default function MyCamera() {
+  // State to control camera facing direction ('front' or 'back')
   const [facing, setFacing] = useState<CameraType>('back');
+
+  // States and hooks for handling camera and media library permissions
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [mediaPermission, requestMediaPermission] = MediaLibrary.usePermissions();
   const [photoUri, setPhotoUri] = useState<string | null>(null);
-  const [photoHeight, setPhotoHeight] = useState<number>(0); // New state to store photo height
+  const [photoHeight, setPhotoHeight] = useState<number>(0); // State for photo height
   const [isScanning, setIsScanning] = useState(false);
   const cameraRef = useRef<CameraView>(null);
 
+  // Animation value for scanning effect
   const [animationValue] = useState(new Animated.Value(0));
 
   useEffect(() => {
     if (isScanning) {
+      // Loop animation for scanning effect
       const animation = Animated.loop(
         Animated.sequence([
           Animated.timing(animationValue, {
@@ -48,93 +60,90 @@ export default function MyCamera() {
     }
   }, [isScanning]);
 
+  // Interpolate animation value to translate the line vertically
   const lineTranslateY = animationValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 385],
   });
 
+  // Style for animated line
   const animatedLineStyle = {
     transform: [{ translateY: lineTranslateY }],
   };
 
+  // Handle case when camera permission is not granted
   if (!cameraPermission) {
-    console.log('Camera permission state is undefined');
     return <View />;
   }
 
   if (!cameraPermission.granted) {
-    console.log('Camera permission not granted');
     return (
       <View style={styles.container}>
         <InformationText style={styles.permissionsMessage}>
-          Nous avons besoin de votre permission pour afficher la caméra
+          We need your permission to access the camera
         </InformationText>
         <TouchableOpacity
           style={styles.permissionsButton}
           onPress={requestCameraPermission}
         >
           <ButtonText style={styles.permissionsButtontext}>
-            Autoriser l'accès à la caméra
+            Allow Camera Access
           </ButtonText>
         </TouchableOpacity>
       </View>
     );
   }
 
+  // Handle case when media library permission is not granted
   if (!mediaPermission) {
-    console.log('Media library permission state is undefined');
     return <View />;
   }
 
   if (!mediaPermission.granted) {
-    console.log('Media library permission not granted');
     return (
       <View style={styles.container}>
         <InformationText style={styles.permissionsMessage}>
-          Nous avons besoin de votre permission pour accéder à la bibliothèque de médias
+          We need your permission to access the media library
         </InformationText>
         <TouchableOpacity
           style={styles.permissionsButton}
           onPress={requestMediaPermission}
         >
           <ButtonText style={styles.permissionsButtontext}>
-            Autoriser l'accès à la bibliothèque de médias
+            Allow Media Library Access
           </ButtonText>
         </TouchableOpacity>
       </View>
     );
   }
 
+  // Function to take a picture
   const takePicture = async () => {
     if (cameraRef.current) {
-      console.log('Attempting to take a picture');
       try {
         const photo = await cameraRef.current.takePictureAsync();
-        console.log('Picture taken:', photo);
-
         if (photo?.uri) {
           setPhotoUri(photo.uri);
-          setPhotoHeight(photo.height); // Set the height of the photo
-          console.log('Photo height:', photo.height);
+          setPhotoHeight(photo.height); // Set photo height
         } else {
-          console.error('Échec de la prise de photo');
+          console.error('Failed to take picture');
         }
       } catch (error) {
-        console.error('Erreur lors de la prise de photo', error);
+        console.error('Error taking picture', error);
       }
     }
   };
 
+  // Function to close the photo preview
   const closePhoto = () => {
-    console.log('Closing photo');
     setPhotoUri(null);
-    setPhotoHeight(0); // Reset the photo height when closing the photo
+    setPhotoHeight(0); // Reset photo height
   };
 
+  // Function to save photo to the gallery
   const savePhotoToGallery = async (uri: string) => {
     try {
       const asset = await MediaLibrary.createAssetAsync(uri);
-      console.log('Photo saved to gallery:', asset);
       return asset.uri;
     } catch (error) {
       console.error('Error saving photo to gallery:', error);
@@ -142,14 +151,13 @@ export default function MyCamera() {
     }
   };
 
+  // Function to scan text from the photo
   const scanText = async () => {
     if (photoUri) {
-      console.log('Preparing to scan text');
       setIsScanning(true);
 
       const savedUri = await savePhotoToGallery(photoUri);
       if (!savedUri) {
-        console.error('Failed to save photo to gallery');
         setIsScanning(false);
         return;
       }
@@ -162,35 +170,27 @@ export default function MyCamera() {
       } as any);
 
       let response;
-      console.log(formData);
-      console.log(savedUri);
       try {
-        console.log('Sending image to server');
+        // (change IP adress constant here)
         response = await fetch(`http://${IPvillagebyca}:3000/send-img/`, {
           method: 'POST',
           body: formData,
         });
 
-        console.log('Server response:', response);
-
         if (!response.ok) {
-          console.error(`HTTP error! status: ${response.status}`);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('Data received from server:', data);
-
         router.push({
           pathname: './../../(tabs)/ScannedText',
           params: { ocrData: JSON.stringify(data) }
         });
 
       } catch (error) {
-        console.error(error, response);
         Alert.alert(
-          'Impossible de charger l\'image',
-          'Vérifier l\'adresse IP réseau wifi ipconfig + containers + node .\\server.js',
+          'Unable to upload image',
+          'Check network IP address and server configuration',
           [
             {
               text: 'Ok',
@@ -205,7 +205,7 @@ export default function MyCamera() {
     }
   };
 
-  // Determine the minHeight based on the photoHeight
+  // Determine the style for the photo based on its height
   const photoStyle: ImageStyle = {
     minWidth: '90%',
     minHeight: photoHeight > 3000 ? 470 : 265,
@@ -214,7 +214,7 @@ export default function MyCamera() {
     borderRadius: 20
   };
 
-  // Adjust the marginTop for closeButtonContainer based on photoHeight
+  // Adjust the marginTop for the close button container based on photo height
   const closeButtonContainerStyle = {
     ...styles.closeButtonContainer,
     marginTop: photoHeight >= 4000 ? styles.closeButtonContainer.marginTop : (photoHeight > 3000 ? 100 : 130),
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: Colors.whiteTransparent,
     margin: 10,
-    marginTop: 10, // Initial marginTop value
+    marginTop: 10,
   },
   closeButton: {
     color: Colors.white,
