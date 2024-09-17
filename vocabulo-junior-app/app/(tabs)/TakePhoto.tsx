@@ -3,7 +3,7 @@
 import { View, StyleSheet } from 'react-native'
 import React from 'react'
 
-import TakePhotoScreen from '../otherScreens/TakePhotoScreen';  // Importing the TakePhotoScreen component
+import TakePhotoScreen from '../mainScreens/TakePhotoScreen';  // Importing the TakePhotoScreen component
 
 export default function TakePhoto() {
   return (

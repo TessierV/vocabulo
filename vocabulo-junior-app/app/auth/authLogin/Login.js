@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
@@ -33,8 +33,13 @@ const Login = () => {
       const userDocument = await firestore().collection("users").doc(user.uid).get();
 
       if (userDocument.exists) {
-        // Initialize liked cards collection for new users
-        await firestore().collection('likedCards').doc(user.uid).set({});
+        // Check if likedCards collection exists, if not, initialize it
+        const likedCardsCollection = await firestore().collection('users').doc(user.uid).collection('likedCards').get();
+        if (likedCardsCollection.empty) {
+          await firestore().collection('users').doc(user.uid).collection('likedCards').doc('placeholder').set({
+            placeholder: true
+          });
+        }
 
         navigation.navigate("HomeScreen");
       } else {

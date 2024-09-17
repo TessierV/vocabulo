@@ -3,7 +3,7 @@
 import { View, StyleSheet } from 'react-native';
 import React from 'react';
 
-import DictionaryScreen from '../otherScreens/DictionaryScreen'; // Importing the DictionaryScreen component
+import DictionaryScreen from '../mainScreens/DictionaryScreen'; // Importing the DictionaryScreen component
 
 export default function Dictionnary() {
   return (

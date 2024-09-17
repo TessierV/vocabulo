@@ -3,7 +3,7 @@
 import { View, StyleSheet } from 'react-native'
 import React from 'react';
 
-import ScannedTextScreen from '../otherScreens/ScannedTextScreen';  // Importing the ScannedTextScreen component
+import ScannedTextScreen from '../mainScreens/ScannedTextScreen';  // Importing the ScannedTextScreen component
 
 export default function ScannedText() {
   return (

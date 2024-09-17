@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
@@ -48,6 +48,15 @@ const Signup = () => {
           ]
         );
       } else {
+        // Initialize liked cards collection for new users
+        await firestore().collection('users').doc(user.uid).set({
+          phoneNumber: phoneNumber,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        });
+        await firestore().collection('users').doc(user.uid).collection('likedCards').doc('placeholder').set({
+          placeholder: true
+        });
+        
         navigation.navigate("Detail", { uid: user.uid });
       }
     } catch (error) {
