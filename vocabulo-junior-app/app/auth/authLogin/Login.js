@@ -1,35 +1,46 @@
+// This file defines the Login component which handles user authentication via phone number.
+// It uses Firebase authentication and Firestore for user data management.
+
 import React, { useState } from "react";
 import { View, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
-import { useNavigation } from "@react-navigation/native";
-import { Colors } from '@/constants/Colors';
+
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { Colors } from '@/constants/Colors';
 import { HeaderTitle, Title } from '@/constants/StyledText';
 
+
+// Constants for phone number and code lengths
 const PHONE_NUMBER_LENGTH = 10;
 const CODE_LENGTH = 6;
 
 const Login = () => {
+  // State variables for phone number, code, and confirmation
   const [phoneNumber, setPhoneNumber] = useState("");
   const [code, setCode] = useState("");
   const [confirm, setConfirm] = useState(null);
   const navigation = useNavigation();
 
+  // Function to send a verification code to the provided phone number
   const signInWithPhoneNumber = async () => {
     try {
       const confirmation = await auth().signInWithPhoneNumber(`+33${phoneNumber}`);
-      setConfirm(confirmation);
+      setConfirm(confirmation); // Store confirmation object for later use
     } catch (error) {
       console.error("Error sending code", error);
     }
   };
 
+  // Function to verify the code and handle user sign-in
   const confirmCode = async () => {
     try {
-      const userCredential = await confirm.confirm(code);
-      const user = userCredential.user;
+      const userCredential = await confirm.confirm(code); // Confirm the code
+      const user = userCredential.user; // Get user information
 
+      // Check if the user document exists in Firestore
       const userDocument = await firestore().collection("users").doc(user.uid).get();
 
       if (userDocument.exists) {
@@ -41,8 +52,10 @@ const Login = () => {
           });
         }
 
+        // Navigate to the HomeScreen if user exists
         navigation.navigate("HomeScreen");
       } else {
+        // Handle case where user document does not exist
         Alert.alert(
           "Compte non trouvé",
           "Votre compte n'existe pas. Que souhaitez-vous faire ?",
@@ -59,6 +72,7 @@ const Login = () => {
         );
       }
     } catch (error) {
+      // Handle case where code is invalid
       Alert.alert(
         "Erreur de code",
         "Le code saisi est incorrect. Que souhaitez-vous faire ?",
@@ -77,6 +91,7 @@ const Login = () => {
     }
   };
 
+  // Validation for phone number and code lengths
   const isPhoneNumberValid = phoneNumber.length === PHONE_NUMBER_LENGTH;
   const isCodeValid = code.length === CODE_LENGTH;
 
