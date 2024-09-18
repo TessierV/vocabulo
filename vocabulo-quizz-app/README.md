@@ -1,4 +1,4 @@
-![Product Mockups](https://github.com/user-attachments/assets/60b544c2-00be-46ee-9fee-1c96fd4ec456)
+![Product Mockups (2)](https://github.com/user-attachments/assets/1f12dbd9-e4b5-4a42-a9ea-ecf56273ba8d)
 
 # Pitch 
 
