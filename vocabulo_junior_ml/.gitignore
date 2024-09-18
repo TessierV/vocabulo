@@ -1,0 +1,12 @@
+# Fichier .env
+.env
+
+# Dossier Expo (par exemple pour React Native)
+.expo/
+
+# Dossiers et fichiers de cache Python
+__pycache__/
+api/__pycache__/
+core/__pycache__/
+models/__pycache__/
+utils/__pycache__/
