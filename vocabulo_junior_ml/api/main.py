@@ -24,7 +24,6 @@ Author: Marianne Arrué
 Date: 29/08/24
 """
 
-
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from core.image_processing import handle_image_format
 from core.ocr import perform_ocr
