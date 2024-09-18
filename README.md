@@ -6,7 +6,9 @@ Soon
 
 <hr>
 
-![Product Mockups](https://github.com/user-attachments/assets/60b544c2-00be-46ee-9fee-1c96fd4ec456)
+![Product Mockups (2)](https://github.com/user-attachments/assets/1f12dbd9-e4b5-4a42-a9ea-ecf56273ba8d)
+
+
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=800&size=28&pause=1000&width=800&lines=Vocabulo-quizz-app+and+Vocabulo+Quizz+ml" alt="Typing SVG" /></a>
 
 ## Pitch 
