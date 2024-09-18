@@ -4,8 +4,9 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { TabBarMaterialCommunityIcon, TabBarMaterialIcon } from '@/components/Navigation/TabBarIcon';
+import { TabBarMaterialCommunityIcon, TabBarMaterialIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
+
 
 export default function TabLayout() {
   return (
