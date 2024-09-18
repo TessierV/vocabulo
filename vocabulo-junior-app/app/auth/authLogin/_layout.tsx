@@ -1,30 +1,22 @@
-import React, { useEffect, useState } from "react";
-import useCustomFonts from '@/constants/useCustomFonts';
-import { Stack } from "expo-router";
+// This file defines the LoginLayout component to manage the navigation for login-related screens.
 
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+
+// Import the screen components used in the navigator
+import HomeScreen from "@/app/screens/HomeScreen";
+import Signup from "../authSignup/Signup";
+import Login from "../authLogin/Login";
+
+// Create a Stack Navigator instance
+const Stack = createStackNavigator();
 
 export default function LoginLayout() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
-
-  useEffect(() => {
-    async function loadFonts() {
-      const fontsSuccessfullyLoaded = await useCustomFonts();
-      if (fontsSuccessfullyLoaded) {
-        setFontsLoaded(true);
-      }
-    }
-    loadFonts();
-  }, []);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
-
-    <Stack>
-      <Stack.Screen name="Login" options={{ headerShown: false }} />
-      <Stack.Screen name="screens" options={{ headerShown: false }} />
-    </Stack>
+    <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
+    </Stack.Navigator>
   );
 }

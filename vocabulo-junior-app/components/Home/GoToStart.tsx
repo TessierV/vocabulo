@@ -1,14 +1,20 @@
+// This file defines the `GoToStart` component which displays an animated logo and a call-to-action message.
+// It provides navigation to a photo-taking screen when the user interacts with the icon.
+
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Animated, StyleSheet, TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
+
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { Colors } from '@/constants/Colors';
 import { ButtonText, InformationText } from '@/constants/StyledText';
-import { router } from 'expo-router';
-import AntDesign from '@expo/vector-icons/AntDesign';
 
 const GoToStart = () => {
+    // Create a reference for the animated value
     const moveAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
+        // Start a looping animation that moves the logo up and down
         Animated.loop(
             Animated.sequence([
                 Animated.timing(moveAnim, {
@@ -27,18 +33,21 @@ const GoToStart = () => {
 
     return (
         <View style={styles.container}>
+            {/* Animated logo image */}
             <Animated.Image
-                source={require('./../../assets/images/Logo-blue.png')}
+                source={require('./../../assets/images/graphicElements/Logo-blue.png')}
                 style={[styles.logo, { transform: [{ translateY: moveAnim }] }]}
             />
             <View style={styles.middleContainer}>
                 <View style={styles.contents}>
+                    {/* Text and information */}
                     <View>
-                        <ButtonText style={styles.bigText}>Apprends du vocabulaire</ButtonText>
+                        <ButtonText style={styles.bigText}>Découvre de nouveaux mots !</ButtonText>
                         <InformationText style={styles.littleText}>
-                            Scann un texte pour en découvrir le contenu
+                            Prends une photo du texte dans ton livre !
                         </InformationText>
                     </View>
+                    {/* Navigation to photo-taking screen */}
                     <TouchableOpacity
                         onPress={() => router.push('./../../(tabs)/TakePhoto')}
                         style={styles.iconContainer}
@@ -54,7 +63,7 @@ const GoToStart = () => {
 const styles = StyleSheet.create({
     container: {
         width: '90%',
-        height: '28%',
+        height: 160,
         backgroundColor: Colors.lightBlue,
         justifyContent: 'flex-end',
         padding: 15,
@@ -64,7 +73,7 @@ const styles = StyleSheet.create({
     },
     middleContainer: {
         width: '100%',
-        height: '55%',
+        height: 70,
         paddingHorizontal: 15,
         backgroundColor: Colors.white,
         borderRadius: 15,

@@ -1,10 +1,13 @@
+// This file defines multiple reusable styled text components for a React Native application, using custom styles for different text elements.
+
+
 import * as React from "react";
 import { ReactNode } from 'react';
 import { Text, StyleSheet, TextProps } from 'react-native';
+
 import { Colors } from '@/constants/Colors';
 
 
-// Fonction pour créer des styles thématisés
 const createThemedStyles = () => StyleSheet.create({
   bigTitle: {
     fontFamily: 'Chewy',
@@ -19,10 +22,19 @@ const createThemedStyles = () => StyleSheet.create({
     fontFamily: 'MontserratSemiBold',
     fontSize: 18,
   },
+  OriginalScannedtextTitle: {
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 14
+  },
+  OriginalScannedtext: {
+    fontFamily: 'MontserratRegular',
+    fontSize: 14,
+    lineHeight: 20
+  },
   Scannedtext: {
     fontFamily: 'MontserratRegular',
-    fontSize: 18,
-    lineHeight: 35
+    fontSize: 20,
+    lineHeight: 35,
   },
   Title: {
     fontFamily: 'MontserratSemiBold',
@@ -30,7 +42,7 @@ const createThemedStyles = () => StyleSheet.create({
   },
   InformationText: {
     fontFamily: 'MontserratRegular',
-    fontSize: 12,
+    fontSize: 14,
   },
   UserNameText: {
     fontFamily: 'Chewy',
@@ -47,31 +59,36 @@ const createThemedStyles = () => StyleSheet.create({
     fontSize: 18,
     color: Colors.white
   },
-  SourceCard: {
-    fontFamily: 'MontserratSemiBold',
-    fontSize: 12,
-    color: Colors.lightGrey
-  },
   VideoButtonCard: {
     fontFamily: 'MontserratSemiBold',
-    fontSize: 14,
+    fontSize: 15,
     color: Colors.white
   },
   WordCard: {
     fontFamily: 'MontserratSemiBold',
     fontSize: 18,
-    color: Colors.grey
+    color: Colors.black
   },
   DefCard: {
     fontFamily: 'MontserratRegular',
-    fontSize: 16,
-    color: Colors.grey
+    fontSize: 18,
+    color: Colors.black
   },
   CategoryCard: {
     fontFamily: 'MontserratRegular',
     fontSize: 12,
-    color: Colors.grey
+    color: Colors.black
   },
+  ModalTitle: {
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 18,
+    color: Colors.black
+  },
+  ModalText: {
+    fontFamily: 'MontserratRegular',
+    fontSize: 16,
+    color: Colors.black
+  }
 });
 
 interface TextComponentProps extends TextProps {
@@ -91,6 +108,14 @@ const HeaderTitle = ({ children, style, ...props }: TextComponentProps) => {
 const ButtonText = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
   return <Text style={[styles.ButtonText, style]} {...props}>{children}</Text>;
+};
+const OriginalScannedtextTitle = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.OriginalScannedtextTitle, style]} {...props}>{children}</Text>;
+};
+const OriginalScannedtext = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.OriginalScannedtext, style]} {...props}>{children}</Text>;
 };
 const Scannedtext = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
@@ -116,10 +141,6 @@ const OnboardingText = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
   return <Text style={[styles.OnboardingText, style]} {...props}>{children}</Text>;
 };
-const SourceCard = ({ children, style, ...props }: TextComponentProps) => {
-  const styles = createThemedStyles();
-  return <Text style={[styles.SourceCard, style]} {...props}>{children}</Text>;
-};
 const VideoButtonCard = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
   return <Text style={[styles.VideoButtonCard, style]} {...props}>{children}</Text>;
@@ -136,19 +157,30 @@ const DefCard = ({ children, style, ...props }: TextComponentProps) => {
   const styles = createThemedStyles();
   return <Text style={[styles.DefCard, style]} {...props}>{children}</Text>;
 };
+const ModalTitle = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.ModalTitle, style]} {...props}>{children}</Text>;
+};
+const ModalText = ({ children, style, ...props }: TextComponentProps) => {
+  const styles = createThemedStyles();
+  return <Text style={[styles.ModalText, style]} {...props}>{children}</Text>;
+};
 export {
   BigTitle,
   HeaderTitle,
   ButtonText,
+  OriginalScannedtextTitle,
+  OriginalScannedtext,
   Scannedtext,
   Title,
   InformationText,
   UserNameText,
   OnboardingTitle,
   OnboardingText,
-  SourceCard,
   VideoButtonCard,
   WordCard,
   DefCard,
-  CategoryCard
+  CategoryCard,
+  ModalTitle,
+  ModalText
 };

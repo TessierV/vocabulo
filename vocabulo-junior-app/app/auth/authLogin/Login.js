@@ -1,50 +1,97 @@
+// This file defines the Login component which handles user authentication via phone number.
+// It uses Firebase authentication and Firestore for user data management.
+
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
-import { useNavigation } from "@react-navigation/native";
-import { Colors } from '@/constants/Colors';
+
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { Colors } from '@/constants/Colors';
 import { HeaderTitle, Title } from '@/constants/StyledText';
 
 
-
+// Constants for phone number and code lengths
 const PHONE_NUMBER_LENGTH = 10;
 const CODE_LENGTH = 6;
 
-
 const Login = () => {
+  // State variables for phone number, code, and confirmation
   const [phoneNumber, setPhoneNumber] = useState("");
   const [code, setCode] = useState("");
   const [confirm, setConfirm] = useState(null);
   const navigation = useNavigation();
 
+  // Function to send a verification code to the provided phone number
   const signInWithPhoneNumber = async () => {
     try {
       const confirmation = await auth().signInWithPhoneNumber(`+33${phoneNumber}`);
-      setConfirm(confirmation);
+      setConfirm(confirmation); // Store confirmation object for later use
     } catch (error) {
       console.error("Error sending code", error);
     }
   };
 
+  // Function to verify the code and handle user sign-in
   const confirmCode = async () => {
     try {
-      const userCredential = await confirm.confirm(code);
-      const user = userCredential.user;
+      const userCredential = await confirm.confirm(code); // Confirm the code
+      const user = userCredential.user; // Get user information
 
+      // Check if the user document exists in Firestore
       const userDocument = await firestore().collection("users").doc(user.uid).get();
 
       if (userDocument.exists) {
-        navigation.navigate("/HomeScreen");
+        // Check if likedCards collection exists, if not, initialize it
+        const likedCardsCollection = await firestore().collection('users').doc(user.uid).collection('likedCards').get();
+        if (likedCardsCollection.empty) {
+          await firestore().collection('users').doc(user.uid).collection('likedCards').doc('placeholder').set({
+            placeholder: true
+          });
+        }
+
+        // Navigate to the HomeScreen if user exists
+        navigation.navigate("HomeScreen");
       } else {
-        navigation.navigate("/Signup", { uid: user.uid });
+        // Handle case where user document does not exist
+        Alert.alert(
+          "Compte non trouvé",
+          "Votre compte n'existe pas. Que souhaitez-vous faire ?",
+          [
+            {
+              text: "Créer un compte",
+              onPress: () => navigation.navigate("Signup", { uid: user.uid }),
+            },
+            {
+              text: "Réessayer",
+              onPress: () => navigation.navigate("Login"),
+            },
+          ]
+        );
       }
     } catch (error) {
+      // Handle case where code is invalid
+      Alert.alert(
+        "Erreur de code",
+        "Le code saisi est incorrect. Que souhaitez-vous faire ?",
+        [
+          {
+            text: "Réessayer",
+            onPress: () => setCode(""),
+          },
+          {
+            text: "Créer un compte",
+            onPress: () => navigation.navigate("Signup"),
+          },
+        ]
+      );
       console.error("Invalid code.", error);
     }
   };
 
+  // Validation for phone number and code lengths
   const isPhoneNumberValid = phoneNumber.length === PHONE_NUMBER_LENGTH;
   const isCodeValid = code.length === CODE_LENGTH;
 
@@ -164,7 +211,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     width: '100%',
     height: 50,
-        marginBottom: '6%'
+    marginBottom: '6%'
   },
   inputText: {
     fontFamily: 'MontserratRegular',

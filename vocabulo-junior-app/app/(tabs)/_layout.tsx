@@ -1,13 +1,18 @@
+// This file defines the TabLayout component for rendering the tab navigation bar in the application.
+
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { TabBarIonicons, TabBarMaterialCommunityIcon, TabBarMaterialIcon } from '@/components/Navigation/TabBarIcon';
+
+import { TabBarMaterialCommunityIcon, TabBarMaterialIcon } from '@/components/Navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 
 export default function TabLayout() {
   return (
+    // Main Tabs component which holds the screenOptions and individual tab screens
     <Tabs
       screenOptions={() => ({
+        // Styling for the tab bar (background color, border, position, etc.)
         tabBarStyle: {
           backgroundColor: Colors.darkGreen,
           borderRadius: 100,
@@ -24,15 +29,21 @@ export default function TabLayout() {
           borderWidth: 1,
           borderColor: Colors.darkGreen
         },
+        // Active tab icon color
         tabBarActiveTintColor: Colors.white,
+        // Inactive tab icon color
         tabBarInactiveTintColor: Colors.white,
+        // Hide the header on the top of the screen
         headerShown: false,
       })}
     >
+      {/* First Tab: Dictionary */}
       <Tabs.Screen
-        name="Dictionnary"
+        name="Dictionary"
         options={{
+          // No title for this tab
           title: '',
+          // Render custom icon for the Dictionary tab
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.iconLeft}>
               <TabBarMaterialCommunityIcon
@@ -44,12 +55,16 @@ export default function TabLayout() {
           ),
         }}
       />
+      
+      {/* Second Tab: TakePhoto */}
       <Tabs.Screen
         name="TakePhoto"
         options={{
+          // No title for this tab
           title: '',
+          // Render custom icon for the TakePhoto tab
           tabBarIcon: ({ color, focused }) => (
-            <View style={styles.iconCenter}>
+            <View>
               <TabBarMaterialIcon
                 name={focused ? 'camera' : 'camera-enhance'}
                 color={color}
@@ -59,14 +74,18 @@ export default function TabLayout() {
           ),
         }}
       />
+      
+      {/* Third Tab: ScannedText */}
       <Tabs.Screen
         name="ScannedText"
         options={{
+          // No title for this tab
           title: '',
+          // Render custom icon for the ScannedText tab
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.iconRight}>
-              <TabBarIonicons
-                name={focused ? 'document-text' : 'document-text-outline'}
+              <TabBarMaterialCommunityIcon
+                name={focused ? 'sticker-text' : 'sticker-text-outline'}
                 color={color}
                 style={[focused && styles.activeIcon]}
               />
@@ -92,8 +111,6 @@ const styles = StyleSheet.create({
   },
   iconLeft: {
     marginLeft: '20%',
-  },
-  iconCenter: {
   },
   iconRight: {
     marginRight: '20%',

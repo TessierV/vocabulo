@@ -4,35 +4,56 @@
     "slug": "vocabulo-junior-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/expoImages/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "permissions": [
+      "CAMERA",
+      "READ_EXTERNAL_STORAGE",
+      "WRITE_EXTERNAL_STORAGE"
+    ],
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/expoImages/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs access to your camera to take pictures.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to save pictures."
+      }
     },
     "android": {
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon-app-junior-blue-plum.png"
+        "foregroundImage": "./assets/images/graphicElements/icon-app-junior-blue-plum.png"
       },
       "package": "com.amandineassenat.vocabulojuniorapp"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/expoImages/favicon.png"
     },
     "plugins": [
       "expo-router",
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
       "expo-camera",
-      "expo-av"
+      "expo-av",
+      [
+        "expo-media-library",
+        {
+          "isAccessMediaLocationEnabled": true
+        }
+      ],
+      "expo-image-picker"
     ],
     "experiments": {
       "typedRoutes": true
