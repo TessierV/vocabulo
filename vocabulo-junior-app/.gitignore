@@ -26,3 +26,6 @@ package-lock.json
 
 expo-env.d.ts
 # @end expo-cli
+
+../.venv/
+../.vscode/
