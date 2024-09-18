@@ -7,7 +7,7 @@ import React from 'react';
 
 import { Colors } from '@/constants/Colors'; // Importing colors defined in constants
 
-import TopNavBar from '@/components/Navigation/TopNavBar'; // Importing the top navigation bar component
+import TopNavBar from '@/components/navigation/TopNavBar'; // Importing the top navigation bar component
 import CustomProfile from '@/components/Settings/CustomProfile'; // Importing the CustomProfile component
 import DeleteProfile from '@/components/Settings/DeleteProfile'; // Importing the DeleteProfile component
 import SignoutProfile from '@/components/Settings/SignoutProfile'; // Importing the SignoutProfile component

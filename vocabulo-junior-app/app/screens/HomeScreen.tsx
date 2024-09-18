@@ -7,11 +7,10 @@ import React from 'react';
 
 import { Colors } from '@/constants/Colors'; // Importing colors defined in constants
 
-import TopNavBar from '@/components/Navigation/TopNavBar'; // Importing the top navigation bar component
+import TopNavBar from '@/components/navigation/TopNavBar'; // Importing the top navigation bar component
 import GoToStart from '@/components/Home/GoToStart'; // Importing the GotoStart component
 import DisplaySettings from '@/components/Home/DisplaySettings'; // Importing the displaySettings component
 import HelpToScannText from '@/components/Home/WarningToScannText'; // Importing the helpToScanText component
-
 
 export default function HomeScreen() {
   return (
