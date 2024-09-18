@@ -7,7 +7,7 @@ import React from 'react';
 
 import { Colors } from '@/constants/Colors'; // Importing colors defined in constants
 
-import TopNavBar from '@/components/Navigation/TopNavBar'; // Importing the top navigation bar component
+import TopNavBar from '@/components/navigation/TopNavBar'; // Importing the top navigation bar component
 import OCRScannedTextScreen from '@/components/ScannedText/OCRScannedTextScreen'; // Importing the OCR scanned text component
 
 export default function ScannedTextScreen() {

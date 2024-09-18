@@ -6,7 +6,7 @@ import { View, StyleSheet, SafeAreaView } from 'react-native';
 import React from 'react';
 import { Colors } from '@/constants/Colors'; // Importing colors defined in constants
 
-import TopNavBar from '@/components/Navigation/TopNavBar'; // Importing the top navigation bar component
+import TopNavBar from '@/components/navigation/TopNavBar'; // Importing the top navigation bar component
 import MyCamera from '@/components/Scan/MyCamera'; // Importing the camera component
 
 export default function TakePhotoScreen() {
