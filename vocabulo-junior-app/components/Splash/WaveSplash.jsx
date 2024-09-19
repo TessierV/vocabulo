@@ -1,4 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+// This file defines the WaveSplash component, which renders animated wave patterns using SVG and React Native Reanimated.
+
+import React, { useEffect } from 'react';
 import { View, Dimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Animated, {
@@ -10,31 +12,30 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { mix } from 'react-native-redash';
+
 import { Colors } from '@/constants/Colors';
 
 
-// Taille de l'animation, calculée en fonction de la largeur de la fenêtre
-
+// Dimensions for the animation, calculated based on the window width and height
 const SIZEheight = Dimensions.get('window').height;
 const SIZEwidth = Dimensions.get('window').width;
 
-// Création d'un composant animé pour le Path SVG
+// Create an animated component for the SVG Path
 const AnimatedPath = Animated.createAnimatedComponent(Path);
-
 const WaveSplash = () => {
-  // Valeur partagée pour contrôler l'animation
+  // Shared value to control the animation progress
   const progress = useSharedValue(0);
 
-  // Utilisation d'un effet pour démarrer l'animation au chargement du composant
+  // Start the animation when the component mounts
   useEffect(() => {
     progress.value = withRepeat(
       withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
-      -1, // Répéter indéfiniment
-      true // Revenir à la valeur initiale après chaque cycle
+      -1, // Repeat indefinitely
+      true // Reverse to the initial value after each cycle
     );
   }, [progress]);
 
-  // Calcul des données de la première vague en fonction de la progression de l'animation
+  // Compute the data for the first wave based on animation progress
   const data1 = useDerivedValue(() => {
     const m = mix.bind(null, progress.value);
     return {
@@ -48,7 +49,7 @@ const WaveSplash = () => {
     };
   });
 
-  // Calcul des données de la deuxième vague, inversée par rapport à la première
+  // Compute the data for the second wave, which is the inverse of the first wave
   const data2 = useDerivedValue(() => {
     const m = mix.bind(null, 1 - progress.value);
     return {
@@ -62,7 +63,7 @@ const WaveSplash = () => {
     };
   });
 
-  // Génération des propriétés animées pour le premier Path SVG
+  // Generate animated properties for the first SVG Path
   const path1 = useAnimatedProps(() => {
     const { from, c1, c2, to } = data1.value;
     return {
@@ -70,7 +71,7 @@ const WaveSplash = () => {
     };
   });
 
-  // Génération des propriétés animées pour le deuxième Path SVG
+  // Generate animated properties for the second SVG Path
   const path2 = useAnimatedProps(() => {
     const { from, c1, c2, to } = data2.value;
     return {
@@ -90,6 +91,7 @@ const WaveSplash = () => {
         height={SIZEheight}
         viewBox="0 0 1 1"
       >
+        {/* Render the animated wave paths with different colors */}
         <AnimatedPath fill={Colors.lightBlue} animatedProps={path2} />
         <AnimatedPath fill={Colors.neutralBlue} animatedProps={path1} />
       </Svg>
@@ -98,19 +100,16 @@ const WaveSplash = () => {
           justifyContent: 'center',
           alignItems: 'center',
           marginTop: -20,
-          backgroundColor: Colors.neutralBlue
-
-
+          backgroundColor: Colors.neutralBlue,
         }}
       >
+        {/* Additional SVG element (currently empty) */}
         <Svg
           width={SIZEwidth}
           height={SIZEheight}
-        >
-        </Svg>
+        />
       </View>
     </View>
-
   );
 };
 

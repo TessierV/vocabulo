@@ -1,30 +1,61 @@
+// This file defines the `DisplaySettings` component which displays user-specific settings.
+// It fetches the user's name from Firebase Auth or Firestore and provides navigation to the settings screen.
+
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { Colors } from '@/constants/Colors';
-import { ButtonText } from '@/constants/StyledText';
+import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { router } from 'expo-router';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
+import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Colors } from '@/constants/Colors';
+import { ButtonText } from '@/constants/StyledText';
+
+
 const DisplaySettings = () => {
-    const [userName, setUserName] = useState('Utilisateur');
+    // State to hold the user's name
+    const [userName, setUserName] = useState<string>('Utilisateur');
 
     useEffect(() => {
-        const user = auth().currentUser;
-        if (user?.displayName) {
-            setUserName(user.displayName);
-        }
+        // Function to fetch user data
+        const fetchUserData = async () => {
+            const user = auth().currentUser;
+            if (user) {
+                // Check if displayName is available from Firebase Auth
+                if (user.displayName) {
+                    setUserName(user.displayName);
+                } else {
+                    // Fetch user name from Firestore if displayName is not set
+                    try {
+                        const userDoc = await firestore().collection('users').doc(user.uid).get();
+                        if (userDoc.exists && userDoc.data()?.name) {
+                            setUserName(userDoc.data()?.name);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user data from Firestore: ', error);
+                    }
+                }
+            }
+        };
+
+        fetchUserData();
     }, []);
 
     return (
         <View style={styles.container}>
             <View style={styles.contents}>
-                <Image source={require('./../../assets/images/Logo-plum.png')} style={styles.logo} />
+                {/* Display logo image */}
+                <Image source={require('./../../assets/images/graphicElements/Logo-plum.png')} style={styles.logo} />
+
+                {/* Display greeting text with the user's name */}
                 <View style={styles.textContainer}>
                     <ButtonText style={styles.welcomeText}>
                         Bonjour <ButtonText style={styles.userName}>{userName}</ButtonText>
                     </ButtonText>
                 </View>
+
+                {/* Navigation to settings screen */}
                 <TouchableOpacity
                     onPress={() => router.push('./../../screens/SettingsScreen')}
                     style={styles.iconContainer}
@@ -45,7 +76,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginHorizontal: 'auto',
         padding: 15,
-        backgroundColor: Colors.white
+        backgroundColor: Colors.white,
     },
     textContainer: {
         flex: 1,
@@ -73,7 +104,7 @@ const styles = StyleSheet.create({
         width: 37,
         height: 35,
         tintColor: Colors.lightBlue,
-        marginRight: 15
+        marginRight: 15,
     },
 });
 

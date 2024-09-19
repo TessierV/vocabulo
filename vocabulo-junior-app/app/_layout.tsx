@@ -1,16 +1,14 @@
-import { FontAwesome } from "@expo/vector-icons";
-import { SplashScreen, Stack } from "expo-router";
+// This file defines the RootLayout component to manage the navigation for all-related screens.
+
 import React, { useEffect, useState } from "react";
+import { SplashScreen, Stack } from "expo-router";
 import useCustomFonts from '@/constants/useCustomFonts';
 
-
+// Export the ErrorBoundary component from expo-router
 export {
   ErrorBoundary,
 } from 'expo-router';
 
-export const unstable_settings = {
-  initialRouteName: '(tabs)',
-};
 
 SplashScreen.preventAutoHideAsync();
 
@@ -19,6 +17,7 @@ export default function RootLayout() {
 
 
   useEffect(() => {
+    // Function to load custom fonts
     async function loadFonts() {
       const fontsSuccessfullyLoaded = await useCustomFonts();
       if (fontsSuccessfullyLoaded) {
@@ -44,6 +43,7 @@ function RootLayoutNav() {
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="auth"  options={{ headerShown: false }} />
       <Stack.Screen name="screens"  options={{ headerShown: false }} />
+      <Stack.Screen name="mainScreens"  options={{ headerShown: false }} />
     </Stack>
   );
 }

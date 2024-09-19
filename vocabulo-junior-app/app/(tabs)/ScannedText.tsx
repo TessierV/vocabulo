@@ -1,9 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
-import ScannedTextScreen from '../screens/ScannedTextScreen'
+// This file defines the ScannedText page, which is linked to the tab navigation bar and displays the content of ScannedTextScreen.
+
+import { View, StyleSheet } from 'react-native'
+import React from 'react';
+
+import ScannedTextScreen from '../mainScreens/ScannedTextScreen';  // Importing the ScannedTextScreen component
 
 export default function ScannedText() {
   return (
+    // Main container view that wraps the ScannedTextScreen component
     <View style={styles.container}>
       <ScannedTextScreen />
     </View>

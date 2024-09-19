@@ -10,6 +10,13 @@ npm-debug.*
 *.orig.*
 web-build/
 package-lock
+.env
+eas.json
+eas
+package-lock.json
+*.json
+*.sql
+
 
 # macOS
 .DS_Store
@@ -19,3 +26,6 @@ package-lock
 
 expo-env.d.ts
 # @end expo-cli
+
+../.venv/
+../.vscode/
