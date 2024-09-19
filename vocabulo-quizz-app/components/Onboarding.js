@@ -2,33 +2,32 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, FlatList, Dimensions, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import logoImage from '@/assets/images/Logo_transparent.png';
-import logoText from '../assets/images/Logo_vocabuloText.png';
 import useCustomFonts from '../constants/useCustomFonts';
+import { AnnonceTitle, BigTitle, Paragraph, Title, } from '@/constants/StyledText';
+import { color, lightTheme } from '@/constants/Colors';
+import logotext from '@/assets/images/Logo_vocabuloText.png';
+import { GradientBackgroundButton, GradientBorderButton } from './Button';
 
 const slides = [
   {
     id: '1',
-    title: 'Bienvenue',
-    text: 'La première application de quizz pour personnes malentendantes',
-    image: require('../assets/images/Onboarding/1.png'),
-    backgroundImage: require('@/assets/images/Onboarding/2.png'),
-    backgroundColor: "#99CDBD",
+    title: 'La première application de quizz pour personnes malentendantes',
+    text: 'conçue pour enrichir votre vocabulaire avec 1991 questions uniques.',
+    backgroundImage: require('@/assets/images/Onboarding/11.png'),
   },
   {
     id: '2',
-    title: 'Jouez et Mémorisez',
-    text: 'Testez et améliorez vos connaissances avec des quizz',
-    image: require('../assets/images/Onboarding/2.png'),
-    backgroundImage: require('../assets/images/Onboarding/1.png'),
-    backgroundColor: "#7DAED6",
+    title: 'Dictionnaire LSF',
+    text: 'comprend  également un',
+    text2: '34 000 définitions traduites en LSF',
+    text3: '27 076 signes',
+    backgroundImage: require('../assets/images/Onboarding/12.png'),
   },
   {
     id: '3',
-    title: 'Vos Données',
-    text: 'Testez vos connaissances et suivez votre progression.',
-    image: require('../assets/images/Onboarding/3.png'),
-    backgroundImage: require('../assets/images/Onboarding/3.png'),
-    backgroundColor: '#AF7DD6',
+    title: 'Un quiz qui s\'adapte à votre rythme grâce à l\'IA.',
+    text: 'Quizz hybride Personnalisé',
+    backgroundImage: require('../assets/images/Onboarding/13.png'),
   },
 ];
 
@@ -56,11 +55,9 @@ const Onboarding = () => {
       flatListRef?.current.scrollToOffset({ offset });
       setCurrentSlideIndex(nextSlideIndex);
     } else {
-      // Navigate to login screen after onboarding
       navigation.navigate('home');
     }
   };
-
 
   const updateCurrentSlideIndex = (e) => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
@@ -68,29 +65,56 @@ const Onboarding = () => {
     setCurrentSlideIndex(currentIndex);
   };
 
-  const backgroundColor = scrollX.interpolate({
-    inputRange: slides.map((_, index) => index * width),
-    outputRange: slides.map(slide => slide.backgroundColor),
-  });
-
   const Slide = ({ item }) => (
-    <ImageBackground source={item.backgroundImage} style={styles.slideContainer} imageStyle={{ resizeMode: 'cover' }}>
-      <View style={styles.header}>
-        <Image source={logoImage} style={styles.logo}  tintColor={'#313941'}/>
-      </View>
-      <View style={{margin:20, bottom: 0, flex: 1, height: '40%',}}>
+    <View style={styles.slideContainer}>
+      <ImageBackground
+        source={item.backgroundImage}
+        style={styles.imageBackground}
+        imageStyle={{ resizeMode: 'cover' }}
+      >
+        <View style={styles.header}>
+          <Image source={logoImage} style={styles.logo} tintColor={lightTheme.darkShade} />
+        </View>
         <View style={styles.content}>
-          <Image source={logoText} style={styles.logotext}  />
-          <Text style={styles.text}>{item.text}</Text>
+          {/* Gestion de l'affichage basé sur l'ID de la slide */}
+          {item.id === '1' && (
+            <>
+                    <Image source={logotext} style={styles.logotext} />
+
+              <AnnonceTitle style={styles.title}>{item.title}</AnnonceTitle>
+              <Paragraph style={styles.text}>{item.text}</Paragraph>
+            </>
+          )}
+          {item.id === '2' && (
+            <>
+              <Paragraph style={styles.text}>{item.text}</Paragraph>
+              <AnnonceTitle style={styles.title}>{item.title}</AnnonceTitle>
+              <View style={styles.blackView}>
+                <Title style={{fontSize: 15, color: color.neutral, textAlign: 'center'}}>{item.text2}</Title>
+              </View>
+              <View style={styles.blackView}>
+                <Title style={{fontSize: 15, color: color.neutral, textAlign: 'center'}}>{item.text3}</Title>
+              </View>
+            </>
+          )}
+          {item.id === '3' && (
+            <>
+              <Paragraph style={styles.text}>{item.text}</Paragraph>
+              <AnnonceTitle style={styles.title}>{item.title}</AnnonceTitle>
+            </>
+          )}
         </View>
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.button} onPress={goToNextSlide}>
-            <Text style={styles.buttonText}>{currentSlideIndex === slides.length - 1 ? 'Commencez' : 'Suivant'}</Text>
-          </TouchableOpacity>
+        <GradientBorderButton
+          text={currentSlideIndex === slides.length - 1 ? 'Commencez' : 'Suivant'}
+          textColor={'light'}
+          onPress={goToNextSlide}
+        />
+
           <Pagination />
         </View>
-      </View>
-    </ImageBackground>
+      </ImageBackground>
+    </View>
   );
 
   const Pagination = () => (
@@ -98,10 +122,7 @@ const Onboarding = () => {
       {slides.map((_, index) => (
         <View
           key={index}
-          style={[
-            styles.paginationDot,
-            currentSlideIndex === index && styles.paginationDotActive
-          ]}
+          style={[styles.paginationDot, currentSlideIndex === index && styles.paginationDotActive]}
         />
       ))}
     </View>
@@ -112,87 +133,80 @@ const Onboarding = () => {
   }
 
   return (
-    <Animated.View style={[styles.container, { backgroundColor }]}>
-      <FlatList
-        ref={flatListRef}
-        onMomentumScrollEnd={updateCurrentSlideIndex}
-        data={slides}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        pagingEnabled
-        renderItem={({ item }) => <Slide item={item} />}
-        keyExtractor={(item) => item.id}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
-        )}
-      />
-    </Animated.View>
+    <FlatList
+      ref={flatListRef}
+      onMomentumScrollEnd={updateCurrentSlideIndex}
+      data={slides}
+      horizontal
+      style={styles.container}
+      showsHorizontalScrollIndicator={false}
+      pagingEnabled
+      renderItem={({ item }) => <Slide item={item} />}
+      keyExtractor={(item) => item.id}
+      onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: false })}
+    />
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'absolute',
+    bottom: 0,
+
+    width: width,
+    height: height,
+
   },
   slideContainer: {
+    width: width,
+    height: height,
+  },
+  imageBackground: {
     width,
     height,
-  },
-  slide: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  image: {
-    resizeMode: 'contain',
-    width: '100%',
+    justifyContent: 'space-around', // Distribute content equally (header, content, footer)
   },
   header: {
-    flex: 1,
-    justifyContent: 'center',
-    alignSelf: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '60%',
   },
   content: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '90%',
+    alignSelf: 'center',
+    gap: 20,
+  },
+  footer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 30,
   },
   logo: {
     width: 40,
     height: 40,
   },
   logotext: {
-    width: 206,
-    height: 50,
+    width: 105,
+    height: 25,
+  },
+  title: {
+    color: lightTheme.darkShade,
+    textAlign: 'center',
+    fontSize: 36,
+    lineHeight: 50,
   },
   text: {
-    color: '#313941',
+    color: lightTheme.dark_lightShade,
     textAlign: 'center',
-    fontFamily: 'font-base',
-    padding: 20,
-    fontSize: 18,
   },
-  footer: {
-    alignItems: 'center',
-    paddingBottom: 20,
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FF7F50',
+  blackView: {
+    backgroundColor: 'black',
+    padding: 10,
+    marginVertical: 5,
     borderRadius: 8,
-    paddingVertical: 10,
-    minHeight: 50,
-    width: 170,
-    marginVertical: 20,
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+    minHeight: 40,
+    minWidth: 180,
   },
   pagination: {
     flexDirection: 'row',
@@ -201,12 +215,12 @@ const styles = StyleSheet.create({
   paginationDot: {
     height: 10,
     width: 10,
-    backgroundColor: "#DAE0E4",
+    backgroundColor: color.neutral,
     borderRadius: 8,
     marginHorizontal: 5,
   },
   paginationDotActive: {
-    backgroundColor: '#FFF',
+    backgroundColor: lightTheme.darkShade,
   },
 });
 
