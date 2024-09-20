@@ -1,4 +1,5 @@
 ![Product Mockups (1)](https://github.com/TessierV/vocabulo/blob/main/vocabulo-junior-app/assets/images/ImageReadme.png)
+
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=800&size=28&pause=1000&width=800&lines=Vocabulo-junior-app+and+Vocabulo_junior_ml" alt="Typing SVG" /></a>
 
 
