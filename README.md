@@ -1,7 +1,45 @@
+![Product Mockups (2)](https://github.com/TessierV/vocabulo/blob/main/vocabulo-junior-app/assets/images/ImageReadme.png)
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=800&size=28&pause=1000&width=800&lines=Vocabulo-junior-app+and+Vocabulo_junior_ml" alt="Typing SVG" /></a>
 
-Soon
 
+Vocabulo Kid is **an Android mobile application using machine learning to make children's literature more accessible to deaf children.** Playful and interactive, the child takes a picture of the text, which then reappears with words available in LSF (French Sign Language, via Dico Elix) as well as grammatical analysis.
+
+## Get started
+*This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).*
+- **Important:** Dump files will be required.
+- Machine learning directory: `vocabulo_junior_ml`
+- Mobile App directory `vocabulo-junior-app`
+
+
+* **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+* **Build app in your Android device** (or [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/))
+
+   ```bash
+   eas login
+   ```
+   ```bash
+   eas build --platform android --profile development --clear-cache 
+   ```
+   - [More informations for development build](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build)
+* **Lunch machine learning API**
+
+   *change IP adress ```bash ipconfig ``` in .\server.js and .    \components\Scan\MyCamera.tsx*
+
+   ```bash
+   node .\server.js
+   ```
+* **Start the app**
+
+   ```bash
+    npx expo start
+   ```
+   ```bash
+    a
+   ```
 
 
 <hr>
