@@ -2,7 +2,7 @@
 
 const CONFIG = {
     House: 'http://192.168.0.12',
-    School: 'http://192.168.1.1',
+    School: 'http://192.168.23.25',
     House2: 'http://192.168.1.1',
   };
 

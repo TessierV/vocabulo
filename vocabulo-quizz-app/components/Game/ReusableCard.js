@@ -21,7 +21,7 @@ const { height } = Dimensions.get('window');
 const ReusableCard = ({
   title = "Titre",
   description = "Description",
-  buttonText = "Commencer",
+  buttonText = "Click here",
   onPressButton = () => {},
   image = imgBanner,
   imageBg = bgImage,

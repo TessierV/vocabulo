@@ -4,6 +4,7 @@ import { darkTheme, lightTheme } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
 import HomeScreen from '../screens/HomeScreen';
 
+// Home page
 const Page = () => {
   const [darkMode, toggleDarkMode] = useDarkMode();
 

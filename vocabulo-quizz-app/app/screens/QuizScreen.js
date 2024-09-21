@@ -167,38 +167,37 @@ const QuizScreen = () => {
     };
 
     // Function to validate the selected answer
-    // Function to validate the selected answer
-const validateAnswer = () => {
-    if (selectedAnswer) {
-        if (selectedAnswer.correct) { // Check if the selected answer is correct
-            setScore((prevScore) => prevScore + 1); // Increment the score
+    const validateAnswer = () => {
+        if (selectedAnswer) {
+            if (selectedAnswer.correct) { // Check if the selected answer is correct
+                setScore((prevScore) => prevScore + 1); // Increment the score
 
-            if (incorrectCount === 0) {
-                setCorrectFirstAttempt((prev) => prev + 1); // Increment correct first attempt count
-            } else if (incorrectCount === 1) {
-                setCorrectSecondAttempt((prev) => prev + 1); // Increment correct second attempt count
+                if (incorrectCount === 0) {
+                    setCorrectFirstAttempt((prev) => prev + 1); // Increment correct first attempt count
+                } else if (incorrectCount === 1) {
+                    setCorrectSecondAttempt((prev) => prev + 1); // Increment correct second attempt count
+                } else {
+                    setCorrectMoreAttempt((prev) => prev + 1); // Increment correct more attempt count if more than one incorrect attempt
+                }
+
+                moveToNextQuestion(); // Move to the next question
             } else {
-                setCorrectMoreAttempt((prev) => prev + 1); // Increment correct more attempt count if more than one incorrect attempt
-            }
+                setDisabledAnswers((prev) => [...prev, selectedAnswer.text]); // Disable the incorrect answer
+                setIncorrectCount(incorrectCount + 1); // Increment the incorrect count
+                setSelectedAnswer(null);
 
-            moveToNextQuestion(); // Move to the next question
+                if (incorrectCount === 0) {
+                    handleHint('Hint', questions[currentQuestionIndex]?.hint || ''); // Show first hint
+                } else if (incorrectCount === 1) {
+                    handleHint('Hint +', questions[currentQuestionIndex]?.secondHint || ''); // Show second hint
+                } else if (incorrectCount === 2) {
+                    handleHint('Reminder', questions[currentQuestionIndex]?.thirdHint || ''); // Show third hint
+                }
+            }
         } else {
-            setDisabledAnswers((prev) => [...prev, selectedAnswer.text]); // Disable the incorrect answer
-            setIncorrectCount(incorrectCount + 1); // Increment the incorrect count
-            setSelectedAnswer(null);
-
-            if (incorrectCount === 0) {
-                handleHint('Hint', questions[currentQuestionIndex]?.hint || ''); // Show first hint
-            } else if (incorrectCount === 1) {
-                handleHint('Hint +', questions[currentQuestionIndex]?.secondHint || ''); // Show second hint
-            } else if (incorrectCount === 2) {
-                handleHint('Reminder', questions[currentQuestionIndex]?.thirdHint || ''); // Show third hint
-            }
+            Alert.alert('Warning', 'Please select an answer before validating.'); // Alert if no answer is selected
         }
-    } else {
-        Alert.alert('Warning', 'Please select an answer before validating.'); // Alert if no answer is selected
-    }
-};
+    };
 
 
     // Function to handle showing hint modal

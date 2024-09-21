@@ -163,15 +163,15 @@ const CongratulationsModal = ({
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.iconButtonContainer} onPress={handleRestartPress}>
                             <View style={[styles.iconButton]}>
-                                <InterfaceSvg iconName="refresh" fillColor={color.neutralBlue} width={30} height={30} />
+                                <InterfaceSvg iconName="house" fillColor={color.neutralBlue} width={30} height={30} />
                             </View>
-                            <Paragraph style={styles.iconButtonText}>Profil</Paragraph>
+                            <Paragraph style={styles.iconButtonText}>Home</Paragraph>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.iconButtonContainer} onPress={handleGamePress}>
                             <View style={[styles.iconButton, { backgroundColor: color.neutralBlue }]}>
                                 <InterfaceSvg iconName="game" fillColor={lightTheme.darkShade} width={30} height={30} />
                             </View>
-                            <Paragraph style={styles.iconButtonText}>Game</Paragraph>
+                            <Paragraph style={styles.iconButtonText}>Hybrid</Paragraph>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.iconButtonContainer} onPress={handleDictionaryPress}>
                             <View style={[styles.iconButton]}>
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     perfectRunText: {
-        color: color.neutralCoral,
+        color: color.neutralYellow,
         marginVertical: 20,
     },
     attemptsContainer: {

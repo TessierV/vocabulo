@@ -2,9 +2,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import SvgIcon from '@/SVG/CategorySvgIcon';
-import { lightTheme } from '@/constants/Colors';
+import { color, darkTheme, lightTheme } from '@/constants/Colors';
 
-const SubcategoryModal = ({ subcategory }) => {
+const SubcategoryModal = ({ subcategory, darkMode }) => {
     if (!subcategory || !Array.isArray(subcategory.words)) {
         console.error('Invalid subcategory prop:', subcategory);
         return <Text>Aucun mot disponible</Text>;
@@ -14,7 +14,7 @@ const SubcategoryModal = ({ subcategory }) => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.subcategoryDetailContainer}>
+            <View style={[styles.subcategoryDetailContainer, {          borderColor: darkMode ? darkTheme.light_darkShade : color.neutral,}]}>
             <View style={styles.categoryRowIcon}>
                 <SvgIcon icon={subcategory.subcategory_name} fillColor="pink" width="25" height="25"/>
                 <Text style={styles.recapTitle}>
@@ -57,8 +57,6 @@ const styles = StyleSheet.create({
           padding: 10,
           borderRadius: 8,
           borderWidth: 1,
-          borderColor: "#DDD",
-
     },
     categoryRowIcon: {
       flexDirection: 'row',
@@ -80,11 +78,9 @@ recapCount: {
     },
     word: {
         fontSize: 16,
-        fontWeight: 'bold',
     },
     definition: {
         fontSize: 14,
-        color: 'gray',
     },
 });
 

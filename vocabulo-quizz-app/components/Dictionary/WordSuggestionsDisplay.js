@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, ScrollView, TouchableOpacity, ActivityIndicator, Text } from 'react-native';
-import { ContainerTitle, Paragraph, Subtitle } from '@/constants/StyledText';
-import { SvgXml } from 'react-native-svg';
-import { lightTheme, color, darkTheme, grammaticalCategoryColors } from '@/constants/Colors';
+import { Paragraph, Subtitle } from '@/constants/StyledText';
+import { lightTheme, color, darkTheme } from '@/constants/Colors';
 import InterfaceSvg from '@/SVG/InterfaceSvg';
 import { dictionary } from '@/constants/texts';
 

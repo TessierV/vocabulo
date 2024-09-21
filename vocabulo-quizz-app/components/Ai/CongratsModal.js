@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, StyleSheet, Dimensions, Image } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Modal, StyleSheet, Dimensions, Image, Alert } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { SvgXml } from 'react-native-svg';
 import InterfaceSvg from '@/SVG/InterfaceSvg';
@@ -7,21 +7,33 @@ import { color, darkTheme, lightTheme } from '@/constants/Colors';
 import Bubble from '@/components/Effect/Bubble';
 import logoBanner from '@/assets/images/Quizz/banner.png';
 import { Paragraph } from '@/constants/StyledText';
+import SvgIcon from '@/SVG/CategorySvgIcon';
 import { GradientBorderButton } from '@/components/Button';
+import VideoModal from '@/components/Quizz/HintVideoModal';
 
+// CongratsModal component to display quiz results and evaluation
 const CongratsModal = ({
     visible,
     questions,
     firstAttemptCorrect,
     incorrectAttempts,
     wordDefinitions,
+    categoryName,
     onClose,
     darkMode
 }) => {
+    // Get screen dimensions
     const { width, height } = Dimensions.get('window');
+
+    // State for evaluation modal visibility and selected evaluation
     const [evaluationModalVisible, setEvaluationModalVisible] = useState(false);
     const [selectedEvaluation, setSelectedEvaluation] = useState(null);
 
+    // State for video modal visibility and current video URL
+    const [videoModalVisible, setVideoModalVisible] = useState(false);
+    const [currentVideoUrl, setCurrentVideoUrl] = useState('');
+
+    // Generate bubble effect data
     const bubbles = Array.from({ length: 20 }).map((_, index) => ({
         id: index.toString(),
         size: Math.random() * 30 + 20,
@@ -37,15 +49,37 @@ const CongratsModal = ({
         opacity: 0.8,
     }));
 
-    const handleEvaluationSelect = (evaluation) => {
+    // Handle evaluation selection
+    const handleEvaluationSelect = useCallback((evaluation) => {
         setSelectedEvaluation(evaluation);
-    };
+    }, []);
 
-    const handleEvaluationSubmit = () => {
+    // Handle evaluation submission
+    const handleEvaluationSubmit = useCallback(() => {
         console.log('Selected evaluation:', selectedEvaluation);
         setEvaluationModalVisible(false);
-        onClose(); // Close modal and return to game
-    };
+        onClose();
+    }, [selectedEvaluation, onClose]);
+
+    // Handle opening video modal
+    const handleOpenVideo = useCallback((url) => {
+        console.log('Attempting to open video with URL:', url);
+        if (url && typeof url === 'string' && url.trim() !== '') {
+            setCurrentVideoUrl(url);
+            setVideoModalVisible(true);
+            console.log('Video modal should now be visible with URL:', url);
+        } else {
+            console.log('Invalid video URL:', url);
+            Alert.alert('Erreur', 'La vidéo n\'est pas disponible.');
+        }
+    }, []);
+
+    // Handle closing video modal
+    const closeVideoModal = useCallback(() => {
+        console.log('Closing video modal');
+        setVideoModalVisible(false);
+        setCurrentVideoUrl('');
+    }, []);
 
     return (
         <Modal
@@ -54,6 +88,7 @@ const CongratsModal = ({
             animationType="slide"
             onRequestClose={onClose}
         >
+            {/* Bubble effect container */}
             <View style={styles.bubblesContainer}>
                 {bubbles.map(bubble => (
                     <Bubble
@@ -66,6 +101,8 @@ const CongratsModal = ({
                     />
                 ))}
             </View>
+
+            {/* Main modal content */}
             <View style={styles.modalOverlay}>
                 <Image
                     source={logoBanner}
@@ -74,13 +111,15 @@ const CongratsModal = ({
                 />
                 <View style={styles.modalContent}>
                     <Paragraph style={styles.title}>Félicitations!</Paragraph>
+                    <SvgIcon icon={categoryName} width={80} height={80} fillColor={color.neutralCoral} />
 
-                    {/* Quiz Recap */}
                     <View style={{ paddingVertical: 10 }}>
                         <Paragraph style={{ color: lightTheme.lightShade, textAlign: 'center' }}>
                             Bravo ! Vous avez terminé le quizz
                         </Paragraph>
                     </View>
+
+                    {/* Scrollable container for quiz recap */}
                     <ScrollView horizontal={true} contentContainerStyle={styles.horizontalScrollContainer}>
                         {questions.map((question, index) => {
                             const isCorrectFirstTry = firstAttemptCorrect.includes(index);
@@ -89,43 +128,31 @@ const CongratsModal = ({
                             return (
                                 <View
                                     key={index}
-                                    style={[styles.wordRecapContainer, { borderColor: isCorrectFirstTry ? color.darkGreen : isIncorrect ? color.darkCoral : color.darkCoral, backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.darkShade }]}
+                                    style={[styles.wordRecapContainer, {
+                                        borderColor: isCorrectFirstTry ? color.darkGreen : isIncorrect ? color.darkCoral : color.darkCoral,
+                                        backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.darkShade
+                                    }]}
                                 >
-                                    <Paragraph style={[styles.recapWordText, { color: isCorrectFirstTry ? color.darkGreen : isIncorrect ? color.darkCoral : color.darkCoral }]}>Mot : {question.correctWord.mot}</Paragraph>
+                                    <Paragraph style={[styles.recapWordText, { color: isCorrectFirstTry ? color.darkGreen : isIncorrect ? color.darkCoral : color.darkCoral }]}>
+                                        Mot : {question.correctWord.mot}
+                                    </Paragraph>
                                     <Paragraph style={[styles.recapDefinitionText, { color: darkMode ? color.neutral : color.neutral }]}>
                                         Définition : {wordDefinitions[question.correctWord.mot_id]?.definition || 'Non disponible'}
                                     </Paragraph>
-                                    <View style={styles.videoButtonsContainer}>
-                                        <TouchableOpacity
-                                            style={[styles.hintButton, { borderColor: darkTheme.neutral }]}
-                                            onPress={() => console.log('Open LSF definition video')}
-                                        >
-                                            <InterfaceSvg iconName="url_def" fillColor={darkTheme.neutral} width={18} height={18} />
-                                            <Paragraph style={{ color: darkTheme.neutral, fontSize: 12 }}>Définition LSF</Paragraph>
-                                        </TouchableOpacity>
-
-                                        <TouchableOpacity
-                                            style={[styles.hintButton, { borderColor: darkTheme.neutral }]}
-                                            onPress={() => console.log('Open sign video')}
-                                        >
-                                            <InterfaceSvg iconName="url_sign" fillColor={darkTheme.neutral} width={18} height={18} />
-                                            <Paragraph style={{ color: darkTheme.neutral, fontSize: 12 }}>Sign</Paragraph>
-                                        </TouchableOpacity>
-                                    </View>
                                 </View>
                             );
                         })}
                     </ScrollView>
 
+                    {/* Evaluation button */}
                     <View style={styles.buttonContainer}>
                         <GradientBorderButton
                             text="évaluation"
                             background={darkMode ? 'dark' : 'dark'}
                             textColor={darkMode ? 'light' : 'light'}
-                            onPress={() => setEvaluationModalVisible(true)} // Open evaluation modal
+                            onPress={() => setEvaluationModalVisible(true)}
                         />
                     </View>
-
                 </View>
             </View>
 
@@ -140,6 +167,7 @@ const CongratsModal = ({
                     <View style={styles.evaluationModalContent}>
                         <Text style={styles.evaluationTitle}>Sélectionnez votre évaluation</Text>
                         <View style={styles.evaluationOptions}>
+                            {/* Too Hard Option */}
                             <TouchableOpacity
                                 style={[
                                     styles.evaluationOption,
@@ -150,6 +178,7 @@ const CongratsModal = ({
                                 <Feather name="frown" size={30} color={selectedEvaluation === 'Trop dur' ? color.darkCoral : color.neutral} />
                                 <Text style={[styles.evaluationText, { color: selectedEvaluation === 'Trop dur' ? color.neutral :  lightTheme.light_darkShade }]}>Trop dur</Text>
                             </TouchableOpacity>
+                            {/* Good Option */}
                             <TouchableOpacity
                                 style={[
                                     styles.evaluationOption,
@@ -160,6 +189,7 @@ const CongratsModal = ({
                                 <Feather name="meh" size={30} color={selectedEvaluation === 'Bien' ? color.darkBlue : color.neutral} />
                                 <Text style={[styles.evaluationText, { color: selectedEvaluation === 'Bien' ? color.neutral : lightTheme.light_darkShade}]}>Bien</Text>
                             </TouchableOpacity>
+                            {/* Too Easy Option */}
                             <TouchableOpacity
                                 style={[
                                     styles.evaluationOption,
@@ -172,7 +202,7 @@ const CongratsModal = ({
                             </TouchableOpacity>
                         </View>
 
-                        {/* Only show the "Valider" button if an evaluation has been selected */}
+                        {/* Submit Evaluation Button */}
                         {selectedEvaluation && (
                             <View style={styles.evaluationButtons}>
                                 <GradientBorderButton
@@ -186,10 +216,18 @@ const CongratsModal = ({
                     </View>
                 </View>
             </Modal>
+
+            {/* Video Modal */}
+            <VideoModal
+                visible={videoModalVisible}
+                onClose={closeVideoModal}
+                videoUrl={currentVideoUrl}
+            />
         </Modal>
     );
 };
 
+// Styles for the component
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
@@ -260,7 +298,6 @@ const styles = StyleSheet.create({
         marginTop: 20,
         justifyContent: 'center',
     },
-
     bubblesContainer: {
         ...StyleSheet.absoluteFillObject,
         zIndex: 0,
@@ -270,8 +307,6 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
     },
-
-    // Evaluation Modal Styles
     evaluationModalContent: {
         backgroundColor: darkTheme.darkShade,
         padding: 20,
@@ -303,28 +338,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
-    },
-    submitButton: {
-        backgroundColor: color.darkGreen,
-        padding: 10,
-        borderRadius: 5,
-        width: '45%',
-        alignItems: 'center',
-    },
-    submitButtonText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-    cancelButton: {
-        backgroundColor: color.neutralCoral,
-        padding: 10,
-        borderRadius: 5,
-        width: '45%',
-        alignItems: 'center',
-    },
-    cancelButtonText: {
-        color: '#fff',
-        fontSize: 16,
     },
 });
 

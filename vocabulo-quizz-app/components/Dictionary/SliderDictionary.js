@@ -42,6 +42,8 @@ const SliderDictionary = ({ darkMode, isDaltonianMode, toggleDaltonianMode }) =>
               useSvg={true} // Enable using an SVG banner
               showButton={true} // Show button for this card
               onPressButton={() => toggleDaltonianMode()} // Binds the toggle function to the button press
+              textButton="click"
+
             />
           ),
         },

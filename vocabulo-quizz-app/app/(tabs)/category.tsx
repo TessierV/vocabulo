@@ -4,6 +4,7 @@ import { darkTheme, lightTheme } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
 import CategoryScreen from '../screens/CategoryScreen';
 
+//Category page
 const Page = () => {
   const [darkMode, toggleDarkMode] = useDarkMode();
 

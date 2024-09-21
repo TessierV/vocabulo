@@ -25,7 +25,7 @@ const slides = [
   },
   {
     id: '3',
-    title: 'Un quiz qui s\'adapte à votre rythme grâce à l\'IA.',
+    title: 'Un quizz qui s\'adapte à votre rythme grâce à l\'IA.',
     text: 'Quizz hybride Personnalisé',
     backgroundImage: require('../assets/images/Onboarding/13.png'),
   },
@@ -55,7 +55,7 @@ const Onboarding = () => {
       flatListRef?.current.scrollToOffset({ offset });
       setCurrentSlideIndex(nextSlideIndex);
     } else {
-      navigation.navigate('home');
+      navigation.navigate('login');
     }
   };
 

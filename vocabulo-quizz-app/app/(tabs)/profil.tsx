@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import ProfileScreen from '../screens/ProfileScreen'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+// Profil page
 const Page = () => {
   return (
     <GestureHandlerRootView>
@@ -13,11 +13,3 @@ const Page = () => {
 
 
 export default Page
-
-const styles = StyleSheet.create({
-  container:{
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-})

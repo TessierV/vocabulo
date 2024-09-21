@@ -6,6 +6,7 @@ import { BigTitle } from '@/constants/StyledText';
 import SectionTitle from '@/components/SectionTitle';
 import { texts } from '@/constants/texts';
 import SvgIcon from '@/SVG/CategorySvgIcon';
+import config from '@/backend/config/config';
 
 const Page = () => {
   const [darkMode] = useDarkMode();
@@ -17,7 +18,7 @@ const Page = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://192.168.0.12:3000/api/categories');
+      const response = await fetch(`${config.BASE_URL}:3000/api/categories`);
       const data = await response.json();
       setCategories(data);
       setLoading(false);

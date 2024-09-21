@@ -7,18 +7,27 @@ import FooterSVG from '@/constants/svg';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import { logoLetterSVG } from '@/SVG/logoSVG';
 
+// Main layout component for the app
 const Layout = () => {
+  // Use custom hook to manage dark mode state
   const [darkMode] = useDarkMode();
+
+  // Set tab bar background color based on dark mode
   const tabBarBgColor = darkMode ? darkTheme.light_darkShade : lightTheme.lightShade;
 
+  // Function to determine icon fill color based on focus and dark mode
   const getIconFillColor = (focused) => (
     focused ? (darkMode ? color.darkPlum : color.darkBlue) : (darkMode ? darkTheme.dark_lightShade : lightTheme.neutral)
   );
 
+  // Render the middle tab (logo) with special styling
   const renderMiddleTab = (focused) => (
     <View style={[
       styles.middleContainer,
-      { borderColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade, backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade },
+      {
+        borderColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade,
+        backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade
+      },
     ]}>
       <SvgXml xml={logoLetterSVG(focused, darkMode)} width="70%" height="70%" />
     </View>
@@ -26,19 +35,32 @@ const Layout = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
+      {/* Tabs navigation setup */}
       <Tabs screenOptions={({ route }) => ({
-        tabBarStyle: { ...styles.tabBar, display: route.name === 'index' ? 'none' : 'flex', backgroundColor: tabBarBgColor },
+        // Hide tab bar on index screen, customize appearance
+        tabBarStyle: {
+          ...styles.tabBar,
+          display: route.name === 'index' ? 'none' : 'flex',
+          backgroundColor: tabBarBgColor
+        },
         tabBarShowLabel: false,
         headerShown: false,
       })}>
+        {/* Map through screen names to create tab bar items */}
         {['home', 'category', 'game', 'dictionary', 'profil'].map((screen, index) => (
           <Tabs.Screen
             key={screen}
             name={screen}
             options={{
               tabBarIcon: ({ focused }) =>
+                // Render middle tab differently
                 index === 2 ? renderMiddleTab(focused) : (
-                  <FooterSVG icon={screen} fillColor={getIconFillColor(focused)} width={screen === 'dictionary' ? 30 : 24} height={screen === 'dictionary' ? 30 : 24} />
+                  <FooterSVG
+                    icon={screen}
+                    fillColor={getIconFillColor(focused)}
+                    width={screen === 'dictionary' ? 30 : 24}
+                    height={screen === 'dictionary' ? 30 : 24}
+                  />
                 ),
             }}
           />
@@ -48,6 +70,7 @@ const Layout = () => {
   );
 };
 
+// Styles for the layout
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -13,13 +13,14 @@ import { useRouter } from 'expo-router';
 import { GradientBorderButton } from '@/components/Button';
 import GradientSVG from '@/SVG/GradientSVG';
 import RadarEffect from '@/components/RadarEffect';
+import config from '@/backend/config/config';
 
 // Create a mapping for filter options
 const filterTranslations = {
     all: 'Tout',
     easy: 'Facile',
     medium: 'Moyen',
-    hard: 'Expert'
+    hard: 'Difficile'
 };
 
 const GridCardHome = () => {
@@ -40,10 +41,7 @@ const GridCardHome = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                // maison const response = await fetch('http://192.168.0.12:3000/api/categories');
-                // Ecole const response = await fetch('http://10.10.0.8:3000/api/categories');
-
-                const response = await fetch('http://192.168.0.12:3000/api/categories');
+                const response = await fetch(`${config.BASE_URL}:3000/api/categories`);
                 const data = await response.json();
                 setCategories(data);
                 setLoading(false);
@@ -185,9 +183,9 @@ const GridCardHome = () => {
                     onRequestClose={closeModal}
                 >
                     <View style={styles.modalContainer}>
-                        <View style={[styles.modalContent, {backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.dark_lightShade}]}>
+                        <View style={[styles.modalContent, {backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade}]}>
                             <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-                                <Feather name="x" size={24} color="black" />
+                            <Feather name="x" size={24} color={darkMode ? darkTheme.dark_lightShade : lightTheme.darkShade} />
                             </TouchableOpacity>
 
                             <View style={styles.recapContainer}>
@@ -198,10 +196,10 @@ const GridCardHome = () => {
                                     svgIcon={SvgIcon({ icon: selectedCategory.categorie_name }).props.xml}
                                 />
                                 <BigTitle style={{color: darkMode ? darkTheme.dark_lightShade : lightTheme.darkShade}}>Récapitulatif</BigTitle>
-                                <ContainerParagraph style={{ color: darkMode ? darkTheme.light_darkShade : lightTheme.light_darkShade }}>
+                                <ContainerParagraph style={{ color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>
                                     Vous allez commencer avec ce thème:
                                 </ContainerParagraph>
-                                <View style={[styles.categoryRow, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.darkShade }]}>
+                                <View style={[styles.categoryRow, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }]}>
                                     <View style={styles.categoryRowIcon}>
                                         <SvgIcon icon={selectedCategory.categorie_name} width="25" height="25" />
                                         <Text style={styles.recapTitle}>{selectedCategory.categorie_name}</Text>
@@ -280,6 +278,7 @@ const GridCardHome = () => {
                                         <View style={styles.sliderItem}>
                                             {item.map(subcategory => (
                                                 <SubcategoryModal
+                                                darkMode={darkMode}
                                                     key={subcategory.subcat_id}
                                                     subcategory={{
                                                         ...subcategory,

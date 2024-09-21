@@ -5,7 +5,7 @@ import Section from '@/components/Parameters/Section';
 import Setting from '@/components/Parameters/Setting';
 import useDarkMode from '@/components/useDarkMode';
 import { darkTheme, lightTheme } from '@/constants/Colors';
-import { texts } from '@/constants/texts';
+import { texts, parameters } from '@/constants/texts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
@@ -128,25 +128,25 @@ const ParameterScreen = () => {
       <ScrollView style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
         <SliderParameters darkMode={darkMode} setSliderModalVisible={setSliderModalVisible} />
         <View style={styles.Section}>
-          <Section title={`${texts.parameterScreen.section.title} - ${username}`} iconName="user" darkMode={darkMode}>
+          <Section title={`${parameters.parameterScreen.section.title} - ${username}`} iconName="user" darkMode={darkMode}>
             <Setting
               iconName="edit"
-              text={texts.parameterScreen.section.editProfile}
+              text={parameters.parameterScreen.section.editProfile}
               buttonText=""
               onPress={() => console.log('Edit profile pressed')}
             />
             <Setting
               iconName="key"
-              text={texts.parameterScreen.section.changePassword}
+              text={parameters.parameterScreen.section.changePassword}
               buttonText=""
               onPress={() => setPasswordModalVisible(true)}
             />
           </Section>
 
-          <Section title={texts.parameterScreen.section_second.title} iconName="sliders" darkMode={darkMode}>
+          <Section title={parameters.parameterScreen.section_second.title} iconName="sliders" darkMode={darkMode}>
             <Setting
               iconName={darkMode ? 'moon' : 'sun'}
-              text={darkMode ? texts.parameterScreen.section_second.themeDark : texts.parameterScreen.section_second.themeLight}
+              text={darkMode ? parameters.parameterScreen.section_second.themeDark : parameters.parameterScreen.section_second.themeLight}
               buttonText=""
               onPress={toggleDarkMode}
               children={
@@ -160,22 +160,22 @@ const ParameterScreen = () => {
             />
           </Section>
 
-          <Section title={texts.parameterScreen.section_third.title} iconName="paperclip" darkMode={darkMode}>
+          <Section title={parameters.parameterScreen.section_third.title} iconName="paperclip" darkMode={darkMode}>
             <Setting
               iconName="faq"
-              text={texts.parameterScreen.section_third.ask}
+              text={parameters.parameterScreen.section_third.ask}
               buttonText=""
               onPress={() => console.log('FAQ pressed')}
             />
             <Setting
               iconName="send"
-              text={texts.parameterScreen.section_third.contact}
+              text={parameters.parameterScreen.section_third.contact}
               buttonText=""
               onPress={() => console.log('Contact us pressed')}
             />
             <Setting
               iconName="layer"
-              text={texts.parameterScreen.section_third.version}
+              text={parameters.parameterScreen.section_third.version}
               buttonText=""
               onPress={() => console.log('View version pressed')}
             />
@@ -199,7 +199,7 @@ const ParameterScreen = () => {
         darkMode={darkMode}
       />
 
-<EnhancedCustomModal
+      <EnhancedCustomModal
         visible={passwordModalVisible}
         title="Changer le mot de passe"
         content={

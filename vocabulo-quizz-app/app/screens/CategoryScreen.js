@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Text, Button, ActivityIndicator, TouchableOpacity, Dimensions, Modal, TextInput } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { View, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Dimensions, Modal, TextInput } from 'react-native';
 import useDarkMode from '@/components/useDarkMode';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import Header from '@/components/Header/Header';
-import SvgDifficulty from '@/SVG/DifficultySvgIcon';
-import { SvgXml } from 'react-native-svg';
-import SvgIcon from '@/SVG/CategorySvgIcon';
-import GradientSVG from '@/SVG/GradientSVG';
 import { Paragraph, Subtitle, BigTitle, ContainerParagraph } from '@/constants/StyledText';
 import RadarEffect from '@/components/RadarEffect';
 import { useNavigation } from '@react-navigation/native';
@@ -179,10 +174,10 @@ const Page = () => {
     }
 
     const strokeColor = filteredCount < 6
-    ? darkMode
+      ? darkMode
         ? darkTheme.neutral
         : color.neutral
-    : darkMode
+      : darkMode
         ? darkTheme.darkShade
         : lightTheme.dark_lightShade;
 
@@ -209,7 +204,10 @@ const Page = () => {
 
 
 
-  if (loading) return <ActivityIndicator size="large" color={darkMode ? color.darkPlum : color.darkBlue} />;
+  if (loading) return
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <ActivityIndicator size="large" color={darkMode ? color.darkPlum : color.darkBlue} />;
+  </View>
   if (error) return <Paragraph style={{ color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }}>Error: {error}</Paragraph>;
 
   return (

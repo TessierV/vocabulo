@@ -4,6 +4,7 @@ import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import SvgIcon from '@/components/Card/SvgIcon';
 import { Paragraph } from '@/constants/StyledText';
 import CategoryModal from '@/components/Home/HomeCard/CategoryModal';
+import config from '@/backend/config/config';
 
 const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
   const [subcategories, setSubcategories] = useState([]);
@@ -22,7 +23,7 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
 
   const fetchSubcategories = async () => {
     try {
-      const response = await fetch('http://192.168.0.12:3000/api/subcategories');
+      const response = await fetch(`${config.BASE_URL}:3000/api/subcategories`);
       const data = await response.json();
       setSubcategories(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -34,7 +35,7 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
 
   const fetchWords = async (categorieId) => {
     try {
-      const response = await fetch(`http://192.168.0.12:3000/api/words/${categorieId}`);
+      const response = await fetch(`${config.BASE_URL}:3000/api/words/${categorieId}`);
       const data = await response.json();
       setWords(Array.isArray(data) ? data : []);
     } catch (error) {

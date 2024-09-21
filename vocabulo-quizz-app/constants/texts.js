@@ -98,6 +98,24 @@ export const basic = {
     },
 };
 
+// Login export text
+export const login = {
+    header: {
+        title: 'Connexion',
+    },
+
+    section: {
+        textinput: 'Pseudo',
+        textinput2: 'Mot de passe',
+    },
+    footer: {
+        button: "Se connecter",
+        text: "Pas encore inscrit ? Créez votre compte ici !",
+    },
+};
+
+
+
 // Basic export text
 export const ai = {
     header: {
@@ -173,7 +191,7 @@ export const dictionary = {
         },
         slider2: {
             title: 'Palette',
-            description: 'Changement de palette pour des adaptée aux Daltoniens',
+            description: 'Cliquez ici pour activer une palette de couleurs optimisée pour les personnes daltoniennes.',
             button: 'En savoir plus',
         },
     },
@@ -228,6 +246,36 @@ export const parameters = {
             description: "Plus d’images dans les thèmes.",
         },
         button: "Fermer",
+    },
+    parameterScreen: {
+        banner: {
+            title: 'Titre Parametres bannière',
+            text: 'Je suis le texte de la bannière Parametres',
+            popup: {
+                title: 'À propos',
+                text: 'Ceci est une explication détaillée apparaissant dans le pop-up Paramètres lorsque vous cliquez sur l`\'icône.',
+                button: 'Fermer',
+            },
+        },
+        section: {
+            title: 'Profil',
+            editProfile: "Modifier le profil",
+            changePassword: "Modifier le mot de passe",
+        },
+
+        section_second: {
+            title: 'Personnalisation',
+            themeLight: "Thème clair",
+            themeDark: "Thème sombre",
+            sizeText: "Taille de texte",
+        },
+
+        section_third: {
+            title: 'Settings',
+            ask: "FAQ",
+            contact: "Contactez-nous",
+            version: "Version",
+        },
     },
 };
 
@@ -466,94 +514,127 @@ export const texts = {
         },
     },
 
+    /* TEST */
     categories: [
         {
-            id: 11,
-            icon: themes.work,
-            textLabel: 'Bureau',
+            id: 15,
+            icon: themes.musique,
+            textLabel: 'Musique',
             difficulty: 'easy',
-            ratio: '50/100',
-            route: '/game',
+            ratio: '20/26',
+            route: '/',
+        },
+        {
+            id: 14,
+            icon: themes.animaux,
+            textLabel: 'Animaux',
+            difficulty: 'hard',
+            ratio: '16/211',
+            route: '/',
+        },
+        {
+            id: 13,
+            icon: themes.animaux,
+            textLabel: 'Animaux',
+            difficulty: 'middle',
+            ratio: '81/211',
+            route: '/',
+        },
+        {
+            id: 12,
+            icon: themes.animaux,
+            textLabel: 'Animaux',
+            difficulty: 'easy',
+            ratio: '114/211',
+            route: '/',
+        },
+        {
+            id: 11,
+            icon: themes.école,
+            textLabel: 'école',
+            difficulty: 'middle',
+            ratio: '40/44',
+            route: '/',
         },
         {
             id: 10,
-            icon: themes.organ,
-            textLabel: 'Organe',
+            icon: themes.Habitat,
+            textLabel: 'Habitat',
             difficulty: 'hard',
-            ratio: '70/100',
-            route: '/game',
+            ratio: '9/138',
+            route: '/',
         },
         {
             id: 9,
-            icon: themes.car,
-            textLabel: 'Véhicules',
-            difficulty: 'easy',
-            ratio: '70/100',
-            route: '/game',
+            icon: themes.Habitat,
+            textLabel: 'Habitat',
+            difficulty: 'middle',
+            ratio: '30/138',
+            route: '/',
         },
         {
             id: 8,
-            icon: themes.vegetables,
-            textLabel: 'Légumes',
-            difficulty: 'middle',
-            ratio: '70/100',
-            route: '/game',
+            icon: themes.école,
+            textLabel: 'Sports',
+            difficulty: 'easy',
+            ratio: '40/44',
+            route: '/',
         },
         {
             id: 7,
-            icon: themes.umbrella,
-            textLabel: 'Temps',
-            difficulty: 'middle',
-            ratio: '70/100',
-            route: '/game',
+            icon: themes.Habitat,
+            textLabel: 'Habitat',
+            difficulty: 'easy',
+            ratio: '99/138',
+            route: '/',
         },
         {
             id: 6,
-            icon: themes.breakfast,
-            textLabel: 'Matin',
-            difficulty: 'easy',
-            ratio: '70/100',
-            route: '/game',
+            icon: themes.école,
+            textLabel: 'Sports',
+            difficulty: 'hard',
+            ratio: '28/119',
+            route: '/',
         },
         {
             id: 5,
-            icon: themes.gardening,
-            textLabel: 'Jardin',
-            difficulty: 'hard',
-            ratio: '50/100',
-            route: '/random',
+            icon: themes.sports,
+            textLabel: 'Sports',
+            difficulty: 'middle',
+            ratio: '34/119',
+            route: '/',
         },
         {
             id: 4,
-            icon: themes.alimentation,
-            textLabel: 'Alimentation',
+            icon: themes.sports,
+            textLabel: 'Sports',
             difficulty: 'easy',
-            ratio: '70/100',
-            route: '/game',
+            ratio: '57/119',
+            route: '/',
         },
         {
             id: 3,
-            icon: themes.umbrella,
-            textLabel: 'Temps',
-            difficulty: 'hard',
-            ratio: '70/100',
-            route: '/game',
+            icon: themes.fleurs,
+            textLabel: 'Fleurs',
+            difficulty: 'easy',
+            ratio: '19/26',
+            route: '/',
         },
         {
             id: 2,
-            icon: themes.bed,
-            textLabel: 'Chambre',
+            icon: themes.arbres,
+            textLabel: 'Arbres',
             difficulty: 'middle',
-            ratio: '50/100',
-            route: '/game',
+            ratio: '4/9',
+            route: '/',
         },
         {
             id: 1,
-            icon: themes.coffeeLatte,
-            textLabel: 'Barista',
+            icon: themes.arbres,
+            textLabel: 'Arbres',
             difficulty: 'easy',
-            ratio: '100/100',
-            route: '/random', // Mise à jour de la route pour Barista
+            ratio: '4/9',
+            route: '/',
         },
     ],
 };

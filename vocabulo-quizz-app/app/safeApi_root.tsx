@@ -4,6 +4,7 @@ import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
 import SvgIcon from '@/components/Card/SvgIcon';
 import { BigTitle } from '@/constants/StyledText';
+import config from '@/backend/config/config';
 
 const Page = () => {
   const [darkMode] = useDarkMode();
@@ -14,9 +15,7 @@ const Page = () => {
   const fetchCategories = async () => {
     try {
 
-      const response = await fetch('http://192.168.0.12:3000/api/categories');
-      //const response = await fetch('http://10.10.0.8:3000/api/categories');
-      //const response = await fetch('http://192.168.0.12:3000/api/categories');
+      const response = await fetch(`${config.BASE_URL}:3000/api/categories`);
 
       const data = await response.json();
       setCategories(data);

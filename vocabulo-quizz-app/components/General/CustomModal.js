@@ -1,3 +1,4 @@
+// /components/General/CustomModal.js
 import React from 'react';
 import { Modal, View, StyleSheet, TouchableOpacity, Dimensions, Text } from 'react-native';
 import Bubble from '@/components/Effect/Bubble';

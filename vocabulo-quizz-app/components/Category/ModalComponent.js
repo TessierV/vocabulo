@@ -4,7 +4,9 @@ import { Feather } from '@expo/vector-icons';
 import { Paragraph, BigTitle, ContainerParagraph } from '@/constants/StyledText';
 import RadarEffect from '@/components/RadarEffect';
 import SvgIcon from '@/SVG/CategorySvgIcon';
-import { darkTheme, lightTheme } from '@/constants/Colors';
+import SvgDifficulty from '@/SVG/DifficultySvgIcon';
+import { darkTheme, lightTheme, color } from '@/constants/Colors';
+import { GradientBorderButton } from '../Button';
 
 const ModalComponent = ({ darkMode, modalVisible, closeModal, selectedSection, selectedFilter, getRadarColors, filterWordsByDifficulty, navigation, basic }) => {
   if (!selectedSection || !selectedSection.subcat) {
@@ -21,11 +23,10 @@ const ModalComponent = ({ darkMode, modalVisible, closeModal, selectedSection, s
       onRequestClose={closeModal}
     >
       <View style={styles.modalBackground}>
-        <View style={styles.modalContainer}>
+        <View style={[styles.modalContainer, {backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.lightShade}]}>
           <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-            <Feather name="x" size={24} color={darkMode ? lightTheme.darkShade : darkTheme.darkShade} />
+            <Feather name="x" size={24} color={darkMode ? darkTheme.dark_lightShade : lightTheme.darkShade} />
           </TouchableOpacity>
-
           <View style={styles.recapContainer}>
             <RadarEffect
               colors={getRadarColors(selectedFilter)}
@@ -33,38 +34,29 @@ const ModalComponent = ({ darkMode, modalVisible, closeModal, selectedSection, s
               maxRadius={50}
               svgIcon={SvgIcon({ icon: subcat.subcategory_name }).props.xml}
             />
-            <BigTitle>{basic.modal.title}</BigTitle>
-            <ContainerParagraph style={{ color: darkMode ? lightTheme.light_darkShade : darkTheme.darkShade }}>
-              {basic.modal.subtitle}
-            </ContainerParagraph>
-
-            <View style={[styles.categoryRow, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.darkShade }]}>
-              <View style={styles.categoryRowIcon}>
-                <SvgIcon icon={subcat.subcategory_name} width="25" height="25" />
-                <Paragraph style={styles.recapTitle}>{subcat.subcategory_name}</Paragraph>
-              </View>
-              <Paragraph style={styles.modalTitle}>
-                {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
-              </Paragraph>
+            <View style={styles.textContainer}>
+              <BigTitle style={{color: darkMode ? darkTheme.dark_lightShade : lightTheme.darkShade}}>
+                {basic.modal.title}
+              </BigTitle>
+              <ContainerParagraph style={{ color: darkMode ? darkTheme.neutral : lightTheme.light_darkShade }}>
+                {basic.modal.subtitle}
+              </ContainerParagraph>
             </View>
-
-            <ScrollView style={{ height: 200 }}>
-              {filterWordsByDifficulty(subcat.words, difficulty).map(word => (
-                <View key={word.mot_id}>
-                  <Paragraph style={{ color: darkMode ? darkTheme.darkShade : lightTheme.darkShade }}>
-                    {word.mot} - {word.definition}
+            <View style={[styles.categoryRow, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }]}>
+                <View style={styles.categoryRowIcon}>
+                  <SvgIcon icon={subcat.subcategory_name} width="25" height="25" />
+                  <Paragraph style={[styles.recapTitle, {color: darkMode ? darkTheme.lightShade : lightTheme.lightShade}]}>
+                    {subcat.subcategory_name}
                   </Paragraph>
-                  {word.signs.map((sign, index) => (
-                    <View key={index}>
-                      <Paragraph>Sign Video: {sign.urlSign}</Paragraph>
-                      <Paragraph>Definition Video: {sign.urlDef}</Paragraph>
-                    </View>
-                  ))}
                 </View>
-              ))}
-            </ScrollView>
+                <View style={styles.difficultyContainer}>
+                  <SvgDifficulty difficulty={difficulty} isSelected={false} />
+                </View>
+              </View>
 
-            <TouchableOpacity
+            <GradientBorderButton
+              background={darkMode ? 'dark' : 'light'}
+              textColor={darkMode ? 'light' : 'dark'}
               onPress={() => {
                 const filteredWords = filterWordsByDifficulty(subcat.words, difficulty);
                 navigation.navigate('subcat/[subcat_id]', {
@@ -74,12 +66,8 @@ const ModalComponent = ({ darkMode, modalVisible, closeModal, selectedSection, s
                 });
                 closeModal();
               }}
-              style={styles.Button}
-            >
-              <Paragraph style={{ color: darkMode ? lightTheme.text : lightTheme.darkShade }}>
-                {basic.modal.button}
-              </Paragraph>
-            </TouchableOpacity>
+              text={basic.modal.button}
+            />
           </View>
         </View>
       </View>
@@ -90,28 +78,32 @@ const ModalComponent = ({ darkMode, modalVisible, closeModal, selectedSection, s
 const styles = StyleSheet.create({
   modalBackground: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContainer: {
-    backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
+    height: '90%',
+    width: '100%',
+    bottom: 0,
   },
   closeButton: {
     position: 'absolute',
-    top: 10,
+    top: 20,
     right: 10,
   },
   recapContainer: {
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
     marginBottom: 20,
+    height: '100%',
   },
-  recapTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  textContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
   },
   categoryRow: {
     flexDirection: 'row',
@@ -134,13 +126,6 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     marginBottom: 10,
-  },
-  Button: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#007bff',
-    borderRadius: 8,
-    alignItems: 'center',
   },
 });
 

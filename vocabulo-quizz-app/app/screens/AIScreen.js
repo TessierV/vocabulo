@@ -12,6 +12,7 @@ import ExplanationModal from '@/components/Ai/ExplanationModal'; // Modal compon
 import { ai } from '@/constants/texts'; // Text content for internationalization
 import SliderAI from '@/components/Ai/SliderAI'; // Custom AI slider component
 import QuizStartModal from '@/components/Ai/QuizStartModal'; // Modal component for starting a quiz
+import config from '@/backend/config/config';
 
 export default function AIScreen() {
   // State variables
@@ -31,7 +32,7 @@ export default function AIScreen() {
     const fetchRecommendations = async () => {
       try {
         // Call the backend API to fetch word recommendations for the quiz
-        const response = await axios.post('http://192.168.0.12:8000/get_recommendations', {
+        const response = await axios.post(`${config.BASE_URL}:8000/get_recommendations`, {
           user_id: '001b6789-96de-448c-9ede-5c787514be27', // Example user ID
         });
         setRecommendations(response.data.recommendations); // Set recommendations from API response

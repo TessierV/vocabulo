@@ -6,6 +6,7 @@ import { Title, Subtitle, Paragraph, ButtonText, BigTitle, AnnonceTitle, Annonce
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import DictionaryScreen from '../screens/DictionaryScreen';
 
+//Dictionary page
 const Page = () => {
   const [darkMode] = useDarkMode();
 

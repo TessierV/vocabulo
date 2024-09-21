@@ -6,6 +6,7 @@ import { BigTitle, ContainerTitle, Paragraph, Subtitle } from '@/constants/Style
 import { GradientBackgroundButton } from '@/components/Button';
 import { color, lightTheme } from '@/constants/Colors';
 import InterfaceSvg from '@/SVG/InterfaceSvg';
+import config from '@/backend/config/config';
 
 export default function Signup() {
   const [username, setUsername] = useState('');
@@ -30,7 +31,7 @@ export default function Signup() {
     }
 
     try {
-      const response = await axios.post('http://192.168.0.12:8000/register', { username, password }, {
+      const response = await axios.post(`${config.BASE_URL}:8000/register`, { username, password }, {
         headers: { 'Content-Type': 'application/json' },
       });
 

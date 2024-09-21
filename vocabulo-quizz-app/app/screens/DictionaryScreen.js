@@ -8,11 +8,12 @@ import useDarkMode from '@/components/useDarkMode';
 import SliderDictionary from '@/components/Dictionary/SliderDictionary';
 import { lightTheme, darkTheme, grammaticalCategoryColors, grammaticalCategoryColorsDaltonian } from '@/constants/Colors'; // Import both color sets
 import { dictionary } from '@/constants/texts';
+import config from '@/backend/config/config';
 
 // Fetch function to get words by search term
 async function fetchWordsBySearchTerm(searchTerm) {
   try {
-    const response = await fetch(`http://192.168.0.12:3000/api/alphabet/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+    const response = await fetch(`${config.BASE_URL}:3000/api/alphabet/search?searchTerm=${encodeURIComponent(searchTerm)}`);
 
     if (!response.ok) {
       const errorText = await response.text();

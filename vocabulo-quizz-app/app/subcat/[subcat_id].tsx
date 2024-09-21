@@ -7,13 +7,14 @@ import useDarkMode from '@/components/useDarkMode';
 import { lightTheme, color } from '@/constants/Colors';
 import HeaderQuiz from '@/components/Quizz/HeaderQuiz';
 import AnswerButton from '@/components/Quizz/AnswerButton';
-import { AnnonceTitle, Paragraph, Subtitle } from '@/constants/StyledText';
+import { Paragraph, Subtitle } from '@/constants/StyledText';
 import CategoryWordSvg from '@/SVG/CategoryWordSvg';
 import { GradientBackgroundButton } from '@/components/Button';
 import HintComponent from '@/components/Quizz/HintComponent';
 import VideoModal from '@/components/Quizz/HintVideoModal';
 import CustomModal from '@/components/General/CustomModal';
 import CongratulationsModal from '@/components/Quizz/CongratulationsModal';
+import config from '@/backend/config/config';
 
 import CancelModal from '@/components/Quizz/CancelModal';
 
@@ -21,6 +22,7 @@ import CancelModal from '@/components/Quizz/CancelModal';
 type RootStackParamList = {
   'subcat/[subcat_id]': {
     subcat_id: string;
+    subcat_name: string;
     difficulty: 'easy' | 'medium' | 'hard' | 'all';
     words?: Array<{
       mot: string;
@@ -67,11 +69,15 @@ const NewPage = () => {
   const [showSummaryModal, setShowSummaryModal] = useState(false);
 
   const [correctWords, setCorrectWords] = useState(new Set());
-  const [correctWordsDetails, setCorrectWordsDetails] = useState([]);
 
   const [correctFirstAttempt, setCorrectFirstAttempt] = useState(0);
   const [correctSecondAttempt, setCorrectSecondAttempt] = useState(0);
   const [correctMoreAttempt, setCorrectMoreAttempt] = useState(0);
+
+  const [correctWordsDetails, setCorrectWordsDetails] = useState<
+  { mot: string; mot_id: any; categoryName: string }[]
+>([]);
+
 
   useEffect(() => {
     const fetchSubcategoryData = async () => {
@@ -79,7 +85,7 @@ const NewPage = () => {
       setError(null);
 
       try {
-        const response = await fetch(`http://192.168.0.12:3000/api/subcategories/${subcat_id}`);
+        const response = await fetch(`${config.BASE_URL}:3000/api/subcategories/${subcat_id}`);
         const data = await response.json();
 
         if (!data || !data.words) {
@@ -344,7 +350,7 @@ const NewPage = () => {
           handleQuit={handleQuit}
           currentQuestionIndex={currentQuestionIndex}
           totalQuestions={questions.length}
-          categoryName={route.params?.subcat_id || "Unknown Category"}
+          categoryName={route.params?.subcat_name || ""}
           darkMode={false}
         />
       </View>

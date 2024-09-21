@@ -8,7 +8,7 @@ const PaginationDot = ({ isActive }) => {
             style={[
                 styles.paginationDot,
                 {
-                    backgroundColor: isActive ? color.darkBlue : lightTheme.light_darkShade,
+                    backgroundColor: isActive ? color.darkBlue : color.neutral,
                 },
             ]}
         />

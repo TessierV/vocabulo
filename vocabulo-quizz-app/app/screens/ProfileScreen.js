@@ -29,8 +29,10 @@ const ProfileScreen = () => {
 
   const today = new Date();
 
+  // Calculate the oldest date from the word history
   const oldestDate = wordHistory.length > 0 ? new Date(Math.min(...wordHistory.map(word => new Date(word.last_seen)))) : new Date('2024-01-01');
 
+  // Fetch user details when the component mounts
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -62,6 +64,7 @@ const ProfileScreen = () => {
     fetchUserDetails();
   }, []);
 
+  // Effect to filter words based on the selected filter type
   useEffect(() => {
     if (filterType === 'week') {
       setFilteredWords(filterByWeek(wordHistory, currentWeek));
@@ -99,6 +102,7 @@ const ProfileScreen = () => {
     setTotalDaysOnline(totalDays);
   };
 
+  // Function to filter words by week
   const filterByWeek = (words, weekStartDate) => {
     const startOfWeek = new Date(weekStartDate);
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1);
@@ -111,6 +115,7 @@ const ProfileScreen = () => {
     });
   };
 
+  // Function to filter words by month
   const filterByMonth = (words, monthStartDate) => {
     const startOfMonth = new Date(monthStartDate.getFullYear(), monthStartDate.getMonth(), 1);
     const endOfMonth = new Date(monthStartDate.getFullYear(), monthStartDate.getMonth() + 1, 0);
@@ -121,6 +126,7 @@ const ProfileScreen = () => {
     });
   };
 
+  // Navigation functions for changing weeks and months
   const previousWeek = () => {
     const prevWeek = new Date(currentWeek);
     prevWeek.setDate(prevWeek.getDate() - 7);
@@ -153,6 +159,7 @@ const ProfileScreen = () => {
     }
   };
 
+  // Function to format the week display
   const formatWeek = (date) => {
     const startOfWeek = new Date(date);
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1);
@@ -179,9 +186,11 @@ const ProfileScreen = () => {
     return 'transparent';
   };
 
+  // Loading and error handling
   if (loading) return <Text>Chargement...</Text>;
   if (errorMessage) return <Text>{errorMessage}</Text>;
 
+  // Render the main profile screen layout
   return (
     <View style={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade, }]}>
       <Header darkMode={darkMode} PageTitle={profil.header.title} firstLink="/home" secondLink="/parameter" />
