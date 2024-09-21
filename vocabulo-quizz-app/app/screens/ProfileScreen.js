@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '@/components/Header/Header';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
@@ -10,7 +11,7 @@ import HorizontalProgressBar from '@/components/Profil/HorizontalProgressBar';
 import TotalWordsProgressBar from '@/components/Profil/TotalWordsProgressBar';
 import SectionTitle from '@/components/General/SectionTitle';
 import { profil } from '@/constants/texts';
-
+import config from '@/backend/config/config';
 
 const ProfileScreen = () => {
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -33,8 +34,12 @@ const ProfileScreen = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const userId = '01952a09-d04c-47fe-879c-51f19e167541';
-        const response = await fetch(`http://192.168.0.12:3000/api/authentication/${userId}`);
+        const userId = await AsyncStorage.getItem('user_id');
+        if (!userId) {
+          throw new Error('User ID not found');
+        }
+
+        const response = await fetch(`${config.BASE_URL}:3000/api/authentication/${userId}`);
 
         if (!response.ok) {
           const errorText = await response.text();
