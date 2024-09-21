@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Switch, Text, Modal, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Switch, Text, TouchableOpacity, Alert } from 'react-native';
 import Header from '@/components/Header/Header';
 import Section from '@/components/Parameters/Section';
 import Setting from '@/components/Parameters/Setting';
-import Slider from '@/components/Slider/Slider';
-import ReusableCard from '@/components/Game/ReusableCard';
 import useDarkMode from '@/components/useDarkMode';
-import { darkTheme, lightTheme, color } from '@/constants/Colors';
+import { darkTheme, lightTheme } from '@/constants/Colors';
 import { texts } from '@/constants/texts';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons'; // For password visibility toggle
+import { Feather } from '@expo/vector-icons';
 import SliderParameters from '@/components/Parameters/SliderParameters';
 import ExplanationModal from '@/components/Parameters/ExplanationModal';
+import config from '@/backend/config/config';
+import axios from 'axios';
+import EnhancedCustomModal from '@/components/Parameters/EnhancedCustomModal';
+
+
 
 const ParameterScreen = () => {
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -23,33 +25,38 @@ const ParameterScreen = () => {
   const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [randomDigits, setRandomDigits] = useState(shuffleArray(Array.from({ length: 10 }, (_, i) => i.toString()))); // Shuffle digits for numeric keyboard
+  const [randomDigits, setRandomDigits] = useState(shuffleArray(Array.from({ length: 10 }, (_, i) => i.toString())));
   const navigation = useNavigation();
-  const [sliderModalVisible, setSliderModalVisible] = useState(false); // Control the visibility of the slider modal
+  const [sliderModalVisible, setSliderModalVisible] = useState(false);
+  const [userFetchError, setUserFetchError] = useState(false);
 
   useEffect(() => {
     const fetchUsername = async () => {
       try {
         const token = await AsyncStorage.getItem('access_token');
-        if (token) {
-          const response = await axios.get('http://192.168.0.12:8000/user', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setUsername(response.data.username);
+        const storedUsername = await AsyncStorage.getItem('username');
+        if (token && storedUsername) {
+          setUsername(storedUsername);
+          setUserFetchError(false);
         } else {
-          console.error('No token found');
+          console.error('No token or username found');
+          setUserFetchError(true);
+          navigation.navigate('login');
         }
       } catch (error) {
         console.error('Error fetching username:', error);
+        setUserFetchError(true);
+        Alert.alert(
+          "Error",
+          "An error occurred while fetching user information. Please try logging in again.",
+          [{ text: "OK", onPress: () => navigation.navigate('login') }]
+        );
       }
     };
 
     fetchUsername();
-  }, []);
+  }, [navigation]);
 
-  // Shuffle the digits for randomized keyboard
   function shuffleArray(array) {
     return array.sort(() => Math.random() - 0.5);
   }
@@ -74,8 +81,8 @@ const ParameterScreen = () => {
       setLoading(true);
       const token = await AsyncStorage.getItem('access_token');
       const response = await axios.post(
-        'http://192.168.0.12:8000/change-password', // Ensure this is the correct endpoint
-        { username, new_password: newPassword }, // Corrected payload format
+        `${config.BASE_URL}:8000/change-password`,
+        { username, new_password: newPassword },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -105,15 +112,23 @@ const ParameterScreen = () => {
     }
   };
 
+  const handleCancelLogout = () => {
+    setLogoutModalVisible(false);
+  };
+
+  const handleCancelPasswordChange = () => {
+    setPasswordModalVisible(false);
+    setNewPassword('');
+    setShowPassword(false);
+  };
+
   return (
     <View style={[styles.mainContainer, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
       <Header darkMode={darkMode} PageTitle="Paramètre" title="Parametres" firstLink="/profil" secondLink="none" />
       <ScrollView style={[styles.container, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
-      <SliderParameters darkMode={darkMode} setSliderModalVisible={setSliderModalVisible} />
-
-
+        <SliderParameters darkMode={darkMode} setSliderModalVisible={setSliderModalVisible} />
         <View style={styles.Section}>
-          <Section title={texts.parameterScreen.section.title} iconName="user" darkMode={darkMode}>
+          <Section title={`${texts.parameterScreen.section.title} - ${username}`} iconName="user" darkMode={darkMode}>
             <Setting
               iconName="edit"
               text={texts.parameterScreen.section.editProfile}
@@ -124,7 +139,7 @@ const ParameterScreen = () => {
               iconName="key"
               text={texts.parameterScreen.section.changePassword}
               buttonText=""
-              onPress={() => setPasswordModalVisible(true)} // Show password modal
+              onPress={() => setPasswordModalVisible(true)}
             />
           </Section>
 
@@ -174,81 +189,54 @@ const ParameterScreen = () => {
         </View>
       </ScrollView>
 
-      {/* Logout Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
+      <EnhancedCustomModal
         visible={logoutModalVisible}
-        onRequestClose={() => setLogoutModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Voulez-vous vraiment vous déconnecter ?</Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity style={styles.button} onPress={() => setLogoutModalVisible(false)}>
-                <Text style={styles.buttonText}>Annuler</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={logout}>
-                <Text style={styles.buttonText}>Se déconnecter</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        title="Déconnexion"
+        content="Voulez-vous vraiment vous déconnecter ?"
+        buttonText="Se déconnecter"
+        onPress={logout}
+        onCancel={handleCancelLogout}
+        darkMode={darkMode}
+      />
 
-      {/* Password Change Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
+<EnhancedCustomModal
         visible={passwordModalVisible}
-        onRequestClose={() => setPasswordModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Entrez un nouveau mot de passe de 5 chiffres</Text>
-
-            <View style={styles.passwordContainer}>
-              <View style={styles.passwordBoxes}>
-                {[...Array(5)].map((_, i) => (
-                  <View key={i} style={[styles.box, { backgroundColor: newPassword[i] ? '#90EE90' : 'transparent' }]}>
-                    <Text style={styles.boxText}>{newPassword[i] ? newPassword[i] : ''}</Text>
-                  </View>
-                ))}
-              </View>
-
-              <View style={styles.numericKeyboard}>
-                {randomDigits.map((digit) => (
-                  <TouchableOpacity
-                    key={digit}
-                    style={styles.numericKey}
-                    onPress={() => handleKeyPress(digit)}
-                  >
-                    <Text style={styles.keyText}>{digit}</Text>
-                  </TouchableOpacity>
-                ))}
-                <TouchableOpacity style={styles.deleteKey} onPress={handleDelete}>
-                  <Text style={styles.keyText}>Delete</Text>
+        title="Changer le mot de passe"
+        content={
+          <View style={styles.passwordContainer}>
+            <View style={styles.passwordBoxes}>
+              {[...Array(5)].map((_, i) => (
+                <View key={i} style={[styles.box, { backgroundColor: newPassword[i] ? '#90EE90' : 'transparent' }]}>
+                  <Text style={styles.boxText}>{newPassword[i] ? (showPassword ? newPassword[i] : '*') : ''}</Text>
+                </View>
+              ))}
+            </View>
+            <View style={styles.numericKeyboard}>
+              {randomDigits.map((digit) => (
+                <TouchableOpacity
+                  key={digit}
+                  style={styles.numericKey}
+                  onPress={() => handleKeyPress(digit)}
+                >
+                  <Text style={styles.keyText}>{digit}</Text>
                 </TouchableOpacity>
-              </View>
-
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.toggleButton}>
-                <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color="#1E90FF" />
+              ))}
+              <TouchableOpacity style={styles.deleteKey} onPress={handleDelete}>
+                <Text style={styles.keyText}>Delete</Text>
               </TouchableOpacity>
             </View>
-
-            <View style={styles.modalButtons}>
-              <TouchableOpacity style={styles.button} onPress={() => setPasswordModalVisible(false)}>
-                <Text style={styles.buttonText}>Annuler</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handlePasswordChange} disabled={loading}>
-                <Text style={styles.buttonText}>Confirmer</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.toggleButton}>
+              <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color="#1E90FF" />
+            </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
-      <ExplanationModal visible={sliderModalVisible} onClose={() => setSliderModalVisible(false)} darkMode={darkMode} />
+        }
+        buttonText="Confirmer"
+        onPress={handlePasswordChange}
+        onCancel={handleCancelPasswordChange}
+        darkMode={darkMode}
+      />
 
+      <ExplanationModal visible={sliderModalVisible} onClose={() => setSliderModalVisible(false)} darkMode={darkMode} />
     </View>
   );
 };
@@ -273,26 +261,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
     color: darkTheme.lightShade,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalView: {
-    width: '90%',
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    alignItems: 'center',
-    height: '80%',
-    position: 'relative',
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 15,
-    textAlign: 'center',
   },
   passwordContainer: {
     flexDirection: 'column',
@@ -342,27 +310,8 @@ const styles = StyleSheet.create({
   keyText: {
     fontSize: 18,
   },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  button: {
-    backgroundColor: '#ccc',
-    padding: 10,
-    margin: 5,
-    borderRadius: 5,
-  },
-  logoutButton: {
-    backgroundColor: '#f54242',
-  },
-  saveButton: {
-    backgroundColor: '#1E90FF',
-  },
-  buttonText: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
+  toggleButton: {
+    marginTop: 10,
   },
 });
 
