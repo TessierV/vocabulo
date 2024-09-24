@@ -124,7 +124,7 @@ export const ai = {
     slider: {
         slider1: {
             title: 'HybridRec',
-            description: 'Bienvenue sur la page du Quiz IA personnalisé. Grâce à l\'intelligence artificielle, chaque quiz est adapté à ton niveau et à tes préférences d\'apprentissage.',
+            description: 'Bienvenue sur la page du Quizz IA personnalisé. Grâce à l\'intelligence artificielle, chaque quizz est adapté à ton niveau et à tes préférences d\'apprentissage.',
             button: 'En savoir plus',
         },
     },
@@ -177,6 +177,8 @@ export const ai = {
         errornosave: "Vous n'avez aucune progression enregistrée pour ce quiz.",
     },
 };
+
+
 
 // Basic export text
 export const dictionary = {
@@ -329,7 +331,7 @@ export const profil = {
             error: "Aucun historique des mots",
             definition: "Définition :",
             urldef: "Définition LSF",
-            urlsign: "Sign",
+            urlsign: "Signe",
         }
     },
 };
