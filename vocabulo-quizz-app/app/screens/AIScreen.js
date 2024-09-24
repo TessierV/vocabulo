@@ -100,16 +100,16 @@ export default function AIScreen() {
   // Function to render buttons with different numbers of questions
   const renderButton = (numQuestions) => (
     <TouchableOpacity
-      style={[styles.button, { backgroundColor: darkMode ? 'transparent' : lightTheme.dark_lightShade, borderColor: darkMode ? darkTheme.neutral : color.neutral }]}
-      onPress={() => generateQuestions(numQuestions)}
-    >
-      <Paragraph style={[styles.buttonText, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }]}>
-        {ai.renderQuestion} {/* Render the text for the button */}
-      </Paragraph>
-      <BigTitle style={[styles.buttonQuestionNumber, { color: darkMode ? darkTheme.neutral : lightTheme.darkShade }]}>
-        {numQuestions} {/* Render the number of questions on the button */}
-      </BigTitle>
-    </TouchableOpacity>
+    style={[styles.button, { backgroundColor: darkMode ? 'transparent' : lightTheme.dark_lightShade, borderColor: darkMode ? darkTheme.neutral : color.neutral }]}
+    onPress={() => generateQuestions(numQuestions)}
+  >
+    <BigTitle style={[styles.buttonQuestionNumber, { color: darkMode ? darkTheme.neutral : lightTheme.darkShade }]}>
+      {numQuestions}
+    </BigTitle>
+    <Paragraph style={[styles.buttonText, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.light_darkShade }]}>
+      {numQuestions === 1 ? ai.renderQuestion : `${ai.renderQuestion}s`}
+    </Paragraph>
+  </TouchableOpacity>
   );
 
   return (

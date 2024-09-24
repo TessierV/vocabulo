@@ -338,7 +338,7 @@ export default function IAQuizPage() {
       {/* Validate button */}
       <View style={{ width: '90%', alignContent: 'center', marginTop: 10, alignItems: 'center', alignSelf: 'center', justifyContent: 'center' }}>
         <GradientBackgroundButton
-          text="Validate"
+          text="Valider"
           textColor={'light'}
           onPress={validateAnswer}
         />
