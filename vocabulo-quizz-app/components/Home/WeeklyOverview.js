@@ -5,6 +5,7 @@ import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import InfoModal from '@/components/Slider/SlideModal';
 import TitleSlider from '@/components/Slider/SliderTitleWithInfo';
 import { texts } from '@/constants/texts';
+import { Paragraph } from '@/constants/StyledText';
 
 const WeeklyOverview = ({ darkMode }) => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -62,11 +63,11 @@ const WeeklyOverview = ({ darkMode }) => {
                                     style={styles.svgBackground}
                                 />
                             )}
-                            <Text style={textStyle}>{day}</Text>
+                            <Paragraph style={textStyle}>{day}</Paragraph>
                             {svgContent ? (
                                 <SvgXml xml={svgContent} width={20} height={40} />
                             ) : (
-                                <Text style={styles.cardText}>...</Text>
+                                <Paragraph style={styles.cardText}>...</Paragraph>
                             )}
                         </View>
                     );

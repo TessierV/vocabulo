@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
+import { Paragraph } from '@/constants/StyledText';
 
 const Separator = ({ text }) => {
   const [darkMode] = useDarkMode();
@@ -16,13 +17,13 @@ const Separator = ({ text }) => {
           },
         ]}
       />
-      <Text
+      <Paragraph
         style={{
           color: darkMode ? darkTheme.light_darkShade : '#CCC',
         }}
       >
         {text}
-      </Text>
+      </Paragraph>
       <View
         style={[
           styles.separator,

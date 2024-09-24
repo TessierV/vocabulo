@@ -4,6 +4,7 @@ import { SvgXml } from 'react-native-svg';
 import { useRouter } from 'expo-router';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import CategoryModal from '@/components/CategoryModal';
+import { Paragraph } from '@/constants/StyledText';
 
 
 const CategoryCard = ({ categories, darkMode }) => {
@@ -105,12 +106,12 @@ const CategoryCard = ({ categories, darkMode }) => {
               >
                 <SvgXml xml={category.icon} width="70%" height="70%" />
               </View>
-              <Text style={[styles.label, { color: darkMode ? darkTheme.darkShade : lightTheme.light_darkShade }]}>
+              <Paragraph style={[styles.label, { color: darkMode ? darkTheme.darkShade : lightTheme.light_darkShade }]}>
                 {category.textLabel || 'Unknown'}
-              </Text>
-              <Text style={[styles.label, { color: darkMode ? darkTheme.darkShade : lightTheme.light_darkShade }, styles.ratioText]}>
+              </Paragraph>
+              <Paragraph style={[styles.label, { color: darkMode ? darkTheme.darkShade : lightTheme.light_darkShade }, styles.ratioText]}>
                 {category.ratio || '0/0'}
-              </Text>
+              </Paragraph>
               <View style={styles.starsContainer}>
                 {stars.map((star, starIndex) => (
                   <SvgXml key={starIndex} xml={star} width={12} height={12} />

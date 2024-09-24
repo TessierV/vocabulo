@@ -125,7 +125,7 @@ const SubcategoryCard = ({ darkMode, selectedCategory, onCategoryClick }) => {
           );
         })
       ) : (
-        <Text style={styles.noDataText}>Aucune catégorie disponible</Text>
+        <Paragraph style={styles.noDataText}>Aucune catégorie disponible</Paragraph>
       )}
 
       {selectedCategoryData && (

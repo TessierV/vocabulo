@@ -6,6 +6,7 @@ import { Feather } from '@expo/vector-icons';
 
 import { darkTheme, lightTheme } from '@/constants/Colors';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Paragraph } from '@/constants/StyledText';
 // CustomizeRow component for displaying a customizable row
 const CustomizeRow = ({ category, darkMode, onSelect, onRemove }) => {
   // Determine the theme based on darkMode prop
@@ -34,9 +35,9 @@ const CustomizeRow = ({ category, darkMode, onSelect, onRemove }) => {
         )}
         {/* Display category difficulty if available */}
         {category && category.difficulty ? (
-          <Text style={[styles.label, { color: theme.textColor }]}>
+          <Paragraph style={[styles.label, { color: theme.textColor }]}>
             {category.difficulty}
-          </Text>
+          </Paragraph>
         ) : null}
       </TouchableOpacity>
       {/* Display remove button if a category is selected and onRemove prop is provided */}

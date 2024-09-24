@@ -44,7 +44,7 @@ const SubcategoryList = ({ subcategories, filter, darkMode, getWordCountByDiffic
             <View style={styles.progressContainer}>
               {filter === 'all' ? (
                 <Paragraph style={[{ fontSize: 12, color: darkMode ? darkTheme.neutral : lightTheme.neutral }]}>
-                  {totalWords} {subcat.word_count > 1 ? 'words' : 'word'}
+                  {totalWords} {subcat.word_count > 1 ? 'mots' : 'mot'}
                 </Paragraph>
               ) : (
                 <SvgXml xml={getCircularProgressSvg(filteredCount, totalWords, color.neutralGreen, color.neutralBlue, color.neutralPlum)} />

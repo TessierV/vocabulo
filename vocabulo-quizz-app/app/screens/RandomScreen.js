@@ -148,7 +148,7 @@ const RandomScreen = () => {
       />
       <TouchableOpacity style={[styles.randomButtonContainer, { backgroundColor: darkMode ? 'gray' : lightTheme.darkShade }]} onPress={handleRandomize}>
         <SvgXml xml={interfaceIcons.dice} width="30" height="30" />
-        <ContainerParagraph style={{color: darkMode ? darkTheme.lightShade : lightTheme.lightShade}}>Cliquer pour relancer</ContainerParagraph>
+        <ContainerParagraph style={{color: darkMode ? darkTheme.lightShade : lightTheme.lightShade}}>Cliquez pour relancer</ContainerParagraph>
       </TouchableOpacity>
 
       <Separator text="OU" />
@@ -173,7 +173,7 @@ const RandomScreen = () => {
       />
 
       <View style={styles.buttonContainer}>
-        <GradientBorderButton text="Gradient Border" background={darkMode ? 'dark' : 'light'} textColor={darkMode ? 'light' : 'dark'} onPress={handleValidate} />
+        <GradientBorderButton text="Commencer" background={darkMode ? 'dark' : 'light'} textColor={darkMode ? 'light' : 'dark'} onPress={handleValidate} />
       </View>
 
       <CategoryModal

@@ -3,11 +3,12 @@ import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import SvgIcon from '@/SVG/CategorySvgIcon';
 import { color, darkTheme, lightTheme } from '@/constants/Colors';
+import { Paragraph } from '@/constants/StyledText';
 
 const SubcategoryModal = ({ subcategory, darkMode }) => {
     if (!subcategory || !Array.isArray(subcategory.words)) {
         console.error('Invalid subcategory prop:', subcategory);
-        return <Text>Aucun mot disponible</Text>;
+        return <Paragraph>Aucun mot disponible</Paragraph>;
     }
 
     console.log('SubcategoryModal Subcategory:', subcategory);
@@ -17,13 +18,13 @@ const SubcategoryModal = ({ subcategory, darkMode }) => {
             <View style={[styles.subcategoryDetailContainer, {          borderColor: darkMode ? darkTheme.light_darkShade : color.neutral,}]}>
             <View style={styles.categoryRowIcon}>
                 <SvgIcon icon={subcategory.subcategory_name} fillColor="pink" width="25" height="25"/>
-                <Text style={styles.recapTitle}>
+                <Paragraph style={styles.recapTitle}>
                     {subcategory.subcategory_name}
-                </Text>
+                </Paragraph>
                 </View>
-                <Text style={styles.recapCount}>
+                <Paragraph style={styles.recapCount}>
                     {subcategory.countSelected} / {subcategory.wordCount} mots
-                </Text>
+                </Paragraph>
 
                 {/* Uncomment the following section to display the list of words */}
                 {/* {subcategory.words.map((word) => (
@@ -66,6 +67,7 @@ const styles = StyleSheet.create({
   },
   recapTitle: {
     color: lightTheme.light_darkShade,
+    fontSize: 12,
 },
 
 // Filter

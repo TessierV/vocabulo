@@ -4,6 +4,7 @@ import Bubble from '../Effect/Bubble';
 import { Video } from 'expo-av';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import { GradientBorderButton } from '../Button';
+import { Paragraph } from '@/constants/StyledText';
 
 const { width, height } = Dimensions.get('window');
 
@@ -65,12 +66,12 @@ const InfoModal = ({ visible, onClose, title, text, button, darkMode }) => {
                         style={styles.videoList}
                     />
 
-                    <Text style={[styles.modalTitle, { color: darkMode ? darkTheme.lightShade : darkTheme.darkShade }]}>
+                    <Paragraph style={[styles.modalTitle, { color: darkMode ? darkTheme.lightShade : darkTheme.darkShade }]}>
                         {title}
-                    </Text>
-                    <Text style={[styles.modalText, { color: darkMode ? darkTheme.lightShade : lightTheme.light_darkShade }]}>
+                    </Paragraph>
+                    <Paragraph style={[styles.modalText, { color: darkMode ? darkTheme.lightShade : lightTheme.light_darkShade }]}>
                         {text}
-                    </Text>
+                    </Paragraph>
 
                     <GradientBorderButton
                         text={button}

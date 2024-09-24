@@ -53,7 +53,7 @@ const HintComponent = ({ showFirstHint, showSecondHint, url_def, url_sign, openH
                 >
                     <InterfaceSvg iconName="url_sign" fillColor={color.darkPlum} width={18} height={18} />
                     <Paragraph style={{ color: color.darkPlum, fontSize: 12 }}>
-                        Sign
+                        Signe
                     </Paragraph>
                 </TouchableOpacity>
             )}

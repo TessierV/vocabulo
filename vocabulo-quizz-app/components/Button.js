@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { darkTheme, lightTheme } from '@/constants/Colors';
+import { Paragraph } from '@/constants/StyledText';
 
 // GradientBackgroundButton component with gradient background
 const GradientBackgroundButton = ({ text, textColor, onPress }) => {
@@ -25,9 +26,9 @@ const GradientBackgroundButton = ({ text, textColor, onPress }) => {
         style={styles.gradientBackground}
       />
       <TouchableOpacity style={styles.transparentButton} onPress={onPress}>
-        <Text style={[styles.buttonText, { color: textColorStyle }]}>
+        <Paragraph style={[styles.buttonText, { color: textColorStyle }]}>
           {text}
-        </Text>
+        </Paragraph>
       </TouchableOpacity>
     </View>
   );
@@ -44,9 +45,9 @@ const GradientBorderButton = ({ text, background, textColor, onPress }) => {
         style={[styles.gradientBorderButton, { backgroundColor: backgroundColorStyle }]}
         onPress={onPress}
       >
-        <Text style={[styles.buttonText, { color: textColorStyle }]}>
+        <Paragraph style={[styles.buttonText, { color: textColorStyle }]}>
           {text}
-        </Text>
+        </Paragraph>
       </TouchableOpacity>
       <SvgXml
         xml={`
@@ -78,9 +79,9 @@ const GradientBorderButtonMini = ({ text, background, textColor, onPress }) => {
         style={[styles.gradientBorderButtonMini, { backgroundColor: backgroundColorStyle }]}
         onPress={onPress}
       >
-        <Text style={[styles.buttonTextMini, { color: textColorStyle }]}>
+        <Paragraph style={[styles.buttonTextMini, { color: textColorStyle }]}>
           {text}
-        </Text>
+        </Paragraph>
       </TouchableOpacity>
       <SvgXml
         xml={`

@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { lightTheme } from '@/constants/Colors';
+import { Paragraph } from '@/constants/StyledText';
 
 const Hint = ({ hint }) => {
     if (!hint) return null;
 
     return (
         <View>
-            <Text style={styles.hintText}>{hint}</Text>
+            <Paragraph style={styles.hintText}>{hint}</Paragraph>
         </View>
     );
 };

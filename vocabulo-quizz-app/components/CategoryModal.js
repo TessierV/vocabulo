@@ -6,7 +6,7 @@ import Bubble from './Bubble';
 import RadarEffect from './RadarEffect';
 import { GradientBorderButton } from '@/components/Button';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
-import { BigTitle, ContainerParagraph } from '@/constants/StyledText';
+import { BigTitle, ContainerParagraph, Paragraph } from '@/constants/StyledText';
 
 const CategoryModal = ({ isVisible, onClose, category, onConfirm, darkMode }) => {
   if (!category) return null;
@@ -102,9 +102,9 @@ const CategoryModal = ({ isVisible, onClose, category, onConfirm, darkMode }) =>
           <View style={[styles.categoryRow, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.darkShade }]}>
             <View style={styles.categoryRowIcon}>
               <SvgXml xml={category.icon} width={30} height={30} />
-              <Text style={{ color: darkMode ? darkTheme.lightShade : lightTheme.lightShade, marginLeft: 10 }}>
+              <Paragraph style={{ color: darkMode ? darkTheme.lightShade : lightTheme.lightShade, marginLeft: 10 }}>
                 {category.textLabel}
-              </Text>
+              </Paragraph>
             </View>
             <SvgXml xml={difficultySVGs[category.difficulty]} width={15} height={20} />
           </View>

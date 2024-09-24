@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
+import { Paragraph } from '@/constants/StyledText';
 
 const CategoryItem = ({ category, darkMode }) => {
     if (!category) return null;
@@ -56,9 +57,9 @@ const CategoryItem = ({ category, darkMode }) => {
         <View style={[styles.categoryRow, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.darkShade }]}>
             <View style={styles.categoryRowIcon}>
                 <SvgXml xml={category.icon} width={30} height={30} />
-                <Text style={{ color: darkMode ? darkTheme.lightShade : lightTheme.lightShade, marginLeft: 10 }}>
+                <Paragraph style={{ color: darkMode ? darkTheme.lightShade : lightTheme.lightShade, marginLeft: 10 }}>
                     {category.textLabel}
-                </Text>
+                </Paragraph>
             </View>
             {/* Affichage du SVG correspondant à la difficulté */}
             <SvgXml xml={difficultyIconXml} width={15} height={20} />

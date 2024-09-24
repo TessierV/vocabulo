@@ -5,7 +5,7 @@ import Bubble from '@/components/Effect/Bubble';
 import { lightTheme } from '@/constants/Colors';
 import { GradientBorderButton } from '../Button';
 import useDarkMode from '@/components/useDarkMode';
-import { AnnonceTitle } from '@/constants/StyledText';
+import { AnnonceTitle, Paragraph } from '@/constants/StyledText';
 
 
 const { width, height } = Dimensions.get('window');
@@ -47,7 +47,7 @@ const CustomModal = ({ visible, title, content, buttonText, onPress }) => {
         </View>
         <View style={styles.modalContainer}>
           <AnnonceTitle style={styles.title}>{title}</AnnonceTitle>
-          <Text style={styles.content}>{content}</Text>
+          <Paragraph style={styles.content}>{content}</Paragraph>
           <GradientBorderButton style={styles.button} onPress={onPress} background={darkMode ? 'dark' : 'light'} text={buttonText} textColor={darkMode ? 'light' : 'dark'} />
         </View>
       </View>

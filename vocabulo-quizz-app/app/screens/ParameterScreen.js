@@ -14,6 +14,7 @@ import ExplanationModal from '@/components/Parameters/ExplanationModal';
 import config from '@/backend/config/config';
 import axios from 'axios';
 import EnhancedCustomModal from '@/components/Parameters/EnhancedCustomModal';
+import { Paragraph } from '@/constants/StyledText';
 
 
 
@@ -207,7 +208,7 @@ const ParameterScreen = () => {
             <View style={styles.passwordBoxes}>
               {[...Array(5)].map((_, i) => (
                 <View key={i} style={[styles.box, { backgroundColor: newPassword[i] ? '#90EE90' : 'transparent' }]}>
-                  <Text style={styles.boxText}>{newPassword[i] ? (showPassword ? newPassword[i] : '*') : ''}</Text>
+                  <Paragraph style={styles.boxText}>{newPassword[i] ? (showPassword ? newPassword[i] : '*') : ''}</Paragraph>
                 </View>
               ))}
             </View>
@@ -218,11 +219,11 @@ const ParameterScreen = () => {
                   style={styles.numericKey}
                   onPress={() => handleKeyPress(digit)}
                 >
-                  <Text style={styles.keyText}>{digit}</Text>
+                  <Paragraph style={styles.keyText}>{digit}</Paragraph>
                 </TouchableOpacity>
               ))}
               <TouchableOpacity style={styles.deleteKey} onPress={handleDelete}>
-                <Text style={styles.keyText}>Delete</Text>
+                <Paragraph style={styles.keyText}>Supprimer</Paragraph>
               </TouchableOpacity>
             </View>
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.toggleButton}>

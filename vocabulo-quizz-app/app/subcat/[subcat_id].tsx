@@ -161,9 +161,6 @@ const NewPage = () => {
           incorrectWords.push(word);
         }
       }
-
-
-
       const hasImage = CategoryWordSvg[correctWord.mot];
       const svgIconWord = hasImage ? (
         <TouchableOpacity onPress={() => {

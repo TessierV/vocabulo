@@ -6,6 +6,7 @@ import { color, darkTheme, lightTheme } from '@/constants/Colors';
 import InfoModal from '@/components/Slider/SlideModal';
 import TitleSlider from '@/components/Slider/SliderTitleWithInfo';
 import { texts } from '@/constants/texts';
+import { Paragraph } from '@/constants/StyledText';
 
 
 const DailyGoals = ({ darkMode }) => {
@@ -33,8 +34,8 @@ const DailyGoals = ({ darkMode }) => {
       <View style={styles.goalsContainer}>
         {goals.map((goal, index) => (
           <View key={index} style={styles.goalCard}>
-            <Text style={styles.goalLabel}>{goal.label}</Text>
-            <Text style={styles.goalStatus}>{goal.completed}/{goal.total}</Text>
+            <Paragraph style={styles.goalLabel}>{goal.label}</Paragraph>
+            <Paragraph style={styles.goalStatus}>{goal.completed}/{goal.total}</Paragraph>
           </View>
         ))}
       </View>

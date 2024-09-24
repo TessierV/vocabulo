@@ -11,7 +11,7 @@ import { Feather } from '@expo/vector-icons';
 import { Paragraph, Subtitle } from '@/constants/StyledText';
 import VideoModal from '@/components/Quizz/HintVideoModal';
 import InterfaceSvg from '@/SVG/InterfaceSvg';
-import { GradientBackgroundButton } from '@/components/Button';
+import { GradientBackgroundButton, GradientBorderButton } from '@/components/Button';
 import CongratsModal from '@/components/Ai/CongratsModal';
 import useDarkMode from '@/components/useDarkMode';
 import config from '@/backend/config/config';
@@ -157,13 +157,13 @@ export default function IAQuizPage() {
       const questionText = svgIconWord ? (
         <View style={{ width: '100%', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <Paragraph style={{ fontSize: 15, color: color.neutral }}>
-            What word does this image represent?{'\n\n'}
+            Quel mot cette image représente-t-elle ?{'\n\n'}
           </Paragraph>
         </View>
       ) : (
         <View>
           <Paragraph style={{ fontSize: 15, color: lightTheme.light_darkShade }}>
-            What is the answer to this definition?{'\n\n'}
+            Quel est la réponse à cette définition ?{'\n\n'}
           </Paragraph>
           <Subtitle style={{ color: lightTheme.dark_lightShade }}>
             {definitions[correctWord.mot_id]?.definition || 'No definition'}
@@ -176,12 +176,12 @@ export default function IAQuizPage() {
         ...incorrectWords.map(word => ({
           text: word.mot,
           correct: false,
-          definition: definitions[word.mot_id]?.definition || 'No definition',
+          definition: definitions[word.mot_id]?.definition || 'Pas de définition',
         })),
         {
           text: correctWord.mot,
           correct: true,
-          definition: definitions[correctWord.mot_id]?.definition || 'No definition',
+          definition: definitions[correctWord.mot_id]?.definition || 'Pas de définition',
         }
       ].sort(() => 0.5 - Math.random());
 
@@ -203,7 +203,7 @@ export default function IAQuizPage() {
   // Validate the selected answer
   const validateAnswer = () => {
     if (!selectedAnswer) {
-      Alert.alert('Attention', 'Please select an answer before validating.');
+      Alert.alert('Attention', 'Selectionné une reponse avant de Valider.');
       return;
     }
 
@@ -242,11 +242,11 @@ export default function IAQuizPage() {
   // Handle quitting the quiz
   const handleQuit = () => {
     Alert.alert(
-      'Quit Quiz',
-      'Are you sure you want to quit the quiz?',
+      'Quitter le Quizz',
+      'Êtes-vous sûr de vouloir quitter le quizz ?',
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Quit', onPress: () => navigation.goBack() },
+        { text: 'Annuler', style: 'cancel' },
+        { text: 'Quitter', onPress: () => navigation.goBack() },
       ],
       { cancelable: false }
     );
@@ -262,7 +262,7 @@ export default function IAQuizPage() {
   if (!questions.length) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading quiz...</Text>
+        <Paragraph style={styles.loadingText}>Votre quiz est en train d'être généré...</Paragraph>
       </View>
     );
   }
@@ -277,7 +277,7 @@ export default function IAQuizPage() {
           handleQuit={handleQuit}
           currentQuestionIndex={currentQuestionIndex}
           totalQuestions={questions.length}
-          categoryName="AI Quizz"
+          categoryName="Hybride Quizz"
           darkMode={false}
         />
       </View>
@@ -316,7 +316,7 @@ export default function IAQuizPage() {
           >
             <InterfaceSvg iconName="url_def" fillColor={color.neutralBlue} width={18} height={18} />
             <Paragraph style={{ color: color.neutralBlue, fontSize: 12 }}>
-              LSF Definition
+              LSF Définition
             </Paragraph>
           </TouchableOpacity>
 
@@ -329,7 +329,7 @@ export default function IAQuizPage() {
           >
             <InterfaceSvg iconName="url_sign" fillColor={color.darkPlum} width={18} height={18} />
             <Paragraph style={{ color: color.darkPlum, fontSize: 12 }}>
-              Sign
+              Signe
             </Paragraph>
           </TouchableOpacity>
         </View>
@@ -370,14 +370,14 @@ export default function IAQuizPage() {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Definition</Text>
-            <Text style={styles.modalText}>{definitionContent}</Text>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setShowDefinitionModal(false)}
-            >
-              <Text style={styles.modalButtonText}>Close</Text>
-            </TouchableOpacity>
+            <Subtitle style={styles.modalTitle}>Définition</Subtitle>
+            <Paragraph style={styles.modalText}>{definitionContent}</Paragraph>
+            <GradientBorderButton
+            background={darkMode ? 'dark' : 'light'}
+            textColor={darkMode ? 'light' : 'dark'}
+            onPress={() => setShowDefinitionModal(false)}
+            text="Fermer"
+          />
           </View>
         </View>
       </Modal>
@@ -429,7 +429,6 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
     marginBottom: 10,
   },
   modalText: {

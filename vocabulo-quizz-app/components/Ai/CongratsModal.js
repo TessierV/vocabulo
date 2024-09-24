@@ -165,7 +165,7 @@ const CongratsModal = ({
             >
                 <View style={styles.modalOverlay}>
                     <View style={styles.evaluationModalContent}>
-                        <Text style={styles.evaluationTitle}>Sélectionnez votre évaluation</Text>
+                        <Paragraph style={styles.evaluationTitle}>Sélectionnez votre évaluation</Paragraph>
                         <View style={styles.evaluationOptions}>
                             {/* Too Hard Option */}
                             <TouchableOpacity
@@ -176,7 +176,7 @@ const CongratsModal = ({
                                 onPress={() => handleEvaluationSelect('Trop dur')}
                             >
                                 <Feather name="frown" size={30} color={selectedEvaluation === 'Trop dur' ? color.darkCoral : color.neutral} />
-                                <Text style={[styles.evaluationText, { color: selectedEvaluation === 'Trop dur' ? color.neutral :  lightTheme.light_darkShade }]}>Trop dur</Text>
+                                <Paragraph style={[styles.evaluationText, { color: selectedEvaluation === 'Trop dur' ? color.neutral :  lightTheme.light_darkShade }]}>Trop dur</Paragraph>
                             </TouchableOpacity>
                             {/* Good Option */}
                             <TouchableOpacity
@@ -187,7 +187,7 @@ const CongratsModal = ({
                                 onPress={() => handleEvaluationSelect('Bien')}
                             >
                                 <Feather name="meh" size={30} color={selectedEvaluation === 'Bien' ? color.darkBlue : color.neutral} />
-                                <Text style={[styles.evaluationText, { color: selectedEvaluation === 'Bien' ? color.neutral : lightTheme.light_darkShade}]}>Bien</Text>
+                                <Paragraph style={[styles.evaluationText, { color: selectedEvaluation === 'Bien' ? color.neutral : lightTheme.light_darkShade}]}>Bien</Paragraph>
                             </TouchableOpacity>
                             {/* Too Easy Option */}
                             <TouchableOpacity
@@ -198,7 +198,7 @@ const CongratsModal = ({
                                 onPress={() => handleEvaluationSelect('Trop facile')}
                             >
                                 <Feather name="smile" size={30} color={selectedEvaluation === 'Trop facile' ? color.darkGreen : color.neutral} />
-                                <Text style={[styles.evaluationText, { color: selectedEvaluation === 'Trop facile' ? color.neutral : lightTheme.light_darkShade }]}>Trop facile</Text>
+                                <Paragraph style={[styles.evaluationText, { color: selectedEvaluation === 'Trop facile' ? color.neutral : lightTheme.light_darkShade }]}>Trop facile</Paragraph>
                             </TouchableOpacity>
                         </View>
 

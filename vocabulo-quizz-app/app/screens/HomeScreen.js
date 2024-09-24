@@ -34,7 +34,7 @@ const HomeScreen = () => {
         <SectionTitle
           title={home.section.title}
           darkMode={darkMode}
-          showTextAndIcon={false} // Don't show text and icon together
+          showTextAndIcon={false}
         />
 
         {/* Category grid component with predefined categories */}
@@ -45,7 +45,7 @@ const HomeScreen = () => {
             { textLabel: home.section.row3.text, icon: 'custom', route: home.section.row3.route }, // Category 3
             { textLabel: home.section.row4.text, icon: 'random', route: home.section.row4.route }, // Category 4
           ]}
-          darkMode={darkMode} // Pass dark mode state
+          darkMode={darkMode}
         />
 
         {/* Spacer for margin */}

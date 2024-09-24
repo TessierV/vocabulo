@@ -33,10 +33,10 @@ const SectionTitle = ({ title, text, iconName = 'info', popupTitle, popupText, p
       >
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: darkMode ? darkTheme.darkShade : lightTheme.dark_lightShade }]}>
-            <Text style={[styles.modalTitle, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>{popupTitle}</Text>
-            <Text style={[styles.modalText, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>{popupText}</Text>
+            <Paragraph style={[styles.modalTitle, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>{popupTitle}</Paragraph>
+            <Paragraph style={[styles.modalText, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>{popupText}</Paragraph>
             <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Text style={[styles.closeButton, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>{popupButtonText}</Text>
+              <Paragraph style={[styles.closeButton, { color: darkMode ? darkTheme.lightShade : lightTheme.darkShade }]}>{popupButtonText}</Paragraph>
             </TouchableOpacity>
           </View>
         </View>

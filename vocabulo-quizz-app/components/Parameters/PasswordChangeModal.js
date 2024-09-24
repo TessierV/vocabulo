@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { Paragraph } from '@/constants/StyledText';
 
 const PasswordChangeModal = ({ visible, onClose, onConfirm, randomDigits, newPassword, setNewPassword, loading }) => {
   const handleKeyPress = (digit) => {
@@ -22,13 +23,13 @@ const PasswordChangeModal = ({ visible, onClose, onConfirm, randomDigits, newPas
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Entrez un nouveau mot de passe de 5 chiffres</Text>
+          <Paragraph style={styles.modalText}>Entrez un nouveau mot de passe de 5 chiffres</Paragraph>
 
           <View style={styles.passwordContainer}>
             <View style={styles.passwordBoxes}>
               {[...Array(5)].map((_, i) => (
                 <View key={i} style={[styles.box, { backgroundColor: newPassword[i] ? '#90EE90' : 'transparent' }]}>
-                  <Text style={styles.boxText}>{newPassword[i] ? newPassword[i] : ''}</Text>
+                  <Paragraph style={styles.boxText}>{newPassword[i] ? newPassword[i] : ''}</Paragraph>
                 </View>
               ))}
             </View>
@@ -40,21 +41,21 @@ const PasswordChangeModal = ({ visible, onClose, onConfirm, randomDigits, newPas
                   style={styles.numericKey}
                   onPress={() => handleKeyPress(digit)}
                 >
-                  <Text style={styles.keyText}>{digit}</Text>
+                  <Paragraph style={styles.keyText}>{digit}</Paragraph>
                 </TouchableOpacity>
               ))}
               <TouchableOpacity style={styles.deleteKey} onPress={handleDelete}>
-                <Text style={styles.keyText}>Delete</Text>
+                <Paragraph style={styles.keyText}>Delete</Paragraph>
               </TouchableOpacity>
             </View>
           </View>
 
           <View style={styles.modalButtons}>
             <TouchableOpacity style={styles.button} onPress={onClose}>
-              <Text style={styles.buttonText}>Annuler</Text>
+              <Paragraph style={styles.buttonText}>Annuler</Paragraph>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={onConfirm} disabled={loading}>
-              <Text style={styles.buttonText}>Confirmer</Text>
+              <Paragraph style={styles.buttonText}>Confirmer</Paragraph>
             </TouchableOpacity>
           </View>
         </View>

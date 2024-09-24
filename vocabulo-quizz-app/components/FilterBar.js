@@ -4,6 +4,7 @@ import { darkTheme, lightTheme } from '@/constants/Colors';
 import useDarkMode from '@/components/useDarkMode';
 import SvgIcon from './SvgIcon'; // Adjust the import path as needed
 import { Feather } from '@expo/vector-icons';
+import { Paragraph } from '@/constants/StyledText';
 
 const FilterBar = ({ onSearchChange, onSortChange, darkMode }) => {
   const [searchText, setSearchText] = useState('');
@@ -47,7 +48,7 @@ const FilterBar = ({ onSearchChange, onSortChange, darkMode }) => {
           <View style={styles.pickerIconContainer}>
             <SvgIcon icon="sort" fillColor={darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade} />
           </View>
-          <Text style={[styles.selectedOption, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade }]}>{sortOption}</Text>
+          <Paragraph style={[styles.selectedOption, { color: darkMode ? darkTheme.dark_lightShade : lightTheme.dark_lightShade }]}>{sortOption}</Paragraph>
         </TouchableOpacity>
       </View>
 
@@ -73,7 +74,7 @@ const FilterBar = ({ onSearchChange, onSortChange, darkMode }) => {
                   style={[styles.modalItem, { borderBottomWidth: index < sortOptions.length - 1 ? 1 : 0 }]}
                   onPress={() => handleSortChange(item.value)}
                 >
-                  <Text style={styles.modalItemText}>{item.label}</Text>
+                  <Paragraph style={styles.modalItemText}>{item.label}</Paragraph>
                 </Pressable>
               )}
             />

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, Animated, Image } from
 import { useRouter } from 'expo-router';
 import SvgIcon from './SvgIcon'; // Assurez-vous que le chemin est correct
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
-import { BigTitle } from '@/constants/StyledText';
+import { BigTitle, Paragraph } from '@/constants/StyledText';
 
 const imagePath = require('@/assets/images/borderCongrats.png');
 const circusPath = require('@/assets/images/circus.png');
@@ -99,19 +99,19 @@ const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttem
                             <View style={styles.modalTitleSection}>
                                 <SvgIcon icon="happy" fillColor={lightTheme.darkShade} />
                             </View>
-                            <Text style={styles.modalText}>{correctFirstAttempt}</Text>
+                            <Paragraph style={styles.modalText}>{correctFirstAttempt}</Paragraph>
                         </View>
                         <View style={[styles.modalContentSection, { backgroundColor: color.neutralBlue }]}>
                             <View style={styles.modalTitleSection}>
                                 <SvgIcon icon="normal" fillColor={lightTheme.darkShade} />
                             </View>
-                            <Text style={styles.modalText}>{correctSecondAttempt}</Text>
+                            <Paragraph style={styles.modalText}>{correctSecondAttempt}</Paragraph>
                         </View>
                         <View style={[styles.modalContentSection, { backgroundColor: color.neutralPlum }]}>
                             <View style={styles.modalTitleSection}>
                                 <SvgIcon icon="sad" fillColor={lightTheme.darkShade} />
                             </View>
-                            <Text style={styles.modalText}>{correctMoreAttempt}</Text>
+                            <Paragraph style={styles.modalText}>{correctMoreAttempt}</Paragraph>
                         </View>
                     </View>
 
@@ -120,19 +120,19 @@ const ResultModal = ({ visible, onClose, correctFirstAttempt, correctSecondAttem
                             <View style={[styles.iconButton]}>
                                 <SvgIcon icon="category" fillColor={lightTheme.darkShade} />
                             </View>
-                            <Text style={styles.iconButtonText}>Quizz</Text>
+                            <Paragraph style={styles.iconButtonText}>Quizz</Paragraph>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.iconButtonContainer} onPress={handleRestartPress}>
                             <View style={[styles.iconButton, { backgroundColor: lightTheme.darkShade }]}>
                                 <SvgIcon icon="refresh" fillColor={lightTheme.lightShade} />
                             </View>
-                            <Text style={styles.iconButtonText}>Restart</Text>
+                            <Paragraph style={styles.iconButtonText}>Restart</Paragraph>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.iconButtonContainer} onPress={handleDictionaryPress}>
                             <View style={[styles.iconButton]}>
                                 <SvgIcon icon="dictionary" fillColor={lightTheme.darkShade} />
                             </View>
-                            <Text style={styles.iconButtonText}>Dictionnaire</Text>
+                            <Paragraph style={styles.iconButtonText}>Dictionnaire</Paragraph>
                         </TouchableOpacity>
                     </View>
                 </View>

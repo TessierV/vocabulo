@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, View, StyleSheet, TouchableOpacity, Dimensions, Text } from 'react-native';
 import Bubble from '@/components/Effect/Bubble';
 import { Feather } from '@expo/vector-icons';
+import { Paragraph } from '@/constants/StyledText';
 
 const { width, height } = Dimensions.get('window');
 
@@ -40,10 +41,10 @@ const CustomModal = ({ visible, title, content, buttonText, onPress }) => {
           ))}
         </View>
         <View style={styles.modalContainer}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.content}>{content}</Text>
+          <Paragraph style={styles.title}>{title}</Paragraph>
+          <Paragraph style={styles.content}>{content}</Paragraph>
           <TouchableOpacity style={styles.button} onPress={onPress}>
-            <Text style={styles.buttonText}>{buttonText}</Text>
+            <Paragraph style={styles.buttonText}>{buttonText}</Paragraph>
           </TouchableOpacity>
           <TouchableOpacity style={styles.closeButton} onPress={onPress}>
             <Feather name="x" size={18} color="white" />

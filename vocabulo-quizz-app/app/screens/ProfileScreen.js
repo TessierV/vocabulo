@@ -12,6 +12,7 @@ import TotalWordsProgressBar from '@/components/Profil/TotalWordsProgressBar';
 import SectionTitle from '@/components/General/SectionTitle';
 import { profil } from '@/constants/texts';
 import config from '@/backend/config/config';
+import { Paragraph } from '@/constants/StyledText';
 
 const ProfileScreen = () => {
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -187,8 +188,8 @@ const ProfileScreen = () => {
   };
 
   // Loading and error handling
-  if (loading) return <Text>Chargement...</Text>;
-  if (errorMessage) return <Text>{errorMessage}</Text>;
+  if (loading) return <Paragraph>Chargement...</Paragraph>;
+  if (errorMessage) return <Paragraph>{errorMessage}</Paragraph>;
 
   // Render the main profile screen layout
   return (

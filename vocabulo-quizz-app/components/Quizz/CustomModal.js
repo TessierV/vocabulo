@@ -1,4 +1,5 @@
 import { lightTheme, color } from '@/constants/Colors'; // Importing the color themes defined in the project
+import { Paragraph } from '@/constants/StyledText';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Linking } from 'react-native';
 
@@ -12,7 +13,7 @@ const CustomModal = ({ visible, onClose, title, message, urls }) => {
     // Function to render each item in the list of URLs
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.urlButton} onPress={() => handlePress(item)}>
-            <Text style={styles.urlText}>{item}</Text>
+            <Paragraph style={styles.urlText}>{item}</Paragraph>
         </TouchableOpacity>
     );
 
@@ -25,8 +26,8 @@ const CustomModal = ({ visible, onClose, title, message, urls }) => {
         >
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
-                    <Text style={styles.title}>{title}</Text>
-                    <Text style={styles.message}>{message}</Text>
+                    <Paragraph style={styles.title}>{title}</Paragraph>
+                    <Paragraph style={styles.message}>{message}</Paragraph>
                     {urls && urls.length > 0 && ( // If URLs are provided, display them in a list
                         <FlatList
                             data={urls} // The list of URLs to display
@@ -36,7 +37,7 @@ const CustomModal = ({ visible, onClose, title, message, urls }) => {
                         />
                     )}
                     <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                        <Text style={styles.closeButtonText}>Close</Text>
+                        <Paragraph style={styles.closeButtonText}>Close</Paragraph>
                     </TouchableOpacity>
                 </View>
             </View>

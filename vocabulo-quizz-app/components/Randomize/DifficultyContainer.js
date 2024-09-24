@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import useDarkMode from '@/components/useDarkMode';
+import { Paragraph } from '@/constants/StyledText';
 
 const DifficultyContainer = ({ randomCategory, handleChangeDifficulty, isDifficultyAvailable, getDifficultySVG, textStyle, buttonStyle }) => {
   const [darkMode] = useDarkMode();
@@ -16,7 +17,7 @@ const DifficultyContainer = ({ randomCategory, handleChangeDifficulty, isDifficu
           disabled={!isDifficultyAvailable(difficulty)}
         >
           <SvgXml xml={getDifficultySVG(difficulty)} width="30" height="30" />
-          <Text style={textStyle(difficulty)}>{difficulty === 'easy' ? 'Facile' : difficulty === 'middle' ? 'Moyen' : 'Difficile'}</Text>
+          <Paragraph style={textStyle(difficulty)}>{difficulty === 'easy' ? 'Facile' : difficulty === 'middle' ? 'Moyen' : 'Difficile'}</Paragraph>
         </TouchableOpacity>
       ))}
     </View>

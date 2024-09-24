@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { color, darkTheme, lightTheme } from '@/constants/Colors';
 import InterfaceSvg from '@/SVG/InterfaceSvg';
+import { Paragraph } from '@/constants/StyledText';
 
 // Function to determine gradient colors based on views and correctRatio
 const getGradientColors = (views, correctRatio,) => {
@@ -93,7 +94,7 @@ const HorizontalProgressBar = ({ filteredWords, darkMode }) => {
 const LegendItem = ({ color, label }) => (
     <View style={styles.legendItem}>
         <View style={[styles.legendColor, { backgroundColor: color }]} />
-        <Text style={styles.legendText}>{label}</Text>
+        <Paragraph style={styles.legendText}>{label}</Paragraph>
     </View>
 );
 

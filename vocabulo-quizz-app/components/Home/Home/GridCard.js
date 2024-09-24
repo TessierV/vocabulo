@@ -202,11 +202,11 @@ const GridCardHome = () => {
                                 <View style={[styles.categoryRow, { backgroundColor: darkMode ? darkTheme.light_darkShade : lightTheme.darkShade }]}>
                                     <View style={styles.categoryRowIcon}>
                                         <SvgIcon icon={selectedCategory.categorie_name} width="25" height="25" />
-                                        <Text style={styles.recapTitle}>{selectedCategory.categorie_name}</Text>
+                                        <Paragraph style={styles.recapTitle}>{selectedCategory.categorie_name}</Paragraph>
                                     </View>
-                                    <Text style={[styles.recapCount, { color: darkMode ? darkTheme.neutral : lightTheme.dark_lightShade }]}>
+                                    <Paragraph style={[styles.recapCount, { color: darkMode ? darkTheme.neutral : lightTheme.dark_lightShade }]}>
                                         {getTotalFilteredWordCount(selectedCategory)} / {selectedCategory.totalWordCount} mots
-                                    </Text>
+                                    </Paragraph>
                                 </View>
 
                             </View>

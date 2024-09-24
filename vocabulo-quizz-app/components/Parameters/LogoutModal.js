@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import { Paragraph } from '@/constants/StyledText';
 
 const LogoutModal = ({ visible, onClose, onLogout }) => {
   return (
@@ -11,13 +12,13 @@ const LogoutModal = ({ visible, onClose, onLogout }) => {
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Voulez-vous vraiment vous déconnecter ?</Text>
+          <Paragraph style={styles.modalText}>Voulez-vous vraiment vous déconnecter ?</Paragraph>
           <View style={styles.modalButtons}>
             <TouchableOpacity style={styles.button} onPress={onClose}>
-              <Text style={styles.buttonText}>Annuler</Text>
+              <Paragraph style={styles.buttonText}>Annuler</Paragraph>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={onLogout}>
-              <Text style={styles.buttonText}>Se déconnecter</Text>
+              <Paragraph style={styles.buttonText}>Se déconnecter</Paragraph>
             </TouchableOpacity>
           </View>
         </View>

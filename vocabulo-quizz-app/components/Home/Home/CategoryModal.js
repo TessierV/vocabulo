@@ -6,7 +6,7 @@ import { View, Text, StyleSheet } from 'react-native';
 const CategoryModal = ({ words }) => {
     if (!Array.isArray(words)) {
         console.error('Invalid words prop:', words);
-        return <Text>Aucun mot disponible</Text>; // Affiche un message d'erreur si les données sont invalides
+        return <Paragraph>Aucun mot disponible</Paragraph>; // Affiche un message d'erreur si les données sont invalides
     }
 
     console.log('CategoryModal Words:', words); // Debugging

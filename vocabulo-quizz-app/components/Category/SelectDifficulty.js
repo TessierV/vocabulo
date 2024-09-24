@@ -5,6 +5,7 @@ import { darkTheme, lightTheme, color } from '@/constants/Colors';
 import InfoModal from '@/components/Slider/SlideModal';
 import TitleSlider from '@/components/Slider/SliderTitleWithInfo';
 import { texts } from '@/constants/texts';
+import { Paragraph } from '@/constants/StyledText';
 
 // Main component for selecting difficulty
 const SelectDifficulty = ({ darkMode, onFilterChange, categories = [] }) => {
@@ -93,7 +94,7 @@ const SelectDifficulty = ({ darkMode, onFilterChange, categories = [] }) => {
             `}
             style={styles.svgBackground}
           />
-          <Text style={styles.goalLabel}>{texts.categoryScreen.selectDifficulty.levelDifficulty.all.textLabel || 'All'}</Text>
+          <Paragraph style={styles.goalLabel}>{texts.categoryScreen.selectDifficulty.levelDifficulty.all.textLabel || 'All'}</Paragraph>
         </TouchableOpacity>
         {/* Buttons for each difficulty level */}
         {goals.map((goal, index) => (
@@ -103,8 +104,8 @@ const SelectDifficulty = ({ darkMode, onFilterChange, categories = [] }) => {
             onPress={() => handlePress(goal.value)}
           >
             <SvgXml style={styles.goalSvg} xml={goal.icon} width={20} height={20} />
-            <Text style={styles.goalLabel}>{goal.label}</Text>
-            <Text style={styles.goalStatus}>{`${goal.count}/${totalCount}`}</Text>
+            <Paragraph style={styles.goalLabel}>{goal.label}</Paragraph>
+            <Paragraph style={styles.goalStatus}>{`${goal.count}/${totalCount}`}</Paragraph>
           </TouchableOpacity>
         ))}
       </View>

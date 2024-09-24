@@ -195,7 +195,7 @@ const HomeListQuizz = () => {
                     setShowDefinitionModal(true); // Show definition modal
                 }}>
                     <View style={{ position: 'relative', width: '100%', alignSelf:'center', alignItems:'center' }}>
-                        <SvgXml xml={CategoryWordSvg[correctWord.mot]} width="110" height="110" /> // Display SVG
+                        <SvgXml xml={CategoryWordSvg[correctWord.mot]} width="110" height="110" />
                         <Feather style={{ position: 'absolute', right: 0, top: 0 }} name="help-circle" size={18} color={lightTheme.light_darkShade} />
                     </View>
                 </TouchableOpacity>
@@ -214,7 +214,7 @@ const HomeListQuizz = () => {
                         Quelle est la réponse à cette définition ?{'\n\n'}
                     </Paragraph>
                     <Subtitle style={{ color: lightTheme.dark_lightShade }}>
-                        {correctWord.definitions} // Display the correct word definition
+                        {correctWord.definitions}
                     </Subtitle>
                 </>
             );
@@ -380,7 +380,7 @@ const HomeListQuizz = () => {
             <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center', alignItems: 'center' }}>
                 <Paragraph style={{ fontSize: 20, marginBottom: 20 }}>{currentQuestion.questionText}</Paragraph>
                 <View style={{ marginVertical: 10, width: '100%' }}>
-                    {currentQuestion.svgIconWord} {/* Display SVG icon if available */}
+                    {currentQuestion.svgIconWord}
                 </View>
             </View>
             <View style={{ width: '90%', alignSelf: 'center', justifyContent: 'center' }}>

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { darkTheme, lightTheme, color } from '@/constants/Colors';
+import { Paragraph } from '@/constants/StyledText';
 
 const CategoryCard = ({ categories, darkMode, onCategorySelect }) => {
   const screenWidth = Dimensions.get('window').width;
@@ -113,9 +114,9 @@ const CategoryCard = ({ categories, darkMode, onCategorySelect }) => {
               >
                 <SvgXml xml={category.icon} width="70%" height="70%" />
               </View>
-              <Text style={[styles.label, { color: darkMode ? darkTheme.text : lightTheme.text }]}>
+              <Paragraph style={[styles.label, { color: darkMode ? darkTheme.text : lightTheme.text }]}>
                 {category.textLabel || 'Unknown'}
-              </Text>
+              </Paragraph>
               <View style={styles.starsContainer}>
                 {stars.map((star, starIndex) => (
                   <SvgXml key={starIndex} xml={star} width={12} height={12} />
