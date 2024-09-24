@@ -11,7 +11,7 @@ import { GradientBackgroundButton, GradientBorderButton } from './Button';
 const slides = [
   {
     id: '1',
-    title: 'La première application de quizz pour personnes malentendantes',
+    title: 'La première application de quizz pour les personnes sourdes',
     text: 'conçue pour enrichir votre vocabulaire avec 1991 questions uniques.',
     backgroundImage: require('@/assets/images/Onboarding/11.png'),
   },
